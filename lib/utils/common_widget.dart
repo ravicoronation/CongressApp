@@ -1,0 +1,29 @@
+import 'package:flutter/material.dart';
+
+import '../constant/colors.dart';
+
+Widget getBackArrow(BuildContext? context){
+  return GestureDetector(
+    onTap: (){
+      Navigator.pop(context!);
+    },
+    child: Container(
+      alignment: Alignment.centerLeft,
+      margin: const EdgeInsets.only(right: 4),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Image.asset('assets/images/ic_arrow_left.png', width: 22, height: 22),
+      ),
+    ),
+  );
+}
+
+Widget getTitle(String title) {
+  return Text(
+    title,
+    textAlign: TextAlign.center,
+    style: const TextStyle(fontSize: 16, color: black, fontWeight: FontWeight.w500),
+  );
+}
+
+screenPadding() => const EdgeInsets.fromLTRB(16, 12, 16, 12);
