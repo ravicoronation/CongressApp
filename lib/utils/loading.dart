@@ -16,7 +16,7 @@ class LoadingWidget extends StatelessWidget {
                 color: white,
                 borderRadius: BorderRadius.all(Radius.circular(kBorderRadius)),
                 ),
-            child: Lottie.asset('assets/images/loader.json',width: 100,height: 100),
+            child: Lottie.asset('assets/images/loader_animation.json',width: 100,height: 100),
           )),
     );
   }

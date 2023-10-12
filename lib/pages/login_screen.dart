@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:congress_app/pages/DashBoardScreen.dart';
+import 'package:congress_app/pages/sync_data_screen.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
 import '../constant/api_end_point.dart';
 import '../constant/colors.dart';
+import '../local_storage/db_helper.dart';
 import '../model/LoginResponse.dart';
 import '../utils/app_utils.dart';
 import '../utils/session_manager.dart';
@@ -25,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   FocusNode inputNode = FocusNode();
   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
   bool isOnline = true;
+  final dbHelper = DbHelper.instance;
 
   @override
   SessionManager sessionManager = SessionManager();
@@ -238,8 +240,9 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+
   void redirectToHome() {
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const DashBoardScreen()), (Route<dynamic> route) => false);
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const SyncDataScreen()), (Route<dynamic> route) => false);
   }
 
 }

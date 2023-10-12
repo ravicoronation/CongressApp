@@ -11,6 +11,7 @@ class SessionManager {
   final String isActive = "isActive";
   final String deviceToken = "deviceToken";
   final String accessToken = "access_token";
+  final String isDataSync = "isDataSync";
 
   Future createLoginSession(String idParam, String workerNameParam, String workerPhoneParam,
       String assemblyNumberParam, String boothAssignedParam, bool isActiveParam) async {
@@ -30,6 +31,15 @@ class SessionManager {
 
   bool? checkIsLoggedIn() {
     return SessionManagerNew.getBool(isLoggedIn);
+  }
+
+  Future<void> setIsDataSync(bool data)
+  async {
+    await SessionManagerNew.setBool(isDataSync, data);
+  }
+
+  bool? checkIsDataSync() {
+    return SessionManagerNew.getBool(isDataSync);
   }
 
   Future<void> setDeviceToken(String apiDeviceToken)

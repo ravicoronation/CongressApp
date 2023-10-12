@@ -6,7 +6,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../constant/colors.dart';
 
 /*show message to user*/
@@ -66,11 +65,11 @@ String getPrice(String text) {
 getCommonCard() {
   return BoxDecoration(
     color: white,
-    borderRadius: BorderRadius.circular(kButtonCornerRadius),
+   // borderRadius: BorderRadius.circular(kButtonCornerRadius),
     boxShadow: [
       BoxShadow(
         color: Colors.grey.withOpacity(0.1), //color of shadow
-        spreadRadius: 2, //spread radius
+        spreadRadius: 4, //spread radius
         blurRadius: 9, // blur radius
         offset: const Offset(0, 2), // changes position of shadow
         //first paramerter of offset is left-right
@@ -84,16 +83,13 @@ getCommonCardBasic() {
   return BoxDecoration(
     color: white,
     borderRadius: BorderRadius.circular(kButtonCornerRadius),
-    boxShadow: [
-      BoxShadow(
-        color: Colors.grey.withOpacity(0.1), //color of shadow
-        spreadRadius: 3, //spread radius
-        blurRadius: 9, // blur radius
-        offset: const Offset(0, 2), // changes position of shadow
-        //first paramerter of offset is left-right
-        //second parameter is top to down
-      )
-    ],
+  );
+}
+
+getCommonCardBasicBottom() {
+  return const BoxDecoration(
+    color: darOrange,
+    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(0),bottomRight: Radius.circular(0)),
   );
 }
 
@@ -146,6 +142,10 @@ editTextStyle() {
   return TextStyle(fontWeight: FontWeight.w500, color: black, fontSize: textFiledSize);
 }
 
+editTextStyleSmall() {
+  return TextStyle(fontWeight: FontWeight.w500, color: black, fontSize: contentSize);
+}
+
 getClickableIcons(String icon, Color color) {
   return SizedBox(
     width: 48,
@@ -190,6 +190,22 @@ noInterNet(BuildContext? context) {
       const SnackBar(
         content: Text("Please check your internet connection!"),
         duration: Duration(seconds: 1),
+      ),
+    );
+  } catch (e) {
+    if (kDebugMode) {
+      print(e);
+    }
+  }
+}
+
+
+apiFailed(BuildContext? context) {
+  try {
+    return ScaffoldMessenger.of(context!).showSnackBar(
+      const SnackBar(
+        content: Text("Something is not right from API, Please try again!"),
+        duration: Duration(seconds: 2),
       ),
     );
   } catch (e) {

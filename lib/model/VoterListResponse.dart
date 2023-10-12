@@ -1,7 +1,9 @@
 import 'dart:convert';
+
+import 'package:congress_app/utils/app_utils.dart';
 /// count : 929
 /// message : "Success"
-/// voters : [{"id":1,"acNo":"72","partNo":"1","sectionNo":"3","slnoinpart":"765","fullNameEn":"C Konda Jamuna -H- Srinivas","fullNameV1":"సీ కొండ జమున -H- శ్రీనివాస్","fmNameEn":"C Konda Jamuna","lastnameEn":"","fmNameV1":"సీ కొండ జమున","lastnameV1":"","rlnType":"H","rlnFmNmEn":"Srinivas","rlnLNmEn":"","rlnFmNmV1":"శ్రీనివాస్","rlnLNmV1":"","epicNo":"ZUE1141688","gender":"F","age":"44","dob":"1979-01-01","mobileNo":"+918790412964","pcNo":"11","pcnameEn":"Mahabubnagar","pcnameV1":"మహబూబ్ నగర్","acNameEn":"Kodangal","acNameV1":"కొడంగల్","sectionNameV1":"య సి కాలనీ","sectionNameEn":"S C Colony","villageNameEn":"0","villageNameV1":"0","postoffNameEn":"Nagasar","postoffNameV1":"నాగాసార్","postoffPin":"509336","partNameEn":"Nagsar","partNameV1":"నాగాసార్","psbuildingNameEn":"Mandal Parishat Primary School","psbuildingNo":"170","psbuildingNameV1":"మండల పరిషత్ ప్రాధమిక పాఠశాల","tahsilNameEn":"Doulatabad","tahsilNameV1":"దౌల్తాబాద్","policestNameEn":"Doulatabad","policestNameV1":"దౌల్తాబాద్","isDuplicate":false,"chouseNo":"1-182A","chouseNoV1":"1-182ఏ"}]
+/// voters : [{"id":1,"acNo":72,"partNo":1,"sectionNo":3,"slnoinpart":765,"fullNameEn":"C Konda Jamuna -H- Srinivas","fullNameV1":"సీ కొండ జమున -H- శ్రీనివాస్","fmNameEn":"C Konda Jamuna","lastnameEn":"","fmNameV1":"సీ కొండ జమున","lastnameV1":"","rlnType":"H","rlnFmNmEn":"Srinivas","rlnLNmEn":"","rlnFmNmV1":"శ్రీనివాస్","rlnLNmV1":"","epicNo":"ZUE1141688","gender":"F","age":"44","dob":"1979-01-01","mobileNo":"+918790412964","pcNo":11,"pcnameEn":"Mahabubnagar","pcnameV1":"మహబూబ్ నగర్","acNameEn":"Kodangal","acNameV1":"కొడంగల్","sectionNameV1":"య సి కాలనీ","sectionNameEn":"S C Colony","villageNameEn":"0","villageNameV1":"0","postoffNameEn":"Nagasar","postoffNameV1":"నాగాసార్","postoffPin":"509336","partNameEn":"Nagsar","partNameV1":"నాగాసార్","psbuildingNameEn":"Mandal Parishat Primary School","psbuildingNo":170,"psbuildingNameV1":"మండల పరిషత్ ప్రాధమిక పాఠశాల","tahsilNameEn":"Doulatabad","tahsilNameV1":"దౌల్తాబాద్","policestNameEn":"Doulatabad","policestNameV1":"దౌల్తాబాద్","isDuplicate":false,"whatsappNo":"","newAddress":"","aadhaarNo":"","isDead":false,"isVisited":false,"hasVoted":false,"email":"","referenceName":"","bloodGroup":"","profession":"","facebookUrl":"","instagramUrl":"","twitterUrl":"","otherDetails":"","chouseNo":"1-182A","chouseNoV1":"1-182ఏ"}]
 
 VoterListResponse voterListResponseFromJson(String str) => VoterListResponse.fromJson(json.decode(str));
 String voterListResponseToJson(VoterListResponse data) => json.encode(data.toJson());
@@ -52,10 +54,10 @@ VoterListResponse copyWith({  num? count,
 }
 
 /// id : 1
-/// acNo : "72"
-/// partNo : "1"
-/// sectionNo : "3"
-/// slnoinpart : "765"
+/// acNo : 72
+/// partNo : 1
+/// sectionNo : 3
+/// slnoinpart : 765
 /// fullNameEn : "C Konda Jamuna -H- Srinivas"
 /// fullNameV1 : "సీ కొండ జమున -H- శ్రీనివాస్"
 /// fmNameEn : "C Konda Jamuna"
@@ -72,7 +74,7 @@ VoterListResponse copyWith({  num? count,
 /// age : "44"
 /// dob : "1979-01-01"
 /// mobileNo : "+918790412964"
-/// pcNo : "11"
+/// pcNo : 11
 /// pcnameEn : "Mahabubnagar"
 /// pcnameV1 : "మహబూబ్ నగర్"
 /// acNameEn : "Kodangal"
@@ -87,13 +89,27 @@ VoterListResponse copyWith({  num? count,
 /// partNameEn : "Nagsar"
 /// partNameV1 : "నాగాసార్"
 /// psbuildingNameEn : "Mandal Parishat Primary School"
-/// psbuildingNo : "170"
+/// psbuildingNo : 170
 /// psbuildingNameV1 : "మండల పరిషత్ ప్రాధమిక పాఠశాల"
 /// tahsilNameEn : "Doulatabad"
 /// tahsilNameV1 : "దౌల్తాబాద్"
 /// policestNameEn : "Doulatabad"
 /// policestNameV1 : "దౌల్తాబాద్"
 /// isDuplicate : false
+/// whatsappNo : ""
+/// newAddress : ""
+/// aadhaarNo : ""
+/// isDead : false
+/// isVisited : false
+/// hasVoted : false
+/// email : ""
+/// referenceName : ""
+/// bloodGroup : ""
+/// profession : ""
+/// facebookUrl : ""
+/// instagramUrl : ""
+/// twitterUrl : ""
+/// otherDetails : ""
 /// chouseNo : "1-182A"
 /// chouseNoV1 : "1-182ఏ"
 
@@ -102,10 +118,10 @@ String votersToJson(Voters data) => json.encode(data.toJson());
 class Voters {
   Voters({
       num? id, 
-      String? acNo, 
-      String? partNo, 
-      String? sectionNo, 
-      String? slnoinpart, 
+      num? acNo, 
+      num? partNo, 
+      num? sectionNo, 
+      num? slnoinpart, 
       String? fullNameEn, 
       String? fullNameV1, 
       String? fmNameEn, 
@@ -122,7 +138,7 @@ class Voters {
       String? age, 
       String? dob, 
       String? mobileNo, 
-      String? pcNo, 
+      num? pcNo, 
       String? pcnameEn, 
       String? pcnameV1, 
       String? acNameEn, 
@@ -137,13 +153,27 @@ class Voters {
       String? partNameEn, 
       String? partNameV1, 
       String? psbuildingNameEn, 
-      String? psbuildingNo, 
+      num? psbuildingNo, 
       String? psbuildingNameV1, 
       String? tahsilNameEn, 
       String? tahsilNameV1, 
       String? policestNameEn, 
       String? policestNameV1, 
       bool? isDuplicate, 
+      String? whatsappNo, 
+      String? newAddress, 
+      String? aadhaarNo, 
+      bool? isDead, 
+      bool? isVisited, 
+      bool? hasVoted, 
+      String? email, 
+      String? referenceName, 
+      String? bloodGroup, 
+      String? profession, 
+      String? facebookUrl, 
+      String? instagramUrl, 
+      String? twitterUrl, 
+      String? otherDetails, 
       String? chouseNo, 
       String? chouseNoV1,}){
     _id = id;
@@ -189,6 +219,20 @@ class Voters {
     _policestNameEn = policestNameEn;
     _policestNameV1 = policestNameV1;
     _isDuplicate = isDuplicate;
+    _whatsappNo = whatsappNo;
+    _newAddress = newAddress;
+    _aadhaarNo = aadhaarNo;
+    _isDead = isDead;
+    _isVisited = isVisited;
+    _hasVoted = hasVoted;
+    _email = email;
+    _referenceName = referenceName;
+    _bloodGroup = bloodGroup;
+    _profession = profession;
+    _facebookUrl = facebookUrl;
+    _instagramUrl = instagramUrl;
+    _twitterUrl = twitterUrl;
+    _otherDetails = otherDetails;
     _chouseNo = chouseNo;
     _chouseNoV1 = chouseNoV1;
 }
@@ -236,15 +280,29 @@ class Voters {
     _tahsilNameV1 = json['tahsilNameV1'];
     _policestNameEn = json['policestNameEn'];
     _policestNameV1 = json['policestNameV1'];
-    _isDuplicate = json['isDuplicate'];
+    _isDuplicate = json['isDuplicate']  == 1 ? true : false;
+    _whatsappNo = json['whatsappNo'];
+    _newAddress = json['newAddress'];
+    _aadhaarNo = json['aadhaarNo'];
+    _isDead = json['isDead'] == 1 ? true : false;
+    _isVisited = json['isVisited'] == 1 ? true : false;
+    _hasVoted = json['hasVoted'] == 1 ? true : false;
+    _email = json['email'];
+    _referenceName = json['referenceName'];
+    _bloodGroup = json['bloodGroup'];
+    _profession = json['profession'];
+    _facebookUrl = json['facebookUrl'];
+    _instagramUrl = json['instagramUrl'];
+    _twitterUrl = json['twitterUrl'];
+    _otherDetails = json['otherDetails'];
     _chouseNo = json['chouseNo'];
     _chouseNoV1 = json['chouseNoV1'];
   }
   num? _id;
-  String? _acNo;
-  String? _partNo;
-  String? _sectionNo;
-  String? _slnoinpart;
+  num? _acNo;
+  num? _partNo;
+  num? _sectionNo;
+  num? _slnoinpart;
   String? _fullNameEn;
   String? _fullNameV1;
   String? _fmNameEn;
@@ -261,7 +319,7 @@ class Voters {
   String? _age;
   String? _dob;
   String? _mobileNo;
-  String? _pcNo;
+  num? _pcNo;
   String? _pcnameEn;
   String? _pcnameV1;
   String? _acNameEn;
@@ -276,20 +334,34 @@ class Voters {
   String? _partNameEn;
   String? _partNameV1;
   String? _psbuildingNameEn;
-  String? _psbuildingNo;
+  num? _psbuildingNo;
   String? _psbuildingNameV1;
   String? _tahsilNameEn;
   String? _tahsilNameV1;
   String? _policestNameEn;
   String? _policestNameV1;
   bool? _isDuplicate;
+  String? _whatsappNo;
+  String? _newAddress;
+  String? _aadhaarNo;
+  bool? _isDead;
+  bool? _isVisited;
+  bool? _hasVoted;
+  String? _email;
+  String? _referenceName;
+  String? _bloodGroup;
+  String? _profession;
+  String? _facebookUrl;
+  String? _instagramUrl;
+  String? _twitterUrl;
+  String? _otherDetails;
   String? _chouseNo;
   String? _chouseNoV1;
 Voters copyWith({  num? id,
-  String? acNo,
-  String? partNo,
-  String? sectionNo,
-  String? slnoinpart,
+  num? acNo,
+  num? partNo,
+  num? sectionNo,
+  num? slnoinpart,
   String? fullNameEn,
   String? fullNameV1,
   String? fmNameEn,
@@ -306,7 +378,7 @@ Voters copyWith({  num? id,
   String? age,
   String? dob,
   String? mobileNo,
-  String? pcNo,
+  num? pcNo,
   String? pcnameEn,
   String? pcnameV1,
   String? acNameEn,
@@ -321,13 +393,27 @@ Voters copyWith({  num? id,
   String? partNameEn,
   String? partNameV1,
   String? psbuildingNameEn,
-  String? psbuildingNo,
+  num? psbuildingNo,
   String? psbuildingNameV1,
   String? tahsilNameEn,
   String? tahsilNameV1,
   String? policestNameEn,
   String? policestNameV1,
   bool? isDuplicate,
+  String? whatsappNo,
+  String? newAddress,
+  String? aadhaarNo,
+  bool? isDead,
+  bool? isVisited,
+  bool? hasVoted,
+  String? email,
+  String? referenceName,
+  String? bloodGroup,
+  String? profession,
+  String? facebookUrl,
+  String? instagramUrl,
+  String? twitterUrl,
+  String? otherDetails,
   String? chouseNo,
   String? chouseNoV1,
 }) => Voters(  id: id ?? _id,
@@ -373,14 +459,28 @@ Voters copyWith({  num? id,
   policestNameEn: policestNameEn ?? _policestNameEn,
   policestNameV1: policestNameV1 ?? _policestNameV1,
   isDuplicate: isDuplicate ?? _isDuplicate,
+  whatsappNo: whatsappNo ?? _whatsappNo,
+  newAddress: newAddress ?? _newAddress,
+  aadhaarNo: aadhaarNo ?? _aadhaarNo,
+  isDead: isDead ?? _isDead,
+  isVisited: isVisited ?? _isVisited,
+  hasVoted: hasVoted ?? _hasVoted,
+  email: email ?? _email,
+  referenceName: referenceName ?? _referenceName,
+  bloodGroup: bloodGroup ?? _bloodGroup,
+  profession: profession ?? _profession,
+  facebookUrl: facebookUrl ?? _facebookUrl,
+  instagramUrl: instagramUrl ?? _instagramUrl,
+  twitterUrl: twitterUrl ?? _twitterUrl,
+  otherDetails: otherDetails ?? _otherDetails,
   chouseNo: chouseNo ?? _chouseNo,
   chouseNoV1: chouseNoV1 ?? _chouseNoV1,
 );
   num? get id => _id;
-  String? get acNo => _acNo;
-  String? get partNo => _partNo;
-  String? get sectionNo => _sectionNo;
-  String? get slnoinpart => _slnoinpart;
+  num? get acNo => _acNo;
+  num? get partNo => _partNo;
+  num? get sectionNo => _sectionNo;
+  num? get slnoinpart => _slnoinpart;
   String? get fullNameEn => _fullNameEn;
   String? get fullNameV1 => _fullNameV1;
   String? get fmNameEn => _fmNameEn;
@@ -397,7 +497,7 @@ Voters copyWith({  num? id,
   String? get age => _age;
   String? get dob => _dob;
   String? get mobileNo => _mobileNo;
-  String? get pcNo => _pcNo;
+  num? get pcNo => _pcNo;
   String? get pcnameEn => _pcnameEn;
   String? get pcnameV1 => _pcnameV1;
   String? get acNameEn => _acNameEn;
@@ -412,66 +512,92 @@ Voters copyWith({  num? id,
   String? get partNameEn => _partNameEn;
   String? get partNameV1 => _partNameV1;
   String? get psbuildingNameEn => _psbuildingNameEn;
-  String? get psbuildingNo => _psbuildingNo;
+  num? get psbuildingNo => _psbuildingNo;
   String? get psbuildingNameV1 => _psbuildingNameV1;
   String? get tahsilNameEn => _tahsilNameEn;
   String? get tahsilNameV1 => _tahsilNameV1;
   String? get policestNameEn => _policestNameEn;
   String? get policestNameV1 => _policestNameV1;
   bool? get isDuplicate => _isDuplicate;
+  String? get whatsappNo => _whatsappNo;
+  String? get newAddress => _newAddress;
+  String? get aadhaarNo => _aadhaarNo;
+  bool? get isDead => _isDead;
+  bool? get isVisited => _isVisited;
+  bool? get hasVoted => _hasVoted;
+  String? get email => _email;
+  String? get referenceName => _referenceName;
+  String? get bloodGroup => _bloodGroup;
+  String? get profession => _profession;
+  String? get facebookUrl => _facebookUrl;
+  String? get instagramUrl => _instagramUrl;
+  String? get twitterUrl => _twitterUrl;
+  String? get otherDetails => _otherDetails;
   String? get chouseNo => _chouseNo;
   String? get chouseNoV1 => _chouseNoV1;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
-    map['id'] = _id;
-    map['acNo'] = _acNo;
-    map['partNo'] = _partNo;
-    map['sectionNo'] = _sectionNo;
-    map['slnoinpart'] = _slnoinpart;
-    map['fullNameEn'] = _fullNameEn;
-    map['fullNameV1'] = _fullNameV1;
-    map['fmNameEn'] = _fmNameEn;
-    map['lastnameEn'] = _lastnameEn;
-    map['fmNameV1'] = _fmNameV1;
-    map['lastnameV1'] = _lastnameV1;
-    map['rlnType'] = _rlnType;
-    map['rlnFmNmEn'] = _rlnFmNmEn;
-    map['rlnLNmEn'] = _rlnLNmEn;
-    map['rlnFmNmV1'] = _rlnFmNmV1;
-    map['rlnLNmV1'] = _rlnLNmV1;
-    map['epicNo'] = _epicNo;
-    map['gender'] = _gender;
-    map['age'] = _age;
-    map['dob'] = _dob;
-    map['mobileNo'] = _mobileNo;
-    map['pcNo'] = _pcNo;
-    map['pcnameEn'] = _pcnameEn;
-    map['pcnameV1'] = _pcnameV1;
-    map['acNameEn'] = _acNameEn;
-    map['acNameV1'] = _acNameV1;
-    map['sectionNameV1'] = _sectionNameV1;
-    map['sectionNameEn'] = _sectionNameEn;
-    map['villageNameEn'] = _villageNameEn;
-    map['villageNameV1'] = _villageNameV1;
-    map['postoffNameEn'] = _postoffNameEn;
-    map['postoffNameV1'] = _postoffNameV1;
-    map['postoffPin'] = _postoffPin;
-    map['partNameEn'] = _partNameEn;
-    map['partNameV1'] = _partNameV1;
-    map['psbuildingNameEn'] = _psbuildingNameEn;
-    map['psbuildingNo'] = _psbuildingNo;
-    map['psbuildingNameV1'] = _psbuildingNameV1;
-    map['tahsilNameEn'] = _tahsilNameEn;
-    map['tahsilNameV1'] = _tahsilNameV1;
-    map['policestNameEn'] = _policestNameEn;
-    map['policestNameV1'] = _policestNameV1;
-    map['isDuplicate'] = _isDuplicate;
-    map['chouseNo'] = _chouseNo;
-    map['chouseNoV1'] = _chouseNoV1;
+    map['id'] = _id ?? 0;
+    map['acNo'] = _acNo ?? 0;
+    map['partNo'] = _partNo ?? 0;
+    map['sectionNo'] = _sectionNo ?? 0;
+    map['slnoinpart'] = _slnoinpart ?? 0;
+    map['fullNameEn'] = checkValidString(_fullNameEn);
+    map['fullNameV1'] = checkValidString(_fullNameV1);
+    map['fmNameEn'] = checkValidString(_fmNameEn);
+    map['lastnameEn'] = checkValidString(_lastnameEn);
+    map['fmNameV1'] = checkValidString(_fmNameV1);
+    map['lastnameV1'] = checkValidString(_lastnameV1);
+    map['rlnType'] = checkValidString(_rlnType);
+    map['rlnFmNmEn'] = checkValidString(_rlnFmNmEn);
+    map['rlnLNmEn'] = checkValidString(_rlnLNmEn);
+    map['rlnFmNmV1'] = checkValidString(_rlnFmNmV1);
+    map['rlnLNmV1'] = checkValidString(_rlnLNmV1);
+    map['epicNo'] = checkValidString(_epicNo);
+    map['gender'] = checkValidString(_gender);
+    map['age'] = checkValidString(_age);
+    map['dob'] = checkValidString(_dob);
+    map['mobileNo'] = checkValidString(_mobileNo);
+    map['pcNo'] = _pcNo ?? 0;
+    map['pcnameEn'] = checkValidString(_pcnameEn);
+    map['pcnameV1'] = checkValidString(_pcnameV1);
+    map['acNameEn'] = checkValidString(_acNameEn);
+    map['acNameV1'] = checkValidString(_acNameV1);
+    map['sectionNameV1'] = checkValidString(_sectionNameV1);
+    map['sectionNameEn'] = checkValidString(_sectionNameEn);
+    map['villageNameEn'] = checkValidString(_villageNameEn);
+    map['villageNameV1'] = checkValidString(_villageNameV1);
+    map['postoffNameEn'] = checkValidString(_postoffNameEn);
+    map['postoffNameV1'] = checkValidString(_postoffNameV1);
+    map['postoffPin'] = checkValidString(_postoffNameV1);
+    map['partNameEn'] = checkValidString(_partNameEn);
+    map['partNameV1'] = checkValidString(_partNameV1);
+    map['psbuildingNameEn'] = checkValidString(_psbuildingNameEn);
+    map['psbuildingNo'] = _psbuildingNo ?? 0;
+    map['psbuildingNameV1'] = checkValidString(_psbuildingNameV1);
+    map['tahsilNameEn'] = checkValidString(_tahsilNameEn);
+    map['tahsilNameV1'] = checkValidString(_tahsilNameV1);
+    map['policestNameEn'] = checkValidString(_policestNameEn);
+    map['policestNameV1'] = checkValidString(_policestNameV1);
+    map['isDuplicate'] = _isDuplicate ?? false;
+    map['whatsappNo'] = checkValidString(_whatsappNo);
+    map['newAddress'] = checkValidString(_newAddress);
+    map['aadhaarNo'] = checkValidString(_aadhaarNo);
+    map['isDead'] = _isDead ?? false;
+    map['isVisited'] = _isVisited ?? false;
+    map['hasVoted'] = _hasVoted ?? false;
+    map['email'] = checkValidString(_email);
+    map['referenceName'] = checkValidString(_referenceName);
+    map['bloodGroup'] = checkValidString(_bloodGroup);
+    map['profession'] = checkValidString(_profession);
+    map['facebookUrl'] = checkValidString(_facebookUrl);
+    map['instagramUrl'] = checkValidString(_instagramUrl);
+    map['twitterUrl'] = checkValidString(_twitterUrl);
+    map['otherDetails'] = checkValidString(_otherDetails);
+    map['chouseNo'] = checkValidString(_chouseNo);
+    map['chouseNoV1'] = checkValidString(_chouseNoV1);
     return map;
   }
-
-
 
 }

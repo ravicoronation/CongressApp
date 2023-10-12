@@ -18,6 +18,7 @@ double indicatorWeightStatic = 3.0;
 double kNoDataViewCornerRadius = 60.0;
 double kButtonHeight = 42;
 double kDropDownHeight = 32;
+double contentSizeSmall = 13.0;
 double contentSize = 14.0;
 double tabFontSize = 15.0;
 

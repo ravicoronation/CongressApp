@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:congress_app/pages/DashBoardScreen.dart';
 import 'package:congress_app/pages/login_screen.dart';
+import 'package:congress_app/pages/sync_data_screen.dart';
 import 'package:congress_app/utils/app_utils.dart';
 import 'package:congress_app/utils/session_manager.dart';
 import 'package:congress_app/utils/session_manager_new.dart';
@@ -13,6 +14,7 @@ import 'constant/colors.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SessionManagerNew.init();
+  PaintingBinding.instance.imageCache.maximumSizeBytes = 2000 << 40; // for increase the cache memory
   runApp(const MyApp());
 }
 
@@ -86,9 +88,18 @@ class _MyHomePageState extends State<MyHomePage> {
       isLoggedIn = sessionManager.checkIsLoggedIn() ?? false;
       if(isLoggedIn)
       {
-        Timer(const Duration(seconds:1),
-                () => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-            const DashBoardScreen()), (Route<dynamic> route) => false));
+          if(sessionManager.checkIsDataSync() == true)
+          {
+            Timer(const Duration(seconds:1),
+                    () => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                const DashBoardScreen()), (Route<dynamic> route) => false));
+          }
+          else
+            {
+              Timer(const Duration(seconds:1),
+                      () => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                  const SyncDataScreen()), (Route<dynamic> route) => false));
+            }
       }
       else
       {
