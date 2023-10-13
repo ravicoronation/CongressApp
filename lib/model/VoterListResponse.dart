@@ -161,7 +161,8 @@ class Voters {
       String? policestNameV1, 
       bool? isDuplicate, 
       String? whatsappNo, 
-      String? newAddress, 
+      String? newAddress,
+      num? colorCode,
       String? aadhaarNo, 
       bool? isDead, 
       bool? isVisited, 
@@ -221,6 +222,7 @@ class Voters {
     _isDuplicate = isDuplicate;
     _whatsappNo = whatsappNo;
     _newAddress = newAddress;
+    _colorCode = colorCode;
     _aadhaarNo = aadhaarNo;
     _isDead = isDead;
     _isVisited = isVisited;
@@ -283,6 +285,7 @@ class Voters {
     _isDuplicate = json['isDuplicate']  == 1 ? true : false;
     _whatsappNo = json['whatsappNo'];
     _newAddress = json['newAddress'];
+    _colorCode = json['colorCode'];
     _aadhaarNo = json['aadhaarNo'];
     _isDead = json['isDead'] == 1 ? true : false;
     _isVisited = json['isVisited'] == 1 ? true : false;
@@ -343,6 +346,7 @@ class Voters {
   bool? _isDuplicate;
   String? _whatsappNo;
   String? _newAddress;
+  num? _colorCode;
   String? _aadhaarNo;
   bool? _isDead;
   bool? _isVisited;
@@ -402,6 +406,7 @@ Voters copyWith({  num? id,
   bool? isDuplicate,
   String? whatsappNo,
   String? newAddress,
+  num? colorCode,
   String? aadhaarNo,
   bool? isDead,
   bool? isVisited,
@@ -461,6 +466,7 @@ Voters copyWith({  num? id,
   isDuplicate: isDuplicate ?? _isDuplicate,
   whatsappNo: whatsappNo ?? _whatsappNo,
   newAddress: newAddress ?? _newAddress,
+  colorCode : colorCode ?? _colorCode,
   aadhaarNo: aadhaarNo ?? _aadhaarNo,
   isDead: isDead ?? _isDead,
   isVisited: isVisited ?? _isVisited,
@@ -530,57 +536,74 @@ Voters copyWith({  num? id,
   String? get policestNameV1 => _policestNameV1;
   bool? get isDuplicate => _isDuplicate;
   String? get whatsappNo => _whatsappNo;
+  String? get newAddress => _newAddress;
+  num? get colorCode => _colorCode;
+  String? get aadhaarNo => _aadhaarNo;
+  bool? get isDead => _isDead;
+  bool? get isVisited => _isVisited;
+  bool? get hasVoted => _hasVoted;
+  String? get email => _email;
+  String? get referenceName => _referenceName;
+  String? get bloodGroup => _bloodGroup;
+  String? get profession => _profession;
+  String? get facebookUrl => _facebookUrl;
+  String? get instagramUrl => _instagramUrl;
+  String? get twitterUrl => _twitterUrl;
+  String? get chouseNo => _chouseNo;
+  String? get chouseNoV1 => _chouseNoV1;
 
   set whatsappNo(String? value) {
     _whatsappNo = value;
   }
 
-  String? get newAddress => _newAddress;
-
   set newAddress(String? value) {
     _newAddress = value;
+  }
+
+  set colorCode(num? value)
+  {
+    _colorCode = value;
   }
 
   set aadhaarNo(String? value) {
     _aadhaarNo = value;
   }
 
-  String? get aadhaarNo => _aadhaarNo;
-  bool? get isDead => _isDead;
-  bool? get isVisited => _isVisited;
-  bool? get hasVoted => _hasVoted;
-  String? get email => _email;
+  set isDead(bool? value) {
+    _isDead = value;
+  }
+
+  set instagramUrl(String? value) {
+    _instagramUrl = value;
+  }
+
+  set isVisited(bool? value) {
+    _isVisited = value;
+  }
+
+  set hasVoted(bool? value) {
+    _hasVoted = value;
+  }
 
   set email(String? value) {
     _email = value;
   }
 
-  String? get referenceName => _referenceName;
-
   set referenceName(String? value) {
     _referenceName = value;
   }
-
-  String? get bloodGroup => _bloodGroup;
 
   set bloodGroup(String? value) {
     _bloodGroup = value;
   }
 
-  String? get profession => _profession;
-
   set profession(String? value) {
     _profession = value;
   }
 
-  String? get facebookUrl => _facebookUrl;
-
   set facebookUrl(String? value) {
     _facebookUrl = value;
   }
-
-  String? get instagramUrl => _instagramUrl;
-  String? get twitterUrl => _twitterUrl;
 
   set twitterUrl(String? value) {
     _twitterUrl = value;
@@ -592,8 +615,7 @@ Voters copyWith({  num? id,
     _otherDetails = value;
   }
 
-  String? get chouseNo => _chouseNo;
-  String? get chouseNoV1 => _chouseNoV1;
+
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -642,6 +664,7 @@ Voters copyWith({  num? id,
     map['isDuplicate'] = _isDuplicate ?? false;
     map['whatsappNo'] = checkValidString(_whatsappNo);
     map['newAddress'] = checkValidString(_newAddress);
+    map['colorCode'] = _colorCode ?? 0;
     map['aadhaarNo'] = checkValidString(_aadhaarNo);
     map['isDead'] = _isDead ?? false;
     map['isVisited'] = _isVisited ?? false;
@@ -659,7 +682,5 @@ Voters copyWith({  num? id,
     return map;
   }
 
-  set instagramUrl(String? value) {
-    _instagramUrl = value;
-  }
+
 }

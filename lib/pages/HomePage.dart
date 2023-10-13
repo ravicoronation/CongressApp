@@ -36,26 +36,7 @@ class _HomePage extends BaseState<HomePage> {
       MenuGetSet(nameStatic: "Language", itemIconStatic: "assets/images/ic_language.png"),
     ];
 
-    String acNo = "";
-    String acName = "";
-    if (NavigationService.statisticsData.isNotEmpty)
-    {
-      for (int i = 0; i < NavigationService.statisticsData.length; i++)
-      {
-        if (NavigationService.statisticsData[i].name == "ac_no")
-        {
-          acNo = NavigationService.statisticsData[i].value.toString().trim();
-        }
-
-        if (NavigationService.statisticsData[i].name == "ac_name")
-        {
-          acName = NavigationService.statisticsData[i].value.toString().trim();
-        }
-      }
-      titledata = "$acNo $acName General Election 2023";
-      constNo = acNo;
-    }
-
+    getListData();
     super.initState();
   }
 
@@ -339,5 +320,37 @@ class _HomePage extends BaseState<HomePage> {
   @override
   void castStatefulWidget() {
     widget is HomePage;
+  }
+
+  Future<void> getListData() async {
+    var list = await sessionManager.getStaticData();
+    NavigationService.statisticsData = list;
+
+    var listColor = await sessionManager.getColorData();
+    NavigationService.colorCodeList = listColor;
+
+    var listProfession = await sessionManager.getProfessionData();
+    NavigationService.professions = listProfession;
+
+
+    String acNo = "";
+    String acName = "";
+    if (NavigationService.statisticsData.isNotEmpty)
+    {
+      for (int i = 0; i < NavigationService.statisticsData.length; i++)
+      {
+        if (NavigationService.statisticsData[i].name == "ac_no")
+        {
+          acNo = NavigationService.statisticsData[i].value.toString().trim();
+        }
+
+        if (NavigationService.statisticsData[i].name == "ac_name")
+        {
+          acName = NavigationService.statisticsData[i].value.toString().trim();
+        }
+      }
+      titledata = "$acNo $acName General Election 2023";
+      constNo = acNo;
+    }
   }
 }

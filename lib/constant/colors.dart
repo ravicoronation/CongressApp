@@ -42,7 +42,7 @@ const Color blue= Color(0xff2042FE);
 const Color divider_color = Color(0xffbec7ff);
 const Color lightBlue= Color(0xffedf1fb);
 const Color semiBlue= Color(0xffE8EFFC);
-const Color darOrange = Color(0xfff6821f);
+const Color darOrange = Color(0xffcf7da3);
 const Color lightOrange = Color(0x41f6821f);
 
 const Color purple= Color(0xffB255E1);

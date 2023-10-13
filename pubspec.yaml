@@ -56,8 +56,8 @@ dependencies:
   path_provider:
   fluttertoast: ^8.2.1
   sqflite:
-  qr_flutter: ^4.1.0
   permission_handler:
+  regexed_validator: ^2.0.0+1
 
 dev_dependencies:
   flutter_test:

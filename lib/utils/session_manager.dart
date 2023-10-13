@@ -1,4 +1,11 @@
+import 'dart:convert';
+
+import 'package:congress_app/model/StatisticsDataResponse.dart';
 import 'package:congress_app/utils/session_manager_new.dart';
+
+import '../model/ColorCodeResponseModel.dart';
+import '../model/ProfessionListResponse.dart';
+import 'app_utils.dart';
 
 class SessionManager {
 
@@ -12,6 +19,9 @@ class SessionManager {
   final String deviceToken = "deviceToken";
   final String accessToken = "access_token";
   final String isDataSync = "isDataSync";
+  final String staticData = "staticData";
+  final String colorData = "colorData";
+  final String professionData = "professionData";
 
   Future createLoginSession(String idParam, String workerNameParam, String workerPhoneParam,
       String assemblyNumberParam, String boothAssignedParam, bool isActiveParam) async {
@@ -59,6 +69,10 @@ class SessionManager {
     return SessionManagerNew.getString(boothAssigned);
   }
 
+  String? getId() {
+    return SessionManagerNew.getString(id);
+  }
+
   Future<void> setPart(String part)
   async {
     await SessionManagerNew.setString(boothAssigned, part);
@@ -68,4 +82,51 @@ class SessionManager {
     return SessionManagerNew.getString(accessToken);
   }
 
+  Future<void> setStaticData(List<Statistics> listItems) async {
+    var json = jsonEncode(listItems);
+    await SessionManagerNew.setString(staticData, json);
+  }
+
+  List<Statistics> getStaticData() {
+    List<Statistics> listJsonData = [];
+    String jsonString = checkValidString(SessionManagerNew.getString(staticData));
+    if (jsonString.isNotEmpty)
+    {
+      List<dynamic> jsonDataList = jsonDecode(jsonString);
+      listJsonData = jsonDataList.map((jsonData) => Statistics.fromJson(jsonData)).toList();
+    }
+    return listJsonData;
+  }
+
+  Future<void> setColorData(List<Colorcode> listItems) async {
+    var json = jsonEncode(listItems);
+    await SessionManagerNew.setString(colorData, json);
+  }
+
+  List<Colorcode> getColorData() {
+    List<Colorcode> listJsonData = [];
+    String jsonString = checkValidString(SessionManagerNew.getString(colorData));
+    if (jsonString.isNotEmpty)
+    {
+      List<dynamic> jsonDataList = jsonDecode(jsonString);
+      listJsonData = jsonDataList.map((jsonData) => Colorcode.fromJson(jsonData)).toList();
+    }
+    return listJsonData;
+  }
+
+  Future<void> setProfessionData(List<Professions> listItems) async {
+    var json = jsonEncode(listItems);
+    await SessionManagerNew.setString(professionData, json);
+  }
+
+  List<Professions> getProfessionData() {
+    List<Professions> listJsonData = [];
+    String jsonString = checkValidString(SessionManagerNew.getString(professionData));
+    if (jsonString.isNotEmpty)
+    {
+      List<dynamic> jsonDataList = jsonDecode(jsonString);
+      listJsonData = jsonDataList.map((jsonData) => Professions.fromJson(jsonData)).toList();
+    }
+    return listJsonData;
+  }
 }

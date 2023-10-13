@@ -9,7 +9,7 @@ import '../model/VoterListResponse.dart';
 
 class DbHelper {
   static const _DATA_BASE_NAME = "voters_data.db";
-  static const _DATA_BASE_VERSION = 5;
+  static const _DATA_BASE_VERSION = 7;
   static const _TABLE_VOTERS = 'voters';
   static const _TABLE_BOOTHS = 'booths';
 
@@ -100,7 +100,8 @@ class DbHelper {
         "isDuplicate BOOLEAN,"
         "isDead BOOLEAN,"
         "isVisited BOOLEAN,"
-        "hasVoted BOOLEAN"
+        "hasVoted BOOLEAN,"
+        "colorCode INTEGER"
         ")");
   }
 
@@ -140,6 +141,28 @@ class DbHelper {
       }
       batch.commit();
     });
+  }
+
+  //update voter work
+  updateVoter(Voters voter) async {
+    Database? db = await instance.database;
+    var response = await db?.update(_TABLE_VOTERS, voter.toJson(),
+        where: "id = ?", whereArgs: [voter.id]);
+    return response;
+  }
+
+  //get single voter details
+  Future<Voters> getVotersWithId(int id) async {
+    Database? db = await instance.database;
+    var response = await db?.query(_TABLE_VOTERS, where: "id = ?", whereArgs: [id]);
+    if(response !=null)
+      {
+        return response.isNotEmpty ? Voters.fromJson(response.first) : Voters();
+      }
+    else
+      {
+        return Voters();
+      }
   }
 
   Future<int?> getCount() async {

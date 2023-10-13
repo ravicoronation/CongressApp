@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:regexed_validator/regexed_validator.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../constant/colors.dart';
@@ -255,6 +256,23 @@ bool isValidEmail(String? input) {
       print(e);
     }
     return false;
+  }
+}
+
+bool isValidUrl(String? input) {
+  bool isValid = false;
+  try
+  {
+      if(validator.url(input.toString()))
+      {
+        isValid = true;
+      }
+      return isValid;
+  } catch (e) {
+    if (kDebugMode) {
+      print(e);
+    }
+    return isValid;
   }
 }
 

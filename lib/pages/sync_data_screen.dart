@@ -264,7 +264,7 @@ class _SyncDataScreenState extends State<SyncDataScreen> {
       if (checkValidString(dataResponse.message) == "Success") {
         try {
           if (dataResponse.statistics != null) {
-            NavigationService.statisticsData = dataResponse.statistics!;
+            sessionManager.setStaticData(dataResponse.statistics ?? []);
           }
         } catch (e) {
           print(e);
@@ -293,7 +293,7 @@ class _SyncDataScreenState extends State<SyncDataScreen> {
       if (checkValidString(dataResponse.message) == "Success") {
         try {
           if (dataResponse.professions != null) {
-            NavigationService.professions = dataResponse.professions!;
+            sessionManager.setProfessionData(dataResponse.professions ?? []);
           }
         } catch (e) {
           print(e);
@@ -322,7 +322,7 @@ class _SyncDataScreenState extends State<SyncDataScreen> {
       if (checkValidString(dataResponse.message) == "Success") {
         try {
           if (dataResponse.colorcode != null) {
-            NavigationService.colorCodeList = dataResponse.colorcode!;
+            sessionManager.setColorData(dataResponse.colorcode ?? []);
           }
         } catch (e) {
           print(e);
