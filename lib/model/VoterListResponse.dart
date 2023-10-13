@@ -496,7 +496,17 @@ Voters copyWith({  num? id,
   String? get gender => _gender;
   String? get age => _age;
   String? get dob => _dob;
+
+  set dob(String? value) {
+    _dob = value;
+  }
+
   String? get mobileNo => _mobileNo;
+
+  set mobileNo(String? value) {
+    _mobileNo = value;
+  }
+
   num? get pcNo => _pcNo;
   String? get pcnameEn => _pcnameEn;
   String? get pcnameV1 => _pcnameV1;
@@ -520,19 +530,68 @@ Voters copyWith({  num? id,
   String? get policestNameV1 => _policestNameV1;
   bool? get isDuplicate => _isDuplicate;
   String? get whatsappNo => _whatsappNo;
+
+  set whatsappNo(String? value) {
+    _whatsappNo = value;
+  }
+
   String? get newAddress => _newAddress;
+
+  set newAddress(String? value) {
+    _newAddress = value;
+  }
+
+  set aadhaarNo(String? value) {
+    _aadhaarNo = value;
+  }
+
   String? get aadhaarNo => _aadhaarNo;
   bool? get isDead => _isDead;
   bool? get isVisited => _isVisited;
   bool? get hasVoted => _hasVoted;
   String? get email => _email;
+
+  set email(String? value) {
+    _email = value;
+  }
+
   String? get referenceName => _referenceName;
+
+  set referenceName(String? value) {
+    _referenceName = value;
+  }
+
   String? get bloodGroup => _bloodGroup;
+
+  set bloodGroup(String? value) {
+    _bloodGroup = value;
+  }
+
   String? get profession => _profession;
+
+  set profession(String? value) {
+    _profession = value;
+  }
+
   String? get facebookUrl => _facebookUrl;
+
+  set facebookUrl(String? value) {
+    _facebookUrl = value;
+  }
+
   String? get instagramUrl => _instagramUrl;
   String? get twitterUrl => _twitterUrl;
+
+  set twitterUrl(String? value) {
+    _twitterUrl = value;
+  }
+
   String? get otherDetails => _otherDetails;
+
+  set otherDetails(String? value) {
+    _otherDetails = value;
+  }
+
   String? get chouseNo => _chouseNo;
   String? get chouseNoV1 => _chouseNoV1;
 
@@ -600,4 +659,7 @@ Voters copyWith({  num? id,
     return map;
   }
 
+  set instagramUrl(String? value) {
+    _instagramUrl = value;
+  }
 }
