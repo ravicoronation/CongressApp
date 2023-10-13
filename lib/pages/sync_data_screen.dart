@@ -10,6 +10,8 @@ import '../constant/colors.dart';
 import '../constant/global_context.dart';
 import '../local_storage/db_helper.dart';
 import '../model/BoothResponseData.dart';
+import '../model/ColorCodeResponseModel.dart';
+import '../model/ProfessionListResponse.dart';
 import '../model/StatisticsDataResponse.dart';
 import '../model/TotalCountResponse.dart';
 import '../model/VoterListResponse.dart';
@@ -263,6 +265,64 @@ class _SyncDataScreenState extends State<SyncDataScreen> {
         try {
           if (dataResponse.statistics != null) {
             NavigationService.statisticsData = dataResponse.statistics!;
+          }
+        } catch (e) {
+          print(e);
+        }
+      } else {
+        apiFailed(context);
+      }
+    } else {
+      apiFailed(context);
+    }
+
+    getProfessionList();
+  }
+
+  void getProfessionList() async {
+    var urlCreate = API_URL + "/profession";
+    final url = Uri.parse(urlCreate);
+    var request = http.MultipartRequest('GET', url);
+    request.fields.addAll({'token': Token});
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      final body = await response.stream.bytesToString();
+      Map<String, dynamic> user = jsonDecode(body);
+      final statusCode = response.statusCode;
+      var dataResponse = ProfessionListResponse.fromJson(user);
+      if (checkValidString(dataResponse.message) == "Success") {
+        try {
+          if (dataResponse.professions != null) {
+            NavigationService.professions = dataResponse.professions!;
+          }
+        } catch (e) {
+          print(e);
+        }
+      } else {
+        apiFailed(context);
+      }
+    } else {
+      apiFailed(context);
+    }
+
+    getColorCodeList();
+  }
+
+  void getColorCodeList() async {
+    var urlCreate = API_URL + "/colorcode";
+    final url = Uri.parse(urlCreate);
+    var request = http.MultipartRequest('GET', url);
+    request.fields.addAll({'token': Token});
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      final body = await response.stream.bytesToString();
+      Map<String, dynamic> user = jsonDecode(body);
+      final statusCode = response.statusCode;
+      var dataResponse = ColorCodeResponseModel.fromJson(user);
+      if (checkValidString(dataResponse.message) == "Success") {
+        try {
+          if (dataResponse.colorcode != null) {
+            NavigationService.colorCodeList = dataResponse.colorcode!;
           }
         } catch (e) {
           print(e);

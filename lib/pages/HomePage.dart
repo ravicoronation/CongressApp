@@ -38,17 +38,20 @@ class _HomePage extends BaseState<HomePage> {
 
     String acNo = "";
     String acName = "";
-    if (NavigationService.statisticsData.isNotEmpty) {
-      for (int i = 0; i < NavigationService.statisticsData.length; i++) {
-        if (NavigationService.statisticsData[i].name == "ac_no") {
+    if (NavigationService.statisticsData.isNotEmpty)
+    {
+      for (int i = 0; i < NavigationService.statisticsData.length; i++)
+      {
+        if (NavigationService.statisticsData[i].name == "ac_no")
+        {
           acNo = NavigationService.statisticsData[i].value.toString().trim();
         }
 
-        if (NavigationService.statisticsData[i].name == "ac_name") {
+        if (NavigationService.statisticsData[i].name == "ac_name")
+        {
           acName = NavigationService.statisticsData[i].value.toString().trim();
         }
       }
-
       titledata = "$acNo $acName General Election 2023";
       constNo = acNo;
     }
