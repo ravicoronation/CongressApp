@@ -17,14 +17,14 @@ import '../utils/base_class.dart';
 import '../utils/common_widget.dart';
 import '../utils/loading_home.dart';
 
-class DashBoardScreen extends StatefulWidget {
-  const DashBoardScreen({Key? key}) : super(key: key);
+class VoterListScreen extends StatefulWidget {
+  const VoterListScreen({Key? key}) : super(key: key);
 
   @override
-  _DashBoardScreen createState() => _DashBoardScreen();
+  _VoterListScreen createState() => _VoterListScreen();
 }
 
-class _DashBoardScreen extends BaseState<DashBoardScreen> {
+class _VoterListScreen extends BaseState<VoterListScreen> {
   bool _isLoading = false;
   var listVoters = List<Voters>.empty(growable: true);
   var listMandal = List<String>.empty(growable: true);
@@ -68,7 +68,7 @@ class _DashBoardScreen extends BaseState<DashBoardScreen> {
       }
       pagination();
     });
-    getFirstPage(true);
+    Timer(const Duration(milliseconds: 300), () =>  getFirstPage(true));
     super.initState();
   }
 
@@ -90,16 +90,8 @@ class _DashBoardScreen extends BaseState<DashBoardScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        final timeGap = DateTime.now().difference(preBackPressTime);
-        final cantExit = timeGap >= const Duration(seconds: 2);
-        preBackPressTime = DateTime.now();
-        if (cantExit) {
-          showSnackBar('Press back button again to exit', context);
-          return Future.value(false);
-        } else {
-          SystemNavigator.pop();
-          return Future.value(true);
-        }
+        Navigator.pop(context);
+        return Future.value(true);
       },
       child: Scaffold(
         backgroundColor: appBg,
@@ -112,10 +104,15 @@ class _DashBoardScreen extends BaseState<DashBoardScreen> {
           centerTitle: false,
           title: Row(
             children: [
-              Image.asset(
-                'assets/images/ic_logo.png',
-                width: 42,
-                height: 42,
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Image.asset(
+                  'assets/images/ic_logo.jpg',
+                  width: 42,
+                  height: 42,
+                ),
               ),
               const Gap(12),
               getTitle("All Voter List"),
@@ -125,7 +122,6 @@ class _DashBoardScreen extends BaseState<DashBoardScreen> {
             InkWell(
               customBorder: const CircleBorder(),
               onTap: () async {
-                showActionDialog();
               },
               child: Container(
                 width: 40,
@@ -686,6 +682,7 @@ class _DashBoardScreen extends BaseState<DashBoardScreen> {
                             itemBuilder: (context, index) {
                               return InkWell(
                                 onTap: () {
+                                  FocusScope.of(context).unfocus();
                                   if (isFor == 1)
                                   {
                                     if (listMandal[index] != filterMandal)
@@ -808,162 +805,10 @@ class _DashBoardScreen extends BaseState<DashBoardScreen> {
     }
   }
 
-  void showActionDialog() {
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: white,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-      elevation: 5,
-      isDismissible: true,
-      builder: (BuildContext context) {
-        return Wrap(
-          children: [
-            Padding(
-                padding: const EdgeInsets.all(0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(height: 15),
-                    Container(height: 2, width: 40, color: darOrange, margin: const EdgeInsets.only(bottom: 12)),
-                    InkWell(
-                      onTap: () async {
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 25, right: 25, top: 15, bottom: 15),
-                        child: const Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Text(
-                              "My Profile",
-                              textAlign: TextAlign.start,
-                              style: TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.normal),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const Divider(
-                      color: grayLight,
-                      height: 1,
-                    ),
-                    InkWell(
-                      onTap: () async {
-                        Navigator.pop(context);
-                         logoutFromApp();
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 25, right: 25, top: 15, bottom: 15),
-                        child: const Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Text(
-                              "Logout",
-                              textAlign: TextAlign.start,
-                              style: TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.normal),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Container(height: 20)
-                  ],
-                ))
-          ],
-        );
-      },
-    );
-  }
-
-  void logoutFromApp() {
-    showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: white,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12))),
-      builder: (BuildContext context) {
-        return Wrap(
-          children: [
-            Container(
-              margin: const EdgeInsets.all(15),
-              decoration:
-              const BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12)), color: white),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    height: 2,
-                    width: 40,
-                    alignment: Alignment.center,
-                    color: black,
-                    margin: const EdgeInsets.only(top: 10, bottom: 10),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 10, bottom: 15),
-                    child: const Text('Are you sure you want to logout?', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, color: black)),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(left: 15, right: 15, bottom: 12, top: 20),
-                    child: Row(
-                      children: [
-                        Expanded(
-                            child: SizedBox(
-                                height: kButtonHeight,
-                                child: TextButton(
-                                  style: ButtonStyle(
-                                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(kBorderRadius), side: const BorderSide(width: 1, color: black)),
-                                      ),
-                                      backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent)),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text("No", style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: black)),
-                                ))),
-                        const Gap(20),
-                        Expanded(
-                          child: SizedBox(
-                            height: kButtonHeight,
-                            child: TextButton(
-                              style: ButtonStyle(
-                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(kBorderRadius),
-                                    ),
-                                  ),
-                                  backgroundColor: MaterialStateProperty.all<Color>(black)),
-                              onPressed: () async {
-                                dbHelper.deleteAllTableData();
-                                Navigator.pop(context);
-                                SessionManagerNew.clear();
-                                Navigator.pushAndRemoveUntil(
-                                    context, MaterialPageRoute(builder: (context) => const LoginScreen()), (Route<dynamic> route) => false);
-                              },
-                              child: const Text("Yes", style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: white)),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   void castStatefulWidget() {
-    widget is DashBoardScreen;
+    widget is VoterListScreen;
   }
 
   Future<void> getBoothFromMandal() async {

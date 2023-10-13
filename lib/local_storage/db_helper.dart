@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:congress_app/utils/app_utils.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-
 import '../model/BoothResponseData.dart';
 import '../model/VoterListResponse.dart';
 
@@ -119,8 +117,8 @@ class DbHelper {
         ")");
   }
 
-  // voters table work
-  Future<int?> insertVoters(Voters voters) async {
+
+ /* Future<int?> insertVoters(Voters voters) async {
     Database? db = await instance.database;
     var raw = await db?.insert(
       _TABLE_VOTERS,
@@ -128,6 +126,20 @@ class DbHelper {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
     return raw;
+  }*/
+
+
+  // voters table work
+  insertVoters(List<Voters> voters) async {
+    Database? db = await instance.database;
+    await db?.transaction((txn) async {
+      Batch batch = txn.batch();
+      for (var voter in voters)
+      {
+        batch.insert(_TABLE_VOTERS, voter.toJson(),conflictAlgorithm: ConflictAlgorithm.replace);
+      }
+      batch.commit();
+    });
   }
 
   Future<int?> getCount() async {
@@ -161,7 +173,7 @@ class DbHelper {
         }
         else  if(filterSearchBy == "SRNO")
         {
-          searchBy = "fullNameEn";
+          searchBy = "slnoinpart";
         }
         else  if(filterSearchBy == "CardNo")
         {

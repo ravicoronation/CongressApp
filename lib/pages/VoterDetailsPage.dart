@@ -49,7 +49,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                 Navigator.pop(context);
               },
               child: Image.asset(
-                'assets/images/ic_logo.png',
+                'assets/images/ic_logo.jpg',
                 width: 42,
                 height: 42,
               ),
@@ -223,7 +223,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                   "No Number",
                                   overflow: TextOverflow.clip,
                                   style: TextStyle(
-                                    color: black,
+                                    color: darOrange,
                                     fontWeight: FontWeight.w600,
                                     fontSize: contentSize,
                                     decoration: TextDecoration.underline,
@@ -260,7 +260,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                           "WhatsApp No",
                                           overflow: TextOverflow.clip,
                                           style: TextStyle(
-                                            color: black,
+                                            color: darOrange,
                                             fontWeight: FontWeight.w600,
                                             fontSize: contentSize,
                                             decoration: TextDecoration.underline,
@@ -391,7 +391,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                   "Set Birthdate",
                                   overflow: TextOverflow.clip,
                                   style: TextStyle(
-                                    color: black,
+                                    color: darOrange,
                                     fontWeight: FontWeight.w600,
                                     fontSize: contentSize,
                                     decoration: TextDecoration.underline,
@@ -425,7 +425,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                   "Ch Add",
                                   overflow: TextOverflow.clip,
                                   style: TextStyle(
-                                    color: black,
+                                    color: darOrange,
                                     fontWeight: FontWeight.w600,
                                     fontSize: contentSize,
                                     decoration: TextDecoration.underline,
@@ -459,7 +459,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                   "Aadhar Card",
                                   overflow: TextOverflow.clip,
                                   style: TextStyle(
-                                    color: black,
+                                    color: darOrange,
                                     fontWeight: FontWeight.w600,
                                     fontSize: contentSize,
                                     decoration: TextDecoration.underline,
@@ -493,7 +493,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                   "Email ID",
                                   overflow: TextOverflow.clip,
                                   style: TextStyle(
-                                    color: black,
+                                    color: darOrange,
                                     fontWeight: FontWeight.w600,
                                     fontSize: contentSize,
                                     decoration: TextDecoration.underline,
@@ -527,7 +527,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                   "Referance Name",
                                   overflow: TextOverflow.clip,
                                   style: TextStyle(
-                                    color: black,
+                                    color: darOrange,
                                     fontWeight: FontWeight.w600,
                                     fontSize: contentSize,
                                     decoration: TextDecoration.underline,
@@ -561,7 +561,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                   "Select Blood Group",
                                   overflow: TextOverflow.clip,
                                   style: TextStyle(
-                                    color: black,
+                                    color: darOrange,
                                     fontWeight: FontWeight.w600,
                                     fontSize: contentSize,
                                     decoration: TextDecoration.underline,
@@ -595,7 +595,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                   "Select Profession",
                                   overflow: TextOverflow.clip,
                                   style: TextStyle(
-                                    color: black,
+                                    color: darOrange,
                                     fontWeight: FontWeight.w600,
                                     fontSize: contentSize,
                                     decoration: TextDecoration.underline,
@@ -705,7 +705,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                   "Set Link",
                                   overflow: TextOverflow.clip,
                                   style: TextStyle(
-                                    color: black,
+                                    color: darOrange,
                                     fontWeight: FontWeight.w600,
                                     fontSize: contentSize,
                                     decoration: TextDecoration.underline,
@@ -739,7 +739,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                   "Set Link",
                                   overflow: TextOverflow.clip,
                                   style: TextStyle(
-                                    color: black,
+                                    color: darOrange,
                                     fontWeight: FontWeight.w600,
                                     fontSize: contentSize,
                                     decoration: TextDecoration.underline,
@@ -773,7 +773,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                   "Set Link",
                                   overflow: TextOverflow.clip,
                                   style: TextStyle(
-                                    color: black,
+                                    color: darOrange,
                                     fontWeight: FontWeight.w600,
                                     fontSize: contentSize,
                                     decoration: TextDecoration.underline,
@@ -807,7 +807,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                   "Enter details",
                                   overflow: TextOverflow.clip,
                                   style: TextStyle(
-                                    color: black,
+                                    color: darOrange,
                                     fontWeight: FontWeight.w600,
                                     fontSize: contentSize,
                                     decoration: TextDecoration.underline,
@@ -862,7 +862,6 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                 ),
               )),
         ),
-
       ],
     );
   }

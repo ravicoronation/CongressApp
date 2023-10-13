@@ -59,6 +59,11 @@ class SessionManager {
     return SessionManagerNew.getString(boothAssigned);
   }
 
+  Future<void> setPart(String part)
+  async {
+    await SessionManagerNew.setString(boothAssigned, part);
+  }
+
   String? getAccessToken() {
     return SessionManagerNew.getString(accessToken);
   }

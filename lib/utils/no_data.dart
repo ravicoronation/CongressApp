@@ -21,11 +21,7 @@ class MyNoDataWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/images/ic_logo.png', width: 120, height: 120),
-            Visibility(
-              visible: msg.isNotEmpty,
-              child: const Gap(15),
-            ),
+            Image.asset('assets/images/ic_logo.jpg', width: 80, height: 80),
             Visibility(
               visible: msg.isNotEmpty,
               child: Text(

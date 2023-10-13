@@ -92,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         const Spacer(),
                         Container(
                           alignment: Alignment.center,
-                          child: Image.asset('assets/images/ic_logo.png', width: 200, height: 250),
+                          child: Image.asset('assets/images/ic_logo.jpg', width: 200, height: 250),
                         ),
                         Container(
                           margin: const EdgeInsets.only(left: 8, right: 8),
@@ -181,7 +181,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-
   //API Call func...
   void logInRequest(String mobileNumber) async {
     setState(() {
@@ -240,9 +239,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-
   void redirectToHome() {
     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const SyncDataScreen()), (Route<dynamic> route) => false);
   }
-
 }

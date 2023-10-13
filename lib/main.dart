@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:congress_app/pages/DashBoardScreen.dart';
+import 'package:congress_app/pages/HomePage.dart';
 import 'package:congress_app/pages/login_screen.dart';
 import 'package:congress_app/pages/sync_data_screen.dart';
 import 'package:congress_app/utils/app_utils.dart';
@@ -90,13 +90,13 @@ class _MyHomePageState extends State<MyHomePage> {
       {
           if(sessionManager.checkIsDataSync() == true)
           {
-            Timer(const Duration(seconds:1),
+            Timer(const Duration(milliseconds:5),
                     () => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-                const DashBoardScreen()), (Route<dynamic> route) => false));
+                const HomePage()), (Route<dynamic> route) => false));
           }
           else
             {
-              Timer(const Duration(seconds:1),
+              Timer(const Duration(milliseconds:5),
                       () => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
                   const SyncDataScreen()), (Route<dynamic> route) => false));
             }
@@ -150,7 +150,7 @@ class _MyHomePageState extends State<MyHomePage> {
               color: white,
               child: Align(
                 alignment: Alignment.center,
-                child: Image.asset('assets/images/ic_logo.png',
+                child: Image.asset('assets/images/ic_logo.jpg',
                     height: 300,
                     width: 300),
               )
