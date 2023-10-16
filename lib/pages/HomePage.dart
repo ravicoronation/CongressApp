@@ -30,10 +30,17 @@ class _HomePage extends BaseState<HomePage> {
   @override
   void initState() {
     menuList = [
-      MenuGetSet(nameStatic: "Search", itemIconStatic: "assets/images/ic_search_home.png"),
-      MenuGetSet(nameStatic: "Voter List", itemIconStatic: "assets/images/ic_voters.png"),
-      MenuGetSet(nameStatic: "Distribution", itemIconStatic: "assets/images/ic_distribution.png"),
-      MenuGetSet(nameStatic: "Language", itemIconStatic: "assets/images/ic_language.png"),
+      MenuGetSet(nameStatic: "All Voters", itemIconStatic: "assets/images/ic_logo.jpg"),
+      MenuGetSet(nameStatic: "Search", itemIconStatic: "assets/images/ic_logo.jpg"),
+      MenuGetSet(nameStatic: "Visited Voters", itemIconStatic: "assets/images/ic_logo.jpg"),
+      MenuGetSet(nameStatic: "Non-Visited Voters", itemIconStatic: "assets/images/ic_logo.jpg"),
+      MenuGetSet(nameStatic: "House No Wise", itemIconStatic: "assets/images/ic_logo.jpg"),
+      MenuGetSet(nameStatic: "Address Wise", itemIconStatic: "assets/images/ic_logo.jpg"),
+      MenuGetSet(nameStatic: "Age Wise", itemIconStatic: "assets/images/ic_logo.jpg"),
+      MenuGetSet(nameStatic: "Duplicate Voters", itemIconStatic: "assets/images/ic_logo.jpg"),
+      MenuGetSet(nameStatic: "Family Wise", itemIconStatic: "assets/images/ic_logo.jpg"),
+      MenuGetSet(nameStatic: "Color Wise", itemIconStatic: "assets/images/ic_logo.jpg"),
+      MenuGetSet(nameStatic: "New Voter", itemIconStatic: "assets/images/ic_logo.jpg"),
     ];
 
     getListData();
@@ -136,8 +143,14 @@ class _HomePage extends BaseState<HomePage> {
         return InkWell(
           hoverColor: Colors.white.withOpacity(0.0),
           onTap: () async {
-            if (menuList[index].name.toString() == "Voter List") {
-              startActivity(context, VoterListScreen());
+            if (menuList[index].name.toString() == "All Voters") {
+              startActivity(context,  const VoterListScreen(""));
+            }
+            else if (menuList[index].name.toString() == "Visited Voters") {
+              startActivity(context,  const VoterListScreen("Visited Voters"));
+            }
+            else if (menuList[index].name.toString() == "Non-Visited Voters") {
+              startActivity(context,  const VoterListScreen("Non-Visited Voters"));
             }
           },
           child: Container(
@@ -148,12 +161,12 @@ class _HomePage extends BaseState<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(menuList[index].itemIcon, height: 36, width: 36,color: darOrange),
+                Image.asset(menuList[index].itemIcon, height: 36, width: 36),
                 const Gap(12),
                 Text(menuList[index].name.toString(),
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                        color: darOrange, //Color(int.parse(analysisList[index].arrowColor.replaceAll('#', '0x'))),
+                        color: black, //Color(int.parse(analysisList[index].arrowColor.replaceAll('#', '0x'))),
                         fontWeight: FontWeight.w700,
                         fontSize: 16))
               ],

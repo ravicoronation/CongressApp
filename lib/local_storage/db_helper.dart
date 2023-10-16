@@ -180,13 +180,35 @@ class DbHelper {
     }
   }
 
-  Future<List<Voters>?> getAllVoters(int limit,int off,String mandal,String boothId,String search,String filterSearchBy) async {
+  Future<List<Voters>?> getAllVoters(int limit,int off,
+      String boothId,String search,String filterSearchBy,String vistedVoterFilter) async {
     List<Voters>? listItem = List<Voters>.empty(growable: true);
     final db = await database;
     try {
 
       String whereArgs = "";
       String searchBy = "";
+      String isVisited = "";
+
+      if(vistedVoterFilter.isNotEmpty)
+      {
+          if(vistedVoterFilter == "Visited Voters")
+            {
+              isVisited = "1";
+            }
+          else if(vistedVoterFilter == "Non-Visited Voters")
+            {
+              isVisited = "0";
+            }
+          else
+          {
+            isVisited = "";
+          }
+        }
+      else
+      {
+          isVisited = "";
+      }
 
       if(search.isNotEmpty)
       {
@@ -212,7 +234,7 @@ class DbHelper {
         }
       }
 
-      if(mandal.isEmpty && boothId.isEmpty)
+      if(boothId.isEmpty && isVisited.isEmpty)
       {
         if(searchBy.toString().trim().isNotEmpty)
         {
@@ -222,31 +244,19 @@ class DbHelper {
         {
           whereArgs = "";
         }
-
       }
-      else if(mandal.isNotEmpty && boothId.isNotEmpty)
+      else if(boothId.isNotEmpty && isVisited.isNotEmpty)
       {
         if(searchBy.toString().trim().isNotEmpty)
         {
-          whereArgs = " WHERE tahsilNameEn = '$mandal' And partNameEn = '$boothId' And " + searchBy + " like '%" +search+ "%' " ;
+          whereArgs = " WHERE partNameEn = '$boothId' And isVisited = '$isVisited' And " + searchBy + " like '%" +search+ "%' " ;
         }
         else
         {
-          whereArgs = " WHERE tahsilNameEn = '$mandal' AND partNameEn = '$boothId' ";
+          whereArgs = " WHERE partNameEn = '$boothId' AND isVisited = '$isVisited' ";
         }
       }
-      else if(mandal.isNotEmpty && boothId.isEmpty)
-      {
-        if(searchBy.toString().trim().isNotEmpty)
-        {
-            whereArgs = " WHERE tahsilNameEn = '$mandal' And " + searchBy + " like '%" +search+ "%' " ;
-        }
-        else
-        {
-            whereArgs = " WHERE tahsilNameEn = '$mandal'";
-        }
-      }
-      else if(mandal.isEmpty && boothId.isNotEmpty)
+      else if(boothId.isNotEmpty && isVisited.isEmpty)
       {
         if(searchBy.toString().trim().isNotEmpty)
         {
@@ -255,6 +265,17 @@ class DbHelper {
         else
         {
           whereArgs = " WHERE partNameEn = '$boothId'";
+        }
+      }
+      else if(boothId.isEmpty && isVisited.isNotEmpty)
+      {
+        if(searchBy.toString().trim().isNotEmpty)
+        {
+          whereArgs = " WHERE isVisited = '$isVisited' And " + searchBy + " like '%" +search+ "%' " ;
+        }
+        else
+        {
+          whereArgs = " WHERE isVisited = '$isVisited'";
         }
       }
 
@@ -332,82 +353,29 @@ class DbHelper {
     return null;
   }
 
-  Future<List<String>?> getAllMandal() async {
+
+  Future<List<String>?> getAllBooth() async {
     List<String>? listItem = List<String>.empty(growable: true);
     try {
       final db = await database;
-      var response = await db?.rawQuery('SELECT DISTINCT tahsilNameEn FROM voters ORDER BY tahsilNameEn');
+      var response = await db?.rawQuery('SELECT DISTINCT partNameEn FROM voters ORDER BY partNameEn');
       if(response !=null)
       {
         int count = response.length;
         for (int i = 0; i < count; i++) {
-          if(checkValidString(response[i]['tahsilNameEn'].toString()).toString().isNotEmpty)
+          if(checkValidString(response[i]['partNameEn'].toString()).toString().isNotEmpty)
+          {
+            if(checkValidString(response[i]['partNameEn'].toString()) != "0")
             {
-              if(checkValidString(response[i]['tahsilNameEn'].toString()) != "0")
-              {
-                listItem.add(response[i]['tahsilNameEn'].toString());
-              }
+              listItem.add(response[i]['partNameEn'].toString());
             }
+          }
         }
       }
       else
       {
         listItem = List<String>.empty(growable: true);
       }
-    } catch (e) {
-      print(e);
-      listItem = List<String>.empty(growable: true);
-    }
-    return listItem;
-  }
-
-  Future<List<String>?> getAllBooth(String mandal) async {
-    List<String>? listItem = List<String>.empty(growable: true);
-    try {
-      final db = await database;
-      if(mandal.isNotEmpty && mandal != "All Mandal")
-        {
-          String whereArgs = " WHERE tahsilNameEn = '$mandal'";
-          var response = await db?.rawQuery("SELECT DISTINCT partNameEn FROM voters $whereArgs ORDER BY partNameEn");
-          if(response !=null)
-          {
-            int count = response.length;
-            for (int i = 0; i < count; i++) {
-              if(checkValidString(response[i]['partNameEn'].toString()).toString().isNotEmpty)
-              {
-                if(checkValidString(response[i]['partNameEn'].toString()) != "0")
-                {
-                  listItem.add(response[i]['partNameEn'].toString());
-                }
-              }
-            }
-          }
-          else
-          {
-            listItem = List<String>.empty(growable: true);
-          }
-        }
-      else
-        {
-          var response = await db?.rawQuery('SELECT DISTINCT partNameEn FROM voters ORDER BY partNameEn');
-          if(response !=null)
-          {
-            int count = response.length;
-            for (int i = 0; i < count; i++) {
-              if(checkValidString(response[i]['partNameEn'].toString()).toString().isNotEmpty)
-              {
-                if(checkValidString(response[i]['partNameEn'].toString()) != "0")
-                {
-                  listItem.add(response[i]['partNameEn'].toString());
-                }
-              }
-            }
-          }
-          else
-          {
-            listItem = List<String>.empty(growable: true);
-          }
-        }
     } catch (e) {
       print(e);
       listItem = List<String>.empty(growable: true);

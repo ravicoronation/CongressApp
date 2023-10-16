@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'package:congress_app/pages/VoterDetailsPage.dart';
-import 'package:congress_app/pages/login_screen.dart';
 import 'package:congress_app/utils/no_data.dart';
-import 'package:congress_app/utils/session_manager_new.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -18,7 +16,8 @@ import '../utils/common_widget.dart';
 import '../utils/loading_home.dart';
 
 class VoterListScreen extends StatefulWidget {
-  const VoterListScreen({Key? key}) : super(key: key);
+  final String vistedVoterFilter;
+   const VoterListScreen(this.vistedVoterFilter,{Key? key}) : super(key: key);
 
   @override
   _VoterListScreen createState() => _VoterListScreen();
@@ -27,7 +26,6 @@ class VoterListScreen extends StatefulWidget {
 class _VoterListScreen extends BaseState<VoterListScreen> {
   bool _isLoading = false;
   var listVoters = List<Voters>.empty(growable: true);
-  var listMandal = List<String>.empty(growable: true);
   var listBooth = List<String>.empty(growable: true);
   var listSearchBy = List<String>.empty(growable: true);
 
@@ -40,17 +38,19 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
   bool _isLastPage = false;
   bool isScrollingDown = false;
 
-  String filterMandal = "All Mandal";
   String filterBoothName = "All Booth";
   String filterSearchBy = "Name-Regular Search";
   String searchHint = "Search by name...";
   String searchParam = "";
+  String vistedVoterFilter = "";
 
   final TextEditingController _searchController = TextEditingController();
   FocusNode inputNode = FocusNode();
 
   @override
   void initState() {
+    vistedVoterFilter = (widget as VoterListScreen).vistedVoterFilter;
+
     setStaticListData();
     _scrollViewController = ScrollController();
     _scrollViewController.addListener(() {
@@ -167,71 +167,6 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
       decoration: getCommonCardBasicBottom(),
       child: Column(
         children: [
-          Row(
-            children: [
-              Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.only(left: 10),
-                    child: Text(
-                      "Select Mandal",
-                      overflow: TextOverflow.clip,
-                      style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
-                    ),
-                  )),
-              Container(
-                margin: const EdgeInsets.only(left: 8,right: 8),
-                child: Text(
-                  ":",
-                  overflow: TextOverflow.clip,
-                  style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: textFiledSize),
-                ),
-              ),
-              Expanded(
-                  flex: 3,
-                  child: GestureDetector(
-                    onTap: (){
-                      if(listMandal.isNotEmpty)
-                      {
-                        _showSelectionDialog(1);
-                      }
-                      else
-                      {
-                        showToast("Data not found.", context);
-                      }
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      margin: const EdgeInsets.only(right: 10,top: 6,bottom: 6),
-                      child: Column(
-                        children: [
-                          Padding(padding: EdgeInsets.only(top: 6,bottom: 6),
-                              child: Row(
-                                children: [
-                                  Gap(10),
-                                  Expanded(child: Text(
-                                    filterMandal,
-                                    overflow: TextOverflow.clip,
-                                    style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
-                                  )),
-                                  Image.asset(
-                                    'assets/images/ic_arrow_down.png',
-                                    width: 14,
-                                    height: 14,
-                                    color: black,
-                                  ),
-                                  Gap(10)
-                                ],
-                              )),
-                          const Divider(
-                            height: 0.5,
-                            color: black,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ))
-            ],
-          ),
           Row(
             children: [
               Expanded(
@@ -542,18 +477,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
 
       if(isFromInit)
         {
-          final mandalListData = await dbHelper.getAllMandal();
-          if (mandalListData != null)
-          {
-            if (mandalListData.isNotEmpty)
-            {
-              setState(() {
-                listMandal.addAll(mandalListData);
-              });
-            }
-          }
-
-          final boothListData = await dbHelper.getAllBooth('');
+          final boothListData = await dbHelper.getAllBooth();
           if (boothListData != null)
           {
             if (boothListData.isNotEmpty)
@@ -566,7 +490,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
           }
         }
 
-      final voterListData = await dbHelper.getAllVoters(_pageResult,_pageIndex,filterMandal == "All Mandal" ? "" :filterMandal ,filterBoothName == "All Booth" ? "" : filterBoothName,searchParam,filterSearchBy);
+      final voterListData = await dbHelper.getAllVoters(_pageResult,_pageIndex,filterBoothName == "All Booth" ? "" : filterBoothName,searchParam,filterSearchBy,vistedVoterFilter);
 
       listVoters = [];
       if (voterListData != null)
@@ -607,7 +531,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
       });
       int? count = await dbHelper.getCount();
       if (count! > 0) {
-        final voterListData = await dbHelper.getAllVoters(_pageResult,_pageIndex*_pageResult,filterMandal == "All Mandal" ? "" :filterMandal ,filterBoothName == "All Booth" ? "" : filterBoothName,searchParam,filterSearchBy);
+        final voterListData = await dbHelper.getAllVoters(_pageResult,_pageIndex*_pageResult,filterBoothName == "All Booth" ? "" : filterBoothName,searchParam,filterSearchBy,vistedVoterFilter);
         if (voterListData != null) {
           if (voterListData.isNotEmpty)
           {
@@ -683,17 +607,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
                               return InkWell(
                                 onTap: () {
                                   FocusScope.of(context).unfocus();
-                                  if (isFor == 1)
-                                  {
-                                    if (listMandal[index] != filterMandal)
-                                    {
-                                      filterMandal = checkValidString(listMandal[index]);
-                                      filterBoothName = "All Booth";
-                                      Navigator.pop(context);
-                                      Timer(const Duration(milliseconds: 300), () => getBoothFromMandal());
-                                    }
-                                  }
-                                  else if (isFor == 2)
+                                  if (isFor == 2)
                                   {
                                     if (listBooth[index].toString() != filterBoothName)
                                     {
@@ -764,10 +678,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
   }
 
   getItemCount(int isFor) {
-    if (isFor == 1) {
-      return listMandal.length;
-    }
-    else if (isFor == 2) {
+    if (isFor == 2) {
       return listBooth.length;
     }
     else if (isFor == 3) {
@@ -776,16 +687,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
   }
 
   setTextData(int isFor, int index) {
-    if (isFor == 1) {
-      return Text(
-        "${index + 1}. " +checkValidString(listMandal[index]),
-        style: TextStyle(
-            fontSize: 16,
-            fontWeight: listMandal[index] == filterMandal.toString() ? FontWeight.w600 : FontWeight.w400,
-            color: listMandal[index] == filterMandal.toString() ? darOrange : black),
-      );
-    }
-    else if (isFor == 2) {
+    if (isFor == 2) {
       return Text(
           "${index + 1}. " +checkValidString(listBooth[index]),
         style: TextStyle(
@@ -813,7 +715,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
 
   Future<void> getBoothFromMandal() async {
     listBooth = [];
-    final boothListData = await dbHelper.getAllBooth(filterMandal);
+    final boothListData = await dbHelper.getAllBooth();
     if (boothListData != null)
     {
       if (boothListData.isNotEmpty)
@@ -830,14 +732,10 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
   }
 
   void setStaticListData() {
-    listMandal.add("All Mandal");
     listSearchBy.add("Name-Regular Search");
     listSearchBy.add("SRNO");
     listSearchBy.add("CardNo");
     listSearchBy.add("MobileNo");
     listSearchBy.add("Name-Match Case");
   }
-
-
-
 }
