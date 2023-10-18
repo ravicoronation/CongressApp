@@ -10,7 +10,7 @@ Widget getBackArrow(BuildContext? context){
     child: Container(
       alignment: Alignment.centerLeft,
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.only(left: 15.0,right: 10,top: 10,bottom: 10),
         child: Image.asset('assets/images/ic_arrow_left.png', width: 22, height: 22),
       ),
     ),

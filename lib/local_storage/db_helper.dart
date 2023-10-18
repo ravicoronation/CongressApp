@@ -9,7 +9,7 @@ import '../model/VoterListResponse.dart';
 
 class DbHelper {
   static const _DATA_BASE_NAME = "voters_data.db";
-  static const _DATA_BASE_VERSION = 7;
+  static const _DATA_BASE_VERSION = 8;
   static const _TABLE_VOTERS = 'voters';
   static const _TABLE_BOOTHS = 'booths';
 
@@ -101,6 +101,7 @@ class DbHelper {
         "isDead BOOLEAN,"
         "isVisited BOOLEAN,"
         "hasVoted BOOLEAN,"
+        "total_count INTEGER,"
         "colorCode INTEGER"
         ")");
   }
@@ -137,6 +138,7 @@ class DbHelper {
       Batch batch = txn.batch();
       for (var voter in voters)
       {
+        voter.totalCount = 0;
         batch.insert(_TABLE_VOTERS, voter.toJson(),conflictAlgorithm: ConflictAlgorithm.replace);
       }
       batch.commit();
@@ -180,8 +182,8 @@ class DbHelper {
     }
   }
 
-  Future<List<Voters>?> getAllVoters(int limit,int off,
-      String boothId,String search,String filterSearchBy,String vistedVoterFilter) async {
+  Future<List<Voters>?> getAllVoters(int limit,int off, String boothId,String search,String filterSearchBy,
+      String vistedVoterFilter) async {
     List<Voters>? listItem = List<Voters>.empty(growable: true);
     final db = await database;
     try {
@@ -383,9 +385,344 @@ class DbHelper {
     return listItem;
   }
 
+  Future<List<Voters>?> getAllVotersFilterTypeWise(int limit,int off, String boothId,String search,String filterType)
+  async {
+    List<Voters>? listItem = List<Voters>.empty(growable: true);
+    final db = await database;
+    try {
+
+      String whereArgs = "";
+      String searchBy = "";
+      String filterTypeParam = "";
+
+      if(filterType == "House No Wise")
+      {
+        filterTypeParam = "chouseNo";
+        searchBy = "chouseNo";
+      }
+      else if(filterType == "Address Wise")
+      {
+        filterTypeParam = "sectionNameEn";
+        searchBy = "sectionNameEn";
+      }
+      else if(filterType == "Family Wise")
+      {
+        filterTypeParam = "chouseNo";
+        searchBy = "chouseNo";
+      }
+      else if(filterType == "Duplicate Voters")
+      {
+        filterTypeParam = "isDuplicate";
+        searchBy = "isDuplicate";
+      }
+      else
+      {
+        filterTypeParam = "";
+        searchBy= "";
+      }
+
+      if(search.toString().trim().isNotEmpty)
+      {
+        whereArgs = " WHERE partNameEn = '$boothId' And " + searchBy + " like '%" +search+ "%' " ;
+      }
+      else if(boothId.toString().trim().isNotEmpty)
+      {
+        whereArgs = " WHERE partNameEn = '$boothId' ";
+      }
+      else
+      {
+        whereArgs = "";
+      }
+
+      if(filterType == "Family Wise")
+        {
+          if(whereArgs.isEmpty)
+          {
+            var response = await db?.rawQuery('SELECT *, COUNT (*) as total_count FROM voters GROUP BY $filterTypeParam ORDER BY total_count DESC LIMIT $limit OFFSET $off');
+            if(response !=null)
+            {
+              listItem = response.map((c) => Voters.fromJson(c)).toList();
+            }
+            else
+            {
+              listItem = List<Voters>.empty(growable: true);
+            }
+          }
+          else
+          {
+            String query = 'SELECT *, COUNT (*) as total_count FROM voters $whereArgs GROUP BY $filterTypeParam ORDER BY total_count DESC LIMIT $limit OFFSET $off';
+            print("<><> Query Data :: " + query);
+            var response = await db?.rawQuery(query);
+            if(response !=null)
+            {
+              listItem = response.map((c) => Voters.fromJson(c)).toList();
+            }
+            else
+            {
+              listItem = List<Voters>.empty(growable: true);
+            }
+          }
+
+        }
+      else
+        {
+          if(whereArgs.isEmpty)
+          {
+            var response = await db?.rawQuery('SELECT *, COUNT (*) as total_count FROM voters GROUP BY $filterTypeParam LIMIT $limit OFFSET $off');
+            if(response !=null)
+            {
+              listItem = response.map((c) => Voters.fromJson(c)).toList();
+            }
+            else
+            {
+              listItem = List<Voters>.empty(growable: true);
+            }
+          }
+          else
+          {
+            String query = 'SELECT *, COUNT (*) as total_count FROM voters $whereArgs GROUP BY $filterTypeParam LIMIT $limit OFFSET $off';
+            print("<><> Query Data :: " + query);
+            var response = await db?.rawQuery(query);
+            if(response !=null)
+            {
+              listItem = response.map((c) => Voters.fromJson(c)).toList();
+            }
+            else
+            {
+              listItem = List<Voters>.empty(growable: true);
+            }
+          }
+        }
+    } catch (e) {
+      print(e);
+      listItem = List<Voters>.empty(growable: true);
+    }
+    return listItem;
+  }
+
+
+  Future<List<Voters>?> getAllVotersFilterTypeAge(int limit,int off,
+      String boothId,String search,String fromAge,String toAge) async {
+    List<Voters>? listItem = List<Voters>.empty(growable: true);
+    final db = await database;
+    try {
+
+      String whereArgs = "";
+      String searchBy = "fullNameEn";
+
+      if(fromAge.isEmpty && toAge.isEmpty)
+      {
+          whereArgs = " WHERE partNameEn = '$boothId' ";
+      }
+      else if(fromAge.isNotEmpty && toAge.isNotEmpty)
+      {
+        whereArgs = " WHERE partNameEn = '$boothId' And age >= $fromAge And age <= $toAge ";
+      }
+      else if(fromAge.isNotEmpty)
+      {
+        whereArgs = " WHERE partNameEn = '$boothId' And age >= $fromAge ";
+      }
+      else if(toAge.isNotEmpty)
+      {
+        whereArgs = " WHERE partNameEn = '$boothId' And age <= $toAge ";
+      }
+
+      if(search.toString().trim().isNotEmpty)
+      {
+        whereArgs = whereArgs + " And " + searchBy + " like '%" +search+ "%' " ;
+      }
+
+      if(whereArgs.isEmpty)
+      {
+        var response = await db?.rawQuery('SELECT * FROM voters LIMIT $limit OFFSET $off');
+        if(response !=null)
+        {
+          listItem = response.map((c) => Voters.fromJson(c)).toList();
+        }
+        else
+        {
+          listItem = List<Voters>.empty(growable: true);
+        }
+      }
+      else
+      {
+        String query = 'SELECT * FROM voters $whereArgs LIMIT $limit OFFSET $off';
+        print("<><> Query Data :: " + query);
+        var response = await db?.rawQuery(query);
+        if(response !=null)
+        {
+          listItem = response.map((c) => Voters.fromJson(c)).toList();
+        }
+        else
+        {
+          listItem = List<Voters>.empty(growable: true);
+        }
+      }
+    } catch (e) {
+      print(e);
+      listItem = List<Voters>.empty(growable: true);
+    }
+    return listItem;
+  }
+
   Future<int?> deleteAllTableData() async {
     await deleteVoterData();
  //   await deleteBoothData();
     return null;
+  }
+
+
+  Future<List<Voters>?> getAllVotersBySearch(int limit,int off,String searchName,String searchCard) async {
+    List<Voters>? listItem = List<Voters>.empty(growable: true);
+    final db = await database;
+    try {
+
+      String whereArgs = "";
+      String searchBy = "";
+
+      if(searchName.isNotEmpty)
+      {
+        searchBy = "fullNameEn";
+      }
+      else if(searchCard.isNotEmpty)
+      {
+        searchBy = "epicNo";
+      }
+      else
+      {
+        searchBy = "";
+      }
+
+      if(searchBy.toString().trim().isNotEmpty)
+      {
+        if(searchName.isNotEmpty)
+        {
+          whereArgs = " WHERE " + searchBy + " like '%" +searchName+ "%' " ;
+        }
+        else
+        {
+          whereArgs = " WHERE " + searchBy + " like '%" +searchCard+ "%' " ;
+        }
+      }
+      else
+      {
+        whereArgs = "";
+      }
+
+      if(whereArgs.isEmpty)
+      {
+        var response = await db?.rawQuery('SELECT * FROM voters LIMIT $limit OFFSET $off');
+        if(response !=null)
+        {
+          listItem = response.map((c) => Voters.fromJson(c)).toList();
+        }
+        else
+        {
+          listItem = List<Voters>.empty(growable: true);
+        }
+      }
+      else
+      {
+        String query = 'SELECT * FROM voters $whereArgs LIMIT $limit OFFSET $off';
+        print("<><> Query Data :: " + query);
+        var response = await db?.rawQuery(query);
+        if(response !=null)
+        {
+          listItem = response.map((c) => Voters.fromJson(c)).toList();
+        }
+        else
+        {
+          listItem = List<Voters>.empty(growable: true);
+        }
+      }
+
+    } catch (e) {
+      print(e);
+      listItem = List<Voters>.empty(growable: true);
+    }
+    return listItem;
+  }
+
+  Future<num?> getAllVotersFilterTypeColor(String boothId,String colorCode)
+  async {
+    num? count = 0;
+    final db = await database;
+    try {
+
+      String whereArgs = "";
+      whereArgs = " WHERE partNameEn = '$boothId' And colorCode = '$colorCode' ";
+      String query = 'SELECT *, COUNT (*) as total_count FROM voters $whereArgs';
+      print("<><> Query Data :: " + query);
+      var response = await db?.rawQuery(query);
+      if(response !=null)
+      {
+        int countRes = response.length;
+        for (int i = 0; i < countRes; i++) {
+          count = response[i]['total_count'] as num?;
+        }
+      }
+      else
+      {
+        count = 0;
+      }
+    } catch (e) {
+      print(e);
+      count = 0;
+    }
+    return count;
+  }
+
+  Future<List<Voters>?> getAllVoterFormFilterValue(int limit,int off, String search,String filterType,
+      String filterValue,String title,String boothId) async {
+    List<Voters>? listItem = List<Voters>.empty(growable: true);
+    final db = await database;
+    try {
+
+      String whereArgs = "";
+      String searchBy = "fullNameEn";
+
+      if(title == "Color List")
+      {
+        whereArgs = " WHERE partNameEn = '$boothId' And colorCode = '$filterValue' ";
+      }
+      else if(title == "House No Wise")
+      {
+        whereArgs = " WHERE partNameEn = '$boothId' And chouseNo = '$filterValue' ";
+      }
+      else if(title == "Address Wise")
+      {
+        whereArgs = " WHERE partNameEn = '$boothId' And sectionNameEn = '$filterValue' ";
+      }
+      else if(title == "Family Wise")
+      {
+        whereArgs = " WHERE partNameEn = '$boothId' And chouseNo = '$filterValue' ";
+      }
+      else if(title == "Duplicate Voters")
+      {
+        whereArgs = " WHERE partNameEn = '$boothId' Or fullNameEn = '$filterValue' ";
+      }
+
+      if(search.toString().trim().isNotEmpty)
+      {
+        whereArgs = whereArgs + " And " + searchBy + " like '%" +search+ "%' " ;
+      }
+
+      String query = 'SELECT * FROM voters $whereArgs LIMIT $limit OFFSET $off';
+      print("<><> Query Data :: " + query);
+      var response = await db?.rawQuery(query);
+      if(response !=null)
+      {
+        listItem = response.map((c) => Voters.fromJson(c)).toList();
+      }
+      else
+      {
+        listItem = List<Voters>.empty(growable: true);
+      }
+
+    } catch (e) {
+      print(e);
+      listItem = List<Voters>.empty(growable: true);
+    }
+    return listItem;
   }
 }

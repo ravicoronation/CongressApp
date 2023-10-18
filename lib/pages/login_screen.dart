@@ -12,6 +12,7 @@ import '../local_storage/db_helper.dart';
 import '../model/LoginResponse.dart';
 import '../utils/app_utils.dart';
 import '../utils/session_manager.dart';
+import 'VerifyOTPScreen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -209,15 +210,7 @@ class _LoginScreenState extends State<LoginScreen> {
             {
                if(dataResponse.workers![0].isActive == true)
                {
-                 sessionManager.setIsLoggedIn(true);
-                 await sessionManager.createLoginSession(
-                     dataResponse.workers![0].id.toString(),
-                     checkValidString(dataResponse.workers![0].workerName.toString()),
-                     checkValidString(dataResponse.workers![0].workerPhone.toString()),
-                     checkValidString(dataResponse.workers![0].assemblyNumber.toString()),
-                     checkValidString(dataResponse.workers![0].boothAssigned.toString()),
-                     dataResponse.workers![0].isActive ?? false);
-                 redirectToHome();
+                 redirectToHome(dataResponse.workers![0]);
                }
                else
                {
@@ -239,7 +232,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  void redirectToHome() {
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const SyncDataScreen()), (Route<dynamic> route) => false);
+  void redirectToHome(Workers workers) {
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => VerifyOTPScreen(workers)), (Route<dynamic> route) => false);
   }
 }

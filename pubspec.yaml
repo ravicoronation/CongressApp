@@ -57,6 +57,7 @@ dependencies:
   fluttertoast: ^8.2.1
   sqflite:
   permission_handler:
+  pin_code_fields: ^7.4.0
   regexed_validator: ^2.0.0+1
 
 dev_dependencies:

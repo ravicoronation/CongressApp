@@ -15,19 +15,19 @@ import '../utils/base_class.dart';
 import '../utils/common_widget.dart';
 import '../utils/loading_home.dart';
 
-class VoterListScreen extends StatefulWidget {
-  final String vistedVoterFilter;
-   const VoterListScreen(this.vistedVoterFilter,{Key? key}) : super(key: key);
+class AgeWiseVoterListScreen extends StatefulWidget {
+   const AgeWiseVoterListScreen({Key? key}) : super(key: key);
 
   @override
-  _VoterListScreen createState() => _VoterListScreen();
+  _AgeWiseVoterListScreen createState() => _AgeWiseVoterListScreen();
 }
 
-class _VoterListScreen extends BaseState<VoterListScreen> {
+class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
   bool _isLoading = false;
   var listVoters = List<Voters>.empty(growable: true);
   var listBooth = List<String>.empty(growable: true);
-  var listSearchBy = List<String>.empty(growable: true);
+  var listFromAge = List<String>.empty(growable: true);
+  var listToAge = List<String>.empty(growable: true);
 
   final dbHelper = DbHelper.instance;
   DateTime preBackPressTime = DateTime.now();
@@ -39,17 +39,17 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
   bool isScrollingDown = false;
 
   String filterBoothName = "All Booth";
-  String filterSearchBy = "Name-Regular Search";
   String searchHint = "Search by name...";
   String searchParam = "";
-  String vistedVoterFilter = "";
+
+  String fromAge = "From";
+  String toAge = "To";
 
   final TextEditingController _searchController = TextEditingController();
   FocusNode inputNode = FocusNode();
 
   @override
   void initState() {
-    vistedVoterFilter = (widget as VoterListScreen).vistedVoterFilter;
 
     setStaticListData();
     _scrollViewController = ScrollController();
@@ -115,7 +115,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
                 ),
               ),
               const Gap(12),
-              getTitle(vistedVoterFilter.isEmpty ? "All Voter List" : vistedVoterFilter),
+              getTitle("Age Wise"),
             ],
           ),
           actions: [
@@ -241,7 +241,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
                   child: Container(
                     margin: const EdgeInsets.only(left: 10),
                     child: Text(
-                      "Search By",
+                      "Select Age",
                       overflow: TextOverflow.clip,
                       style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                     ),
@@ -256,47 +256,93 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
               ),
               Expanded(
                   flex: 3,
-                  child: GestureDetector(
-                    onTap: (){
-                      if(listSearchBy.isNotEmpty)
-                      {
-                        _showSelectionDialog(3);
-                      }
-                      else
-                      {
-                        showToast("Data not found.", context);
-                      }
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      margin: const EdgeInsets.only(right: 10,top: 6,bottom: 6),
-                      child: Column(
-                        children: [
-                          Padding(padding: EdgeInsets.only(top: 6,bottom: 6),
-                              child: Row(
-                                children: [
-                                  Gap(10),
-                                  Expanded(child: Text(
-                                    filterSearchBy,
-                                    overflow: TextOverflow.clip,
-                                    style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
+                  child: Row(
+                    children: [
+                      Expanded(child: GestureDetector(
+                        onTap: (){
+                          if(listFromAge.isNotEmpty)
+                          {
+                            _showSelectionDialog(3);
+                          }
+                          else
+                          {
+                            showToast("Data not found.", context);
+                          }
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          margin: const EdgeInsets.only(right: 10,top: 6,bottom: 6),
+                          child: Column(
+                            children: [
+                              Padding(padding: EdgeInsets.only(top: 6,bottom: 6),
+                                  child: Row(
+                                    children: [
+                                      Gap(10),
+                                      Expanded(child: Text(
+                                        fromAge,
+                                        overflow: TextOverflow.clip,
+                                        style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
+                                      )),
+                                      Image.asset(
+                                        'assets/images/ic_arrow_down.png',
+                                        width: 14,
+                                        height: 14,
+                                        color: black,
+                                      ),
+                                      Gap(10)
+                                    ],
                                   )),
-                                  Image.asset(
-                                    'assets/images/ic_arrow_down.png',
-                                    width: 14,
-                                    height: 14,
-                                    color: black,
-                                  ),
-                                  Gap(10)
-                                ],
-                              )),
-                          const Divider(
-                            height: 0.5,
-                            color: black,
+                              const Divider(
+                                height: 0.5,
+                                color: black,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
+                        ),
+                      )),
+                      Expanded(child: GestureDetector(
+                        onTap: (){
+                          if(listToAge.isNotEmpty)
+                          {
+                            _showSelectionDialog(4);
+                          }
+                          else
+                          {
+                            showToast("Data not found.", context);
+                          }
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          margin: const EdgeInsets.only(right: 10,top: 6,bottom: 6),
+                          child: Column(
+                            children: [
+                              Padding(padding: EdgeInsets.only(top: 6,bottom: 6),
+                                  child: Row(
+                                    children: [
+                                      Gap(10),
+                                      Expanded(child: Text(
+                                        toAge,
+                                        overflow: TextOverflow.clip,
+                                        style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
+                                      )),
+                                      Image.asset(
+                                        'assets/images/ic_arrow_down.png',
+                                        width: 14,
+                                        height: 14,
+                                        color: black,
+                                      ),
+                                      Gap(10)
+                                    ],
+                                  )),
+                              const Divider(
+                                height: 0.5,
+                                color: black,
+                              ),
+                            ],
+                          ),
+                        ),
+                      )),
+                    ],
                   ))
             ],
           ),
@@ -493,7 +539,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
           }
         }
 
-      final voterListData = await dbHelper.getAllVoters(_pageResult,_pageIndex,filterBoothName == "All Booth" ? "" : filterBoothName,searchParam,filterSearchBy,vistedVoterFilter);
+      final voterListData = await dbHelper.getAllVotersFilterTypeAge(_pageResult,_pageIndex,filterBoothName == "All Booth" ? "" : filterBoothName,searchParam,fromAge == "From" ? "" : fromAge,toAge == "To" ? "" : toAge);
 
       listVoters = [];
       if (voterListData != null)
@@ -534,7 +580,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
       });
       int? count = await dbHelper.getCount();
       if (count! > 0) {
-        final voterListData = await dbHelper.getAllVoters(_pageResult,_pageIndex*_pageResult,filterBoothName == "All Booth" ? "" : filterBoothName,searchParam,filterSearchBy,vistedVoterFilter);
+        final voterListData = await dbHelper.getAllVotersFilterTypeAge(_pageResult,_pageIndex*_pageResult,filterBoothName == "All Booth" ? "" : filterBoothName,searchParam,fromAge == "From" ? "" : fromAge,toAge == "To" ? "" : toAge);
         if (voterListData != null) {
           if (voterListData.isNotEmpty)
           {
@@ -561,14 +607,14 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
 
   void _showSelectionDialog(int isFor) {
     String title = "";
-    if (isFor == 1) {
-      title = "Select Mandal";
-    }
-    else if (isFor == 2) {
+    if (isFor == 2) {
       title = "Select Booth";
     }
     else if (isFor == 3) {
-      title = "Select Search By";
+      title = "Select From Age";
+    }
+    else if (isFor == 4) {
+      title = "Select To Age";
     }
 
     showModalBottomSheet(
@@ -619,43 +665,39 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
                                       Timer(const Duration(milliseconds: 300), () =>  getFirstPage(false));
                                     }
                                   }
-                                  else if (isFor == 3)
+                                  else  if (isFor == 3)
                                   {
-                                    setState(() {
-                                      if (listSearchBy[index] != filterSearchBy)
-                                      {
-                                        filterSearchBy = checkValidString(listSearchBy[index]);
-                                        Navigator.pop(context);
-                                        if(searchParam.isNotEmpty)
+                                    if (listFromAge[index].toString() != fromAge)
+                                    {
+                                      fromAge = checkValidString(listFromAge[index].toString());
+                                      toAge = "To";
+                                      Navigator.pop(context);
+                                      Timer(const Duration(milliseconds: 300), () =>  getFirstPage(false));
+                                    }
+                                  }
+                                  else  if (isFor == 4)
+                                  {
+                                    if (listToAge[index].toString() != toAge)
+                                    {
+                                      if(fromAge != "From")
                                         {
-                                          searchParam = "";
-                                          _searchController.clear();
+                                          if(int.parse(listToAge[index].toString()) >= int.parse(fromAge))
+                                          {
+                                            toAge = checkValidString(listToAge[index].toString());
+                                            Navigator.pop(context);
+                                            Timer(const Duration(milliseconds: 300), () =>  getFirstPage(false));
+                                          }
+                                          else{
+                                            showToast("Please select valid To age.", context);
+                                          }
+                                        }
+                                      else
+                                        {
+                                          toAge = checkValidString(listToAge[index].toString());
+                                          Navigator.pop(context);
                                           Timer(const Duration(milliseconds: 300), () =>  getFirstPage(false));
                                         }
-
-                                        if(filterSearchBy == "Name-Regular Search")
-                                        {
-                                          searchHint = "Search by name...";
-                                        }
-                                        else  if(filterSearchBy == "SRNO")
-                                        {
-                                          searchHint = "Search by srno...";
-                                        }
-                                        else  if(filterSearchBy == "CardNo")
-                                        {
-                                          searchHint = "Search by card no...";
-                                        }
-                                        else  if(filterSearchBy == "MobileNo")
-                                        {
-                                          searchHint = "Search by mobile no...";
-                                        }
-                                        else  if(filterSearchBy == "Name-Match Case")
-                                        {
-                                          searchHint = "Search by name match case...";
-                                        }
-
-                                      }
-                                    });
+                                    }
                                   }
                                 },
                                 child: Column(
@@ -685,7 +727,10 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
       return listBooth.length;
     }
     else if (isFor == 3) {
-      return listSearchBy.length;
+      return listFromAge.length;
+    }
+    else if (isFor == 4) {
+      return listToAge.length;
     }
   }
 
@@ -701,11 +746,20 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
     }
     else  if (isFor == 3) {
       return Text(
-        "${index + 1}. " +checkValidString(listSearchBy[index]),
+        checkValidString(listFromAge[index]),
         style: TextStyle(
             fontSize: 16,
-            fontWeight: listSearchBy[index] == filterSearchBy.toString() ? FontWeight.w600 : FontWeight.w400,
-            color: listSearchBy[index] == filterSearchBy.toString() ? darOrange : black),
+            fontWeight: listFromAge[index] == fromAge.toString() ? FontWeight.w600 : FontWeight.w400,
+            color: listFromAge[index] == fromAge.toString() ? darOrange : black),
+      );
+    }
+    else  if (isFor == 4) {
+      return Text(
+        checkValidString(listToAge[index]),
+        style: TextStyle(
+            fontSize: 16,
+            fontWeight: listToAge[index] == toAge.toString() ? FontWeight.w600 : FontWeight.w400,
+            color: listToAge[index] == toAge.toString() ? darOrange : black),
       );
     }
   }
@@ -713,7 +767,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
 
   @override
   void castStatefulWidget() {
-    widget is VoterListScreen;
+    widget is AgeWiseVoterListScreen;
   }
 
   Future<void> getBoothFromMandal() async {
@@ -735,10 +789,18 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
   }
 
   void setStaticListData() {
-    listSearchBy.add("Name-Regular Search");
-    listSearchBy.add("SRNO");
-    listSearchBy.add("CardNo");
-    listSearchBy.add("MobileNo");
-    listSearchBy.add("Name-Match Case");
+    listFromAge.add("From");
+
+    for(int i=18; i<= 100 ;i++)
+      {
+        listFromAge.add(i.toString());
+      }
+
+    listToAge.add("To");
+
+    for(int i=18; i<= 100 ;i++)
+    {
+      listToAge.add(i.toString());
+    }
   }
 }

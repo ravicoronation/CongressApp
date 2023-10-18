@@ -61,45 +61,69 @@ String colorcodeToJson(Colorcode data) => json.encode(data.toJson());
 class Colorcode {
   Colorcode({
       num? id, 
-      String? colorNameEn, 
+      String? colorNameEn,
+      String? colorCodeHEX,
       String? colorNameV1, 
-      num? colorCode,}){
+      num? colorCode,
+      num? count}){
     _id = id;
     _colorNameEn = colorNameEn;
+    _colorCodeHEX = colorCodeHEX;
     _colorNameV1 = colorNameV1;
     _colorCode = colorCode;
+    _count = count;
 }
 
   Colorcode.fromJson(dynamic json) {
     _id = json['id'];
     _colorNameEn = json['colorNameEn'];
+    _colorCodeHEX = json['colorCodeHEX'];
     _colorNameV1 = json['colorNameV1'];
     _colorCode = json['colorCode'];
+    _count = json['count'];
   }
   num? _id;
   String? _colorNameEn;
+  String? _colorCodeHEX;
   String? _colorNameV1;
   num? _colorCode;
+  num? _count;
 Colorcode copyWith({  num? id,
   String? colorNameEn,
+  String? colorCodeHEX,
   String? colorNameV1,
   num? colorCode,
+  num? count,
 }) => Colorcode(  id: id ?? _id,
   colorNameEn: colorNameEn ?? _colorNameEn,
+  colorCodeHEX : colorCodeHEX ?? _colorCodeHEX,
   colorNameV1: colorNameV1 ?? _colorNameV1,
   colorCode: colorCode ?? _colorCode,
+    count : count ?? _count,
 );
   num? get id => _id;
   String? get colorNameEn => _colorNameEn;
+  String? get colorCodeHEX => _colorCodeHEX;
   String? get colorNameV1 => _colorNameV1;
   num? get colorCode => _colorCode;
+  num? get count => _count;
+
+  set colorCodeHEX(String? value) {
+    _colorCodeHEX = value;
+  }
+
+  set count(num? value) {
+    _count = value;
+  }
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['id'] = _id;
     map['colorNameEn'] = _colorNameEn;
+    map['colorCodeHEX'] = _colorCodeHEX;
     map['colorNameV1'] = _colorNameV1;
     map['colorCode'] = _colorCode;
+    map['count'] = _count;
     return map;
   }
 

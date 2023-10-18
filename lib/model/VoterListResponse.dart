@@ -118,7 +118,8 @@ String votersToJson(Voters data) => json.encode(data.toJson());
 class Voters {
   Voters({
       num? id, 
-      num? acNo, 
+      num? acNo,
+      num? totalCount,
       num? partNo, 
       num? sectionNo, 
       num? slnoinpart, 
@@ -179,6 +180,7 @@ class Voters {
       String? chouseNoV1,}){
     _id = id;
     _acNo = acNo;
+    _totalCount = totalCount;
     _partNo = partNo;
     _sectionNo = sectionNo;
     _slnoinpart = slnoinpart;
@@ -242,6 +244,7 @@ class Voters {
   Voters.fromJson(dynamic json) {
     _id = json['id'];
     _acNo = json['acNo'];
+    _totalCount = json['total_count'];
     _partNo = json['partNo'];
     _sectionNo = json['sectionNo'];
     _slnoinpart = json['slnoinpart'];
@@ -303,6 +306,7 @@ class Voters {
   }
   num? _id;
   num? _acNo;
+  num? _totalCount;
   num? _partNo;
   num? _sectionNo;
   num? _slnoinpart;
@@ -363,6 +367,7 @@ class Voters {
   String? _chouseNoV1;
 Voters copyWith({  num? id,
   num? acNo,
+  num? totalCount,
   num? partNo,
   num? sectionNo,
   num? slnoinpart,
@@ -423,6 +428,7 @@ Voters copyWith({  num? id,
   String? chouseNoV1,
 }) => Voters(  id: id ?? _id,
   acNo: acNo ?? _acNo,
+  totalCount : totalCount ?? _totalCount,
   partNo: partNo ?? _partNo,
   sectionNo: sectionNo ?? _sectionNo,
   slnoinpart: slnoinpart ?? _slnoinpart,
@@ -484,6 +490,7 @@ Voters copyWith({  num? id,
 );
   num? get id => _id;
   num? get acNo => _acNo;
+  num? get totalCount => _totalCount;
   num? get partNo => _partNo;
   num? get sectionNo => _sectionNo;
   num? get slnoinpart => _slnoinpart;
@@ -502,17 +509,6 @@ Voters copyWith({  num? id,
   String? get gender => _gender;
   String? get age => _age;
   String? get dob => _dob;
-
-  set dob(String? value) {
-    _dob = value;
-  }
-
-  String? get mobileNo => _mobileNo;
-
-  set mobileNo(String? value) {
-    _mobileNo = value;
-  }
-
   num? get pcNo => _pcNo;
   String? get pcnameEn => _pcnameEn;
   String? get pcnameV1 => _pcnameV1;
@@ -551,6 +547,21 @@ Voters copyWith({  num? id,
   String? get twitterUrl => _twitterUrl;
   String? get chouseNo => _chouseNo;
   String? get chouseNoV1 => _chouseNoV1;
+
+
+  set totalCount(num? value) {
+    _totalCount = value;
+  }
+
+  set dob(String? value) {
+    _dob = value;
+  }
+
+  String? get mobileNo => _mobileNo;
+
+  set mobileNo(String? value) {
+    _mobileNo = value;
+  }
 
   set whatsappNo(String? value) {
     _whatsappNo = value;
@@ -615,12 +626,11 @@ Voters copyWith({  num? id,
     _otherDetails = value;
   }
 
-
-
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['id'] = _id ?? 0;
     map['acNo'] = _acNo ?? 0;
+    map['total_count'] = _totalCount ?? 0;
     map['partNo'] = _partNo ?? 0;
     map['sectionNo'] = _sectionNo ?? 0;
     map['slnoinpart'] = _slnoinpart ?? 0;

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:congress_app/pages/WiseFilterVoterListScreen.dart';
 import 'package:congress_app/pages/login_screen.dart';
 import 'package:congress_app/utils/session_manager_new.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,9 @@ import '../model/menu_model.dart';
 import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
 import '../utils/common_widget.dart';
+import 'AgeWiseVoterListScreen.dart';
+import 'ColorFilterVoterListScreen.dart';
+import 'SearchVoterListScreen.dart';
 import 'VoterListScreen.dart';
 
 class HomePage extends StatefulWidget {
@@ -146,11 +150,32 @@ class _HomePage extends BaseState<HomePage> {
             if (menuList[index].name.toString() == "All Voters") {
               startActivity(context,  const VoterListScreen(""));
             }
+            else if (menuList[index].name.toString() == "Search") {
+              startActivity(context,  const SearchVoterListScreen());
+            }
             else if (menuList[index].name.toString() == "Visited Voters") {
               startActivity(context,  const VoterListScreen("Visited Voters"));
             }
             else if (menuList[index].name.toString() == "Non-Visited Voters") {
               startActivity(context,  const VoterListScreen("Non-Visited Voters"));
+            }
+            else if (menuList[index].name.toString() == "House No Wise") {
+              startActivity(context,  const WiseFilterVoterListScreen("House No Wise"));
+            }
+            else if (menuList[index].name.toString() == "Address Wise") {
+              startActivity(context,  const WiseFilterVoterListScreen("Address Wise"));
+            }
+            else if (menuList[index].name.toString() == "Family Wise") {
+              startActivity(context,  const WiseFilterVoterListScreen("Family Wise"));
+            }
+            else if (menuList[index].name.toString() == "Duplicate Voters") {
+              startActivity(context,  const WiseFilterVoterListScreen("Duplicate Voters"));
+            }
+            else if (menuList[index].name.toString() == "Age Wise") {
+              startActivity(context,  const AgeWiseVoterListScreen());
+            }
+            else if (menuList[index].name.toString() == "Color Wise") {
+              startActivity(context,  const ColorFilterVoterListScreen());
             }
           },
           child: Container(

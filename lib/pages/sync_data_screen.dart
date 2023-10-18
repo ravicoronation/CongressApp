@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import '../constant/api_end_point.dart';
 import '../constant/colors.dart';
-import '../constant/global_context.dart';
 import '../local_storage/db_helper.dart';
 import '../model/BoothResponseData.dart';
 import '../model/ColorCodeResponseModel.dart';
@@ -322,6 +321,29 @@ class _SyncDataScreenState extends State<SyncDataScreen> {
       if (checkValidString(dataResponse.message) == "Success") {
         try {
           if (dataResponse.colorcode != null) {
+            for(int i=0; i < dataResponse.colorcode!.length; i++)
+            {
+                if(dataResponse.colorcode![i].colorNameEn == "Congress")
+                {
+                    dataResponse.colorcode![i].colorCodeHEX = "#ff87cefa";
+                }
+                else if(dataResponse.colorcode![i].colorNameEn == "Undecided")
+                {
+                  dataResponse.colorcode![i].colorCodeHEX = "#fffed700";
+                }
+                else if(dataResponse.colorcode![i].colorNameEn == "Neutral")
+                {
+                  dataResponse.colorcode![i].colorCodeHEX = "#ff65cdaa";
+                }
+                else if(dataResponse.colorcode![i].colorNameEn == "Opposition")
+                {
+                  dataResponse.colorcode![i].colorCodeHEX = "#ffff3334";
+                }
+                else if(dataResponse.colorcode![i].colorNameEn == "Unknown")
+                {
+                  dataResponse.colorcode![i].colorCodeHEX = "#ffebf0f4";
+                }
+            }
             sessionManager.setColorData(dataResponse.colorcode ?? []);
           }
         } catch (e) {

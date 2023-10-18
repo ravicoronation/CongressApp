@@ -14,21 +14,21 @@ import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
 import '../utils/common_widget.dart';
 import '../utils/loading_home.dart';
+import 'FilterByValueVoterListScreen.dart';
 
-class VoterListScreen extends StatefulWidget {
-  final String vistedVoterFilter;
-   const VoterListScreen(this.vistedVoterFilter,{Key? key}) : super(key: key);
+class WiseFilterVoterListScreen extends StatefulWidget {
+  final String type;
+
+  const WiseFilterVoterListScreen(this.type, {Key? key}) : super(key: key);
 
   @override
-  _VoterListScreen createState() => _VoterListScreen();
+  _WiseFilterVoterListScreen createState() => _WiseFilterVoterListScreen();
 }
 
-class _VoterListScreen extends BaseState<VoterListScreen> {
+class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
   bool _isLoading = false;
   var listVoters = List<Voters>.empty(growable: true);
   var listBooth = List<String>.empty(growable: true);
-  var listSearchBy = List<String>.empty(growable: true);
-
   final dbHelper = DbHelper.instance;
   DateTime preBackPressTime = DateTime.now();
   ScrollController _scrollViewController = ScrollController();
@@ -37,21 +37,17 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
   final int _pageResult = 200;
   bool _isLastPage = false;
   bool isScrollingDown = false;
-
   String filterBoothName = "All Booth";
-  String filterSearchBy = "Name-Regular Search";
   String searchHint = "Search by name...";
   String searchParam = "";
-  String vistedVoterFilter = "";
+  String type = "";
 
   final TextEditingController _searchController = TextEditingController();
   FocusNode inputNode = FocusNode();
 
   @override
   void initState() {
-    vistedVoterFilter = (widget as VoterListScreen).vistedVoterFilter;
-
-    setStaticListData();
+    type = (widget as WiseFilterVoterListScreen).type;
     _scrollViewController = ScrollController();
     _scrollViewController.addListener(() {
       if (_scrollViewController.position.userScrollDirection == ScrollDirection.reverse) {
@@ -68,7 +64,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
       }
       pagination();
     });
-    Timer(const Duration(milliseconds: 300), () =>  getFirstPage(true));
+    Timer(const Duration(milliseconds: 300), () => getFirstPage(true));
     super.initState();
   }
 
@@ -115,14 +111,13 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
                 ),
               ),
               const Gap(12),
-              getTitle(vistedVoterFilter.isEmpty ? "All Voter List" : vistedVoterFilter),
+              getTitle(type),
             ],
           ),
           actions: [
             InkWell(
               customBorder: const CircleBorder(),
-              onTap: () async {
-              },
+              onTap: () async {},
               child: Container(
                 width: 40,
                 height: 40,
@@ -135,27 +130,30 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
         body: Column(
           children: [
             filterData(),
-            _isLoading ? const Expanded(child: LoadingHomeWidget()) : Expanded(child: listVoters.isEmpty ? const MyNoDataWidget(msg: "No Voters Found.") : SingleChildScrollView(
-                controller: _scrollViewController,
-                child: setData())),
+            _isLoading
+                ? const Expanded(child: LoadingHomeWidget())
+                : Expanded(
+                    child: listVoters.isEmpty
+                        ? const MyNoDataWidget(msg: "No Voters Found.")
+                        : SingleChildScrollView(controller: _scrollViewController, child: setData())),
             Visibility(
-                visible: _isLoadingMore,
-                child: Container(
-                  color: dashboardBg,
-                  padding: const EdgeInsets.only(top: 5, bottom: 20),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                          width: 40,
-                          height: 40,
-                          child: Lottie.asset('assets/images/loader.json', repeat: true, animate: true, frameRate: FrameRate.max)),
-                      const Text(' Loading more...', style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16))
-                    ],
-                  ),
+              visible: _isLoadingMore,
+              child: Container(
+                color: dashboardBg,
+                padding: const EdgeInsets.only(top: 5, bottom: 20),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: Lottie.asset('assets/images/loader.json', repeat: true, animate: true, frameRate: FrameRate.max)),
+                    const Text(' Loading more...', style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16))
+                  ],
                 ),
               ),
+            ),
           ],
         ),
       ),
@@ -171,15 +169,15 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
             children: [
               Expanded(
                   child: Container(
-                    margin: const EdgeInsets.only(left: 10),
-                    child: Text(
-                      listBooth.length == 1 ? "Booth Name" : "Select Booth",
-                      overflow: TextOverflow.clip,
-                      style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
-                    ),
-                  )),
+                margin: const EdgeInsets.only(left: 10),
+                child: Text(
+                  listBooth.length == 1 ? "Booth Name" : "Select Booth",
+                  overflow: TextOverflow.clip,
+                  style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
+                ),
+              )),
               Container(
-                margin: const EdgeInsets.only(left: 8,right: 8),
+                margin: const EdgeInsets.only(left: 8, right: 8),
                 child: Text(
                   ":",
                   overflow: TextOverflow.clip,
@@ -189,39 +187,39 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
               Expanded(
                   flex: 3,
                   child: GestureDetector(
-                    onTap: (){
-                      if(listBooth.isNotEmpty)
-                      {
-                        if(listBooth.length >1)
-                        {
+                    onTap: () {
+                      if (listBooth.isNotEmpty) {
+                        if (listBooth.length > 1) {
                           _showSelectionDialog(2);
                         }
-                      }
-                      else
-                      {
+                      } else {
                         showToast("Data not found.", context);
                       }
                     },
                     child: Container(
                       alignment: Alignment.center,
-                      margin: const EdgeInsets.only(right: 10,top: 6,bottom: 6),
+                      margin: const EdgeInsets.only(right: 10, top: 6, bottom: 6),
                       child: Column(
                         children: [
-                          Padding(padding: EdgeInsets.only(top: 6,bottom: 6),
+                          Padding(
+                              padding: EdgeInsets.only(top: 6, bottom: 6),
                               child: Row(
                                 children: [
                                   Gap(10),
-                                  Expanded(child: Text(
+                                  Expanded(
+                                      child: Text(
                                     filterBoothName,
                                     overflow: TextOverflow.clip,
                                     style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                                   )),
-                                  Visibility(visible: listBooth.length >1, child: Image.asset(
-                                    'assets/images/ic_arrow_down.png',
-                                    width: 14,
-                                    height: 14,
-                                    color: black,
-                                  )),
+                                  Visibility(
+                                      visible: listBooth.length > 1,
+                                      child: Image.asset(
+                                        'assets/images/ic_arrow_down.png',
+                                        width: 14,
+                                        height: 14,
+                                        color: black,
+                                      )),
                                   const Gap(10)
                                 ],
                               )),
@@ -235,73 +233,8 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
                   ))
             ],
           ),
-          Row(
-            children: [
-              Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.only(left: 10),
-                    child: Text(
-                      "Search By",
-                      overflow: TextOverflow.clip,
-                      style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
-                    ),
-                  )),
-              Container(
-                margin: const EdgeInsets.only(left: 8,right: 8),
-                child: Text(
-                  ":",
-                  overflow: TextOverflow.clip,
-                  style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: textFiledSize),
-                ),
-              ),
-              Expanded(
-                  flex: 3,
-                  child: GestureDetector(
-                    onTap: (){
-                      if(listSearchBy.isNotEmpty)
-                      {
-                        _showSelectionDialog(3);
-                      }
-                      else
-                      {
-                        showToast("Data not found.", context);
-                      }
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      margin: const EdgeInsets.only(right: 10,top: 6,bottom: 6),
-                      child: Column(
-                        children: [
-                          Padding(padding: EdgeInsets.only(top: 6,bottom: 6),
-                              child: Row(
-                                children: [
-                                  Gap(10),
-                                  Expanded(child: Text(
-                                    filterSearchBy,
-                                    overflow: TextOverflow.clip,
-                                    style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
-                                  )),
-                                  Image.asset(
-                                    'assets/images/ic_arrow_down.png',
-                                    width: 14,
-                                    height: 14,
-                                    color: black,
-                                  ),
-                                  Gap(10)
-                                ],
-                              )),
-                          const Divider(
-                            height: 0.5,
-                            color: black,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ))
-            ],
-          ),
           Container(
-            margin: const EdgeInsets.only(left: 10,right: 10,top: 6,bottom: 8),
+            margin: const EdgeInsets.only(left: 10, right: 10, top: 6, bottom: 8),
             height: 42,
             decoration: BoxDecoration(
               color: white,
@@ -309,7 +242,8 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
             ),
             child: Row(
               children: [
-                Expanded(child: TextField(
+                Expanded(
+                    child: TextField(
                   cursorColor: black,
                   controller: _searchController,
                   keyboardType: TextInputType.text,
@@ -336,30 +270,26 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
                   decoration: InputDecoration(
                       hintText: searchHint,
                       contentPadding: const EdgeInsets.only(left: 12, right: 12, top: 0, bottom: 0),
-                      hintStyle: const TextStyle(color: black, fontSize: 14,fontWeight: FontWeight.w400),
+                      hintStyle: const TextStyle(color: black, fontSize: 14, fontWeight: FontWeight.w400),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(kButtonCornerRadius),
-                          borderSide:  const BorderSide(width: 0.5, style: BorderStyle.solid, color: white)),
+                          borderSide: const BorderSide(width: 0.5, style: BorderStyle.solid, color: white)),
                       focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(kButtonCornerRadius),
                           borderSide: const BorderSide(width: 0.5, style: BorderStyle.solid, color: white)),
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(kButtonCornerRadius),
-                          borderSide: const BorderSide(width:0.5, style: BorderStyle.solid, color: white)),
+                          borderSide: const BorderSide(width: 0.5, style: BorderStyle.solid, color: white)),
                       suffixIcon: GestureDetector(
-                        onTap: ()
-                        {
-                          if(searchParam.isNotEmpty)
-                          {
+                        onTap: () {
+                          if (searchParam.isNotEmpty) {
                             setState(() {
                               searchParam = "";
                               _searchController.clear();
                             });
 
                             getFirstPage(false);
-                          }
-                          else
-                          {
+                          } else {
                             setState(() {
                               searchParam = "";
                               _searchController.clear();
@@ -377,8 +307,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
                             ),
                           ),
                         ),
-                      )
-                  ),
+                      )),
                 )),
               ],
             ),
@@ -394,6 +323,51 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
       children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15),
+                child: IntrinsicHeight(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                          flex: 2,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 10, bottom: 10),
+                            child: Text(
+                              type,
+                              overflow: TextOverflow.clip,
+                              style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
+                            ),
+                          )),
+                      const VerticalDivider(
+                        thickness: 0.5,
+                        color: gray,
+                      ),
+                      Expanded(
+                          flex: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 10, bottom: 10),
+                            child: Text(
+                              "Total Qty",
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.clip,
+                              style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
+                            ),
+                          )),
+                    ],
+                  ),
+                )),
+            const Divider(
+              height: 0.5,
+              color: gray,
+            )
+          ],
+        ),
         setProjectList()
       ],
     );
@@ -410,59 +384,64 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
         return GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-              startActivity(context, VoterDetailsPage(listVoters[index]));
+
+              if (type == "House No Wise") {
+                startActivity(context, FilterByValueVoterListScreen(listVoters[index].chouseNo.toString(),listVoters[index].chouseNo.toString(),"House No Wise",filterBoothName));
+              } else if (type == "Address Wise") {
+                startActivity(context, FilterByValueVoterListScreen(listVoters[index].sectionNameEn.toString(),listVoters[index].sectionNameEn.toString(),"Address Wise",filterBoothName));
+              } else if (type == "Family Wise") {
+                startActivity(context, FilterByValueVoterListScreen(listVoters[index].chouseNo.toString(),listVoters[index].chouseNo.toString(),"Family Wise",filterBoothName));
+              } else if (type == "Duplicate Voters") {
+                startActivity(context, FilterByValueVoterListScreen(listVoters[index].fullNameEn.toString(),listVoters[index].fullNameEn.toString(),"Duplicate Voters",filterBoothName));
+              } else {
+                startActivity(context, VoterDetailsPage(listVoters[index]));
+              }
+
+
+
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                    padding: const EdgeInsets.only(left: 15,right: 15,top: 10,bottom: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "${index + 1}.",//"${toDisplayCase(listVoters[index].id.toString().trim())}.",
-                          overflow: TextOverflow.clip,
-                          style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: contentSizeSmall),
-                        ),
-                        const Gap(6),
-                        Expanded(
-                            child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              toDisplayCase(listVoters[index].fullNameEn.toString().trim()),
-                              overflow: TextOverflow.clip,
-                              style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSizeSmall),
-                            ),
-                            Text(
-                              "${toDisplayCase(listVoters[index].gender.toString().trim())} - ${toDisplayCase(listVoters[index].age.toString().trim())}",
-                              overflow: TextOverflow.clip,
-                              style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: contentSizeSmall),
-                            )
-                          ],
-                        )),
-                        const Gap(10),
-                        Visibility(
-                            visible: checkValidString(listVoters[index].mobileNo).toString().isNotEmpty,
-                            child: GestureDetector(
-                                onTap: () {
-                                  makePhoneCall(checkValidString(listVoters[index].mobileNo).toString().trim());
-                                },
-                                child: Image.asset(
-                                  'assets/images/ic_call_new.png',
-                                  width: 18,
-                                  height: 18,
-                                  color: darOrange,
-                                )))
-                      ],
+                    padding: const EdgeInsets.only(left: 15, right: 15),
+                    child: IntrinsicHeight(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                              flex: 2,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                                child: Text(
+                                  getParamData(listVoters[index]),
+                                  overflow: TextOverflow.clip,
+                                  style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
+                                ),
+                              )),
+                          const VerticalDivider(
+                            thickness: 0.5,
+                            color: gray,
+                          ),
+                          Expanded(
+                              flex: 1,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                                child: Text(
+                                  checkValidString(listVoters[index].totalCount.toString()),
+                                  overflow: TextOverflow.clip,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
+                                ),
+                              )),
+                        ],
+                      ),
                     )),
                 const Divider(
                   height: 0.5,
-                  color: grayLight,
+                  color: gray,
                 )
               ],
             ));
@@ -478,50 +457,39 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
         _isLoading = true;
       });
 
-      if(isFromInit)
-        {
-          final boothListData = await dbHelper.getAllBooth();
-          if (boothListData != null)
-          {
-            if (boothListData.isNotEmpty)
-            {
-              setState(() {
-                listBooth.addAll(boothListData);
-                filterBoothName = listBooth[0].toString().trim();
-              });
-            }
+      if (isFromInit) {
+        final boothListData = await dbHelper.getAllBooth();
+        if (boothListData != null) {
+          if (boothListData.isNotEmpty) {
+            setState(() {
+              listBooth.addAll(boothListData);
+              filterBoothName = listBooth[0].toString().trim();
+            });
           }
         }
+      }
 
-      final voterListData = await dbHelper.getAllVoters(_pageResult,_pageIndex,filterBoothName == "All Booth" ? "" : filterBoothName,searchParam,filterSearchBy,vistedVoterFilter);
-
+      final voterListData = await dbHelper.getAllVotersFilterTypeWise(
+          _pageResult, _pageIndex, filterBoothName == "All Booth" ? "" : filterBoothName, searchParam, type);
       listVoters = [];
-      if (voterListData != null)
-      {
-        if (voterListData.isNotEmpty)
-        {
+      if (voterListData != null) {
+        if (voterListData.isNotEmpty) {
           setState(() {
             listVoters.addAll(voterListData);
             _isLoading = false;
           });
-        }
-        else
-        {
+        } else {
           setState(() {
             listVoters = [];
             _isLoading = false;
           });
-
         }
-      }
-      else
-      {
+      } else {
         setState(() {
           listVoters = [];
           _isLoading = false;
         });
       }
-
     } catch (e) {
       print(e);
     }
@@ -534,10 +502,10 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
       });
       int? count = await dbHelper.getCount();
       if (count! > 0) {
-        final voterListData = await dbHelper.getAllVoters(_pageResult,_pageIndex*_pageResult,filterBoothName == "All Booth" ? "" : filterBoothName,searchParam,filterSearchBy,vistedVoterFilter);
+        final voterListData = await dbHelper.getAllVotersFilterTypeWise(
+            _pageResult, _pageIndex * _pageResult, filterBoothName == "All Booth" ? "" : filterBoothName, searchParam, type);
         if (voterListData != null) {
-          if (voterListData.isNotEmpty)
-          {
+          if (voterListData.isNotEmpty) {
             setState(() {
               if (voterListData.isNotEmpty) {
                 if (voterListData.isEmpty || voterListData.length % _pageResult != 0) {
@@ -561,14 +529,8 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
 
   void _showSelectionDialog(int isFor) {
     String title = "";
-    if (isFor == 1) {
-      title = "Select Mandal";
-    }
-    else if (isFor == 2) {
+    if (isFor == 2) {
       title = "Select Booth";
-    }
-    else if (isFor == 3) {
-      title = "Select Search By";
     }
 
     showModalBottomSheet(
@@ -579,10 +541,11 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
         builder: (context) {
           return StatefulBuilder(builder: (BuildContext context, StateSetter setStatenew) {
             return SizedBox(
-              height:
-              getItemCount(isFor) <= 5 ? MediaQuery.of(context).size.height * 0.35 :
-              getItemCount(isFor) > 10 ? MediaQuery.of(context).size.height * 0.85 :
-              MediaQuery.of(context).size.height * 0.60,
+              height: getItemCount(isFor) <= 5
+                  ? MediaQuery.of(context).size.height * 0.35
+                  : getItemCount(isFor) > 10
+                      ? MediaQuery.of(context).size.height * 0.85
+                      : MediaQuery.of(context).size.height * 0.60,
               child: Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 20),
                 child: Column(
@@ -601,7 +564,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
                       child: Text(title, style: const TextStyle(color: black, fontWeight: FontWeight.bold, fontSize: 18)),
                     ),
                     Expanded(
-                        child:  ListView.builder(
+                        child: ListView.builder(
                             itemCount: getItemCount(isFor),
                             shrinkWrap: true,
                             physics: const AlwaysScrollableScrollPhysics(),
@@ -610,52 +573,12 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
                               return InkWell(
                                 onTap: () {
                                   FocusScope.of(context).unfocus();
-                                  if (isFor == 2)
-                                  {
-                                    if (listBooth[index].toString() != filterBoothName)
-                                    {
+                                  if (isFor == 2) {
+                                    if (listBooth[index].toString() != filterBoothName) {
                                       filterBoothName = checkValidString(listBooth[index].toString());
                                       Navigator.pop(context);
-                                      Timer(const Duration(milliseconds: 300), () =>  getFirstPage(false));
+                                      Timer(const Duration(milliseconds: 300), () => getFirstPage(false));
                                     }
-                                  }
-                                  else if (isFor == 3)
-                                  {
-                                    setState(() {
-                                      if (listSearchBy[index] != filterSearchBy)
-                                      {
-                                        filterSearchBy = checkValidString(listSearchBy[index]);
-                                        Navigator.pop(context);
-                                        if(searchParam.isNotEmpty)
-                                        {
-                                          searchParam = "";
-                                          _searchController.clear();
-                                          Timer(const Duration(milliseconds: 300), () =>  getFirstPage(false));
-                                        }
-
-                                        if(filterSearchBy == "Name-Regular Search")
-                                        {
-                                          searchHint = "Search by name...";
-                                        }
-                                        else  if(filterSearchBy == "SRNO")
-                                        {
-                                          searchHint = "Search by srno...";
-                                        }
-                                        else  if(filterSearchBy == "CardNo")
-                                        {
-                                          searchHint = "Search by card no...";
-                                        }
-                                        else  if(filterSearchBy == "MobileNo")
-                                        {
-                                          searchHint = "Search by mobile no...";
-                                        }
-                                        else  if(filterSearchBy == "Name-Match Case")
-                                        {
-                                          searchHint = "Search by name match case...";
-                                        }
-
-                                      }
-                                    });
                                   }
                                 },
                                 child: Column(
@@ -684,61 +607,36 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
     if (isFor == 2) {
       return listBooth.length;
     }
-    else if (isFor == 3) {
-      return listSearchBy.length;
-    }
   }
 
   setTextData(int isFor, int index) {
     if (isFor == 2) {
       return Text(
-          "${index + 1}. " +checkValidString(listBooth[index]),
+        "${index + 1}. " + checkValidString(listBooth[index]),
         style: TextStyle(
             fontSize: 16,
             fontWeight: listBooth[index].toString() == filterBoothName.toString() ? FontWeight.w600 : FontWeight.w400,
             color: listBooth[index].toString() == filterBoothName.toString() ? darOrange : black),
       );
     }
-    else  if (isFor == 3) {
-      return Text(
-        "${index + 1}. " +checkValidString(listSearchBy[index]),
-        style: TextStyle(
-            fontSize: 16,
-            fontWeight: listSearchBy[index] == filterSearchBy.toString() ? FontWeight.w600 : FontWeight.w400,
-            color: listSearchBy[index] == filterSearchBy.toString() ? darOrange : black),
-      );
-    }
   }
-
 
   @override
   void castStatefulWidget() {
-    widget is VoterListScreen;
+    widget is WiseFilterVoterListScreen;
   }
 
-  Future<void> getBoothFromMandal() async {
-    listBooth = [];
-    final boothListData = await dbHelper.getAllBooth();
-    if (boothListData != null)
-    {
-      if (boothListData.isNotEmpty)
-      {
-        listBooth.addAll(boothListData);
-        filterBoothName = listBooth[0].toString().trim();
-        getFirstPage(false);
-      }
+  String getParamData(Voters listItem) {
+    if (type == "House No Wise") {
+      return checkValidString(listItem.chouseNo);
+    } else if (type == "Address Wise") {
+      return checkValidString(listItem.sectionNameEn);
+    } else if (type == "Family Wise") {
+      return checkValidString(listItem.chouseNo);
+    } else if (type == "Duplicate Voters") {
+      return checkValidString(listItem.fullNameEn);
+    } else {
+      return "";
     }
-    else
-    {
-        getFirstPage(false);
-    }
-  }
-
-  void setStaticListData() {
-    listSearchBy.add("Name-Regular Search");
-    listSearchBy.add("SRNO");
-    listSearchBy.add("CardNo");
-    listSearchBy.add("MobileNo");
-    listSearchBy.add("Name-Match Case");
   }
 }
