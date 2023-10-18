@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:congress_app/pages/AddNewVoterScreen.dart';
 import 'package:congress_app/pages/WiseFilterVoterListScreen.dart';
 import 'package:congress_app/pages/login_screen.dart';
 import 'package:congress_app/utils/session_manager_new.dart';
@@ -107,7 +108,7 @@ class _HomePage extends BaseState<HomePage> {
               visible: titledata.isNotEmpty,
               child: Container(
                   width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.all(6),
+                  padding: const EdgeInsets.all(6),
                   decoration: getCommonCardBasicBottom(),
                   child: Column(
                     children: [
@@ -176,6 +177,9 @@ class _HomePage extends BaseState<HomePage> {
             }
             else if (menuList[index].name.toString() == "Color Wise") {
               startActivity(context,  const ColorFilterVoterListScreen());
+            }
+            else if (menuList[index].name.toString() == "New Voter") {
+              startActivity(context,  const AddNewVoterScreen());
             }
           },
           child: Container(

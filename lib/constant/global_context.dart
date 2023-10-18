@@ -11,4 +11,5 @@ class NavigationService {
   static List<Professions> professions = List<Professions>.empty(growable: true);
   static List<Colorcode> colorCodeList = List<Colorcode>.empty(growable: true);
   static List<String> bloodGroupList = ["A +ve" , "A -ve", "B +ve", "B -ve","AB +ve","AB -ve", "O +ve", "O -ve"];
+  static List<String> genderList = ["Male" , "Female",];
 }
