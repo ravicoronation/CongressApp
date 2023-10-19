@@ -529,7 +529,7 @@ class DbHelper {
 
       if(search.toString().trim().isNotEmpty)
       {
-        whereArgs = whereArgs + " And " + searchBy + " like '%" +search+ "%' " ;
+        whereArgs = "$whereArgs And $searchBy like '%$search%' " ;
       }
 
       if(whereArgs.isEmpty)

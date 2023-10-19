@@ -17,6 +17,7 @@ import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
 import '../utils/common_widget.dart';
 import '../utils/loading_home.dart';
+import 'FilterByValueVoterListScreen.dart';
 
 class VoterDetailsPage extends StatefulWidget {
   final Voters voterDataItem;
@@ -96,13 +97,136 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
       children: [
+        Padding(padding: EdgeInsets.all(5),
+         child: Row(
+           children: [
+             Expanded(child: GestureDetector(
+               onTap: () {
+                 if(checkValidString(voterDataItem.whatsappNo).toString().trim().isNotEmpty)
+                 {
+                     whatsapp(voterDataItem.whatsappNo.toString(), getShareTextData(), context);
+                 }
+                 else
+                   {
+                     showToast("Whatsapp Not Found", context);
+                   }
+               },
+               child: Padding(
+                 padding: EdgeInsets.all(5),
+                 child:  Image.asset(
+                   'assets/images/ic_whatsapp.png',
+                   width: 28,
+                   height: 28,
+                 ),
+               ),
+             )),
+             Expanded(child: GestureDetector(
+               onTap: () {
+                 if(checkValidString(voterDataItem.mobileNo).toString().trim().isNotEmpty)
+                 {
+                   sendSMSCall(voterDataItem.mobileNo.toString(), getShareTextData(), context);
+                 }
+                 else
+                 {
+                   showToast("Mobile No Not Found", context);
+                 }
+               },
+               child: Padding(
+                 padding: EdgeInsets.all(5),
+                 child:  Image.asset(
+                   'assets/images/ic_sms.png',
+                   width: 30,
+                   height: 30,
+                 ),
+               ),
+             )),
+             Expanded(child: GestureDetector(
+               onTap: () {
+               },
+               child: Padding(
+                 padding: EdgeInsets.all(5),
+                 child:  Image.asset(
+                   'assets/images/ic_printer.png',
+                   width: 28,
+                   height: 28,
+                 ),
+               ),
+             )),
+             Expanded(child:  GestureDetector(
+               onTap: () {
+               },
+               child: Padding(
+                 padding: EdgeInsets.all(5),
+                 child:  Image.asset(
+                   'assets/images/ic_fav_unselected.png',
+                   width: 28,
+                   height: 28,
+                 ),
+               ),
+             )),
+             Expanded(child: GestureDetector(
+               onTap: () {
+                 if(checkValidString(voterDataItem.sectionNameEn).toString().isNotEmpty)
+                 {
+                   startActivity(context, FilterByValueVoterListScreen(voterDataItem.chouseNo.toString(),voterDataItem.chouseNo.toString(),"House No Wise",voterDataItem.partNameEn.toString()));
+                 }
+                 else
+                 {
+                   showToast("House No Not Found", context);
+                 }
+
+               },
+               child: Padding(
+                 padding: EdgeInsets.all(5),
+                 child:  Image.asset(
+                   'assets/images/ic_family_wise.png',
+                   width: 28,
+                   height: 28,
+                 ),
+               ),
+             )),
+             Expanded(child: GestureDetector(
+               onTap: () {
+                 if(checkValidString(voterDataItem.sectionNameEn).toString().isNotEmpty)
+                   {
+                     startActivity(context, FilterByValueVoterListScreen(voterDataItem.sectionNameEn.toString(),voterDataItem.sectionNameEn.toString(),"Address Wise",voterDataItem.partNameEn.toString()));
+                   }
+                 else
+                 {
+                   showToast("Address Not Found", context);
+                 }
+               },
+               child: Padding(
+                 padding: const EdgeInsets.all(5),
+                 child:  Image.asset(
+                   'assets/images/ic_address_wise.png',
+                   width: 28,
+                   height: 28,
+                 ),
+               ),
+             )),
+             Expanded(child: GestureDetector(
+               onTap: () {
+                 Navigator.pop(context);
+               },
+               child: Padding(
+                 padding: const EdgeInsets.all(5),
+                 child:  Image.asset(
+                   'assets/images/ic_house_wise.png',
+                   width: 28,
+                   height: 28,
+                 ),
+               ),
+             ))
+           ],
+         )),
         Expanded(
             child: SingleChildScrollView(
           child: Column(
             children: [
               Container(
                 alignment: Alignment.center,
-                margin: const EdgeInsets.fromLTRB(0, 18, 0, 0),
+                margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                 decoration: getCommonCard(),
                 padding: const EdgeInsets.only(right: 10, top: 10, bottom: 10, left: 5),
                 width: MediaQuery.of(context).size.width,
@@ -226,7 +350,14 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                 child: GestureDetector(
                                   behavior: HitTestBehavior.opaque,
                                   onTap: () {
-                                    _showSelectionDialog(1);
+                                    if(checkValidString(voterDataItem.mobileNo).toString().isNotEmpty)
+                                    {
+                                      mobileNumberAction(false);
+                                    }
+                                    else
+                                    {
+                                      _showSelectionDialog(1);
+                                    }
                                   },
                                   child: checkValidString(voterDataItem.mobileNo).toString().isNotEmpty
                                       ? Text(
@@ -266,7 +397,14 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                 child: GestureDetector(
                                   behavior: HitTestBehavior.opaque,
                                   onTap: () {
-                                    _showSelectionDialog(2);
+                                    if(checkValidString(voterDataItem.whatsappNo).toString().isNotEmpty)
+                                    {
+                                      mobileNumberAction(true);
+                                    }
+                                    else
+                                    {
+                                      _showSelectionDialog(2);
+                                    }
                                   },
                                   child: Row(
                                     children: [
@@ -1087,7 +1225,6 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
 
   void _showSelectionDialog(int isFor) {
     TextEditingController commonController = TextEditingController();
-
     String title = "";
     if (isFor == 1) {
       title = "Mobile Number";
@@ -1298,6 +1435,131 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
             }),
           );
         });
+  }
+
+  void mobileNumberAction(bool isForWhats) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: white,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12))),
+      builder: (BuildContext context) {
+        return Wrap(
+          children: [
+            Container(
+              margin: const EdgeInsets.all(15),
+              decoration:
+              const BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12)), color: white),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    height: 2,
+                    width: 40,
+                    alignment: Alignment.center,
+                    color: black,
+                    margin: const EdgeInsets.only(top: 10, bottom: 10),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 10, bottom: 15),
+                    child: const Text('Make a Choice', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, color: black)),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(left: 15, right: 15, bottom: 20, top: 20),
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: SizedBox(
+                                height: kButtonHeight,
+                                child: TextButton(
+                                  style: ButtonStyle(
+                                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(kBorderRadius),
+                                        ),
+                                      ),
+                                      backgroundColor: MaterialStateProperty.all<Color>(darOrange)),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    if(isForWhats)
+                                    {
+                                        _showSelectionDialog(2);
+                                    }
+                                    else
+                                    {
+                                        _showSelectionDialog(1);
+                                    }
+                                  },
+                                  child: const Text("Update", style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: white)),
+                                ))),
+                        const Gap(20),
+                        Expanded(
+                          child: SizedBox(
+                            height: kButtonHeight,
+                            child: TextButton(
+                              style: ButtonStyle(
+                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(kBorderRadius),
+                                    ),
+                                  ),
+                                  backgroundColor: MaterialStateProperty.all<Color>(darOrange)),
+                              onPressed: () async {
+                                Navigator.pop(context);
+                                if(isForWhats)
+                                {
+                                 setState(() {
+                                   voterDataItem.whatsappNo = "";
+                                 });
+                                }
+                                else
+                                {
+                                  setState(() {
+                                    voterDataItem.mobileNo = "";
+                                  });
+                                }
+                              },
+                              child: const Text("Remove", style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: white)),
+                            ),
+                          ),
+                        ),
+                        const Gap(20),
+                        Expanded(
+                          child: SizedBox(
+                            height: kButtonHeight,
+                            child: TextButton(
+                              style: ButtonStyle(
+                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(kBorderRadius),
+                                    ),
+                                  ),
+                                  backgroundColor: MaterialStateProperty.all<Color>(darOrange)),
+                              onPressed: () async {
+                                Navigator.pop(context);
+                                if(isForWhats)
+                                {
+                                  makePhoneCall(voterDataItem.whatsappNo.toString());
+                                }
+                                else
+                                {
+                                  makePhoneCall(voterDataItem.mobileNo.toString());
+                                }
+                              },
+                              child: const Text("Make a Call", style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: white)),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _selectBloodGroup() {
@@ -1736,5 +1998,30 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
       }
     }
     return colorName;
+  }
+
+  String getShareTextData() {
+    String shareText = "";
+    shareText = voterDataItem.acNo.toString() + " ";
+    if (NavigationService.statisticsData.isNotEmpty)
+    {
+      for (int i = 0; i < NavigationService.statisticsData.length; i++)
+      {
+        if (NavigationService.statisticsData[i].name == "ac_name")
+        {
+          shareText = shareText + "" + NavigationService.statisticsData[i].value.toString().trim();
+        }
+      }
+      shareText = "$shareText General Election 2023\n";
+    }
+
+    shareText = shareText + "SrNo-" + voterDataItem.slnoinpart.toString() + "\n";
+    shareText = shareText + "Const No-" + voterDataItem.acNo.toString() + "\n\n";
+    shareText = shareText + "Name-" + voterDataItem.fullNameEn.toString() + "\n";
+    shareText = shareText + "Booth No-" + voterDataItem.partNo.toString() + "\n";
+    shareText = shareText + "Booth Name-" + "${toDisplayCase(checkValidString(voterDataItem.partNo.toString()))},${toDisplayCase(checkValidString(voterDataItem.partNameEn.toString()))},${toDisplayCase(checkValidString(voterDataItem.psbuildingNameEn.toString()))}" + "\n";
+    shareText = shareText + "Address-" + toDisplayCase(checkValidString(voterDataItem.sectionNameEn)) + ", " + toDisplayCase(checkValidString(voterDataItem.postoffNameEn)) + "\n\n\n";
+    shareText = shareText + "From-Congress Party";
+    return shareText;
   }
 }

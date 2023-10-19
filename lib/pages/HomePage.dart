@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:congress_app/pages/AddNewVoterScreen.dart';
 import 'package:congress_app/pages/WiseFilterVoterListScreen.dart';
 import 'package:congress_app/pages/login_screen.dart';
 import 'package:congress_app/utils/session_manager_new.dart';
@@ -34,17 +35,17 @@ class _HomePage extends BaseState<HomePage> {
   @override
   void initState() {
     menuList = [
-      MenuGetSet(nameStatic: "All Voters", itemIconStatic: "assets/images/ic_logo.jpg"),
-      MenuGetSet(nameStatic: "Search", itemIconStatic: "assets/images/ic_logo.jpg"),
-      MenuGetSet(nameStatic: "Visited Voters", itemIconStatic: "assets/images/ic_logo.jpg"),
-      MenuGetSet(nameStatic: "Non-Visited Voters", itemIconStatic: "assets/images/ic_logo.jpg"),
-      MenuGetSet(nameStatic: "House No Wise", itemIconStatic: "assets/images/ic_logo.jpg"),
-      MenuGetSet(nameStatic: "Address Wise", itemIconStatic: "assets/images/ic_logo.jpg"),
-      MenuGetSet(nameStatic: "Age Wise", itemIconStatic: "assets/images/ic_logo.jpg"),
-      MenuGetSet(nameStatic: "Duplicate Voters", itemIconStatic: "assets/images/ic_logo.jpg"),
-      MenuGetSet(nameStatic: "Family Wise", itemIconStatic: "assets/images/ic_logo.jpg"),
-      MenuGetSet(nameStatic: "Color Wise", itemIconStatic: "assets/images/ic_logo.jpg"),
-      MenuGetSet(nameStatic: "New Voter", itemIconStatic: "assets/images/ic_logo.jpg"),
+      MenuGetSet(nameStatic: "All Voters", itemIconStatic: "assets/images/ic_voters.png"),
+      MenuGetSet(nameStatic: "Search", itemIconStatic: "assets/images/ic_search_home.png"),
+      MenuGetSet(nameStatic: "Visited Voters", itemIconStatic: "assets/images/ic_visited _voters.png"),
+      MenuGetSet(nameStatic: "Non-Visited Voters", itemIconStatic: "assets/images/ic_non_visited _voters.png"),
+      MenuGetSet(nameStatic: "House No Wise", itemIconStatic: "assets/images/ic_house_wise.png"),
+      MenuGetSet(nameStatic: "Address Wise", itemIconStatic: "assets/images/ic_address_wise.png"),
+      MenuGetSet(nameStatic: "Age Wise", itemIconStatic: "assets/images/ic_age_wise.png"),
+      MenuGetSet(nameStatic: "Duplicate Voters", itemIconStatic: "assets/images/ic_duplicate.png"),
+      MenuGetSet(nameStatic: "Family Wise", itemIconStatic: "assets/images/ic_family_wise.png"),
+      MenuGetSet(nameStatic: "Color Wise", itemIconStatic: "assets/images/ic_color_wise.png"),
+      MenuGetSet(nameStatic: "New Voter", itemIconStatic: "assets/images/ic_add_voter.png"),
     ];
 
     getListData();
@@ -107,7 +108,7 @@ class _HomePage extends BaseState<HomePage> {
               visible: titledata.isNotEmpty,
               child: Container(
                   width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.all(6),
+                  padding: const EdgeInsets.all(6),
                   decoration: getCommonCardBasicBottom(),
                   child: Column(
                     children: [
@@ -128,7 +129,7 @@ class _HomePage extends BaseState<HomePage> {
             ),
             Expanded(
                 child: Padding(
-              padding: const EdgeInsets.all(15),
+              padding: const EdgeInsets.only(left: 15,right: 15,bottom: 15,top: 10),
               child: setProjectList(),
             ))
           ],
@@ -140,7 +141,8 @@ class _HomePage extends BaseState<HomePage> {
   setProjectList() {
     return GridView.builder(
       gridDelegate:
-          const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisExtent: 120, crossAxisSpacing: 10, mainAxisSpacing: 10),
+          const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisExtent: 100,
+              crossAxisSpacing: 10, mainAxisSpacing: 10),
       itemCount: menuList.length,
       scrollDirection: Axis.vertical,
       itemBuilder: (BuildContext context, int index) {
@@ -177,6 +179,9 @@ class _HomePage extends BaseState<HomePage> {
             else if (menuList[index].name.toString() == "Color Wise") {
               startActivity(context,  const ColorFilterVoterListScreen());
             }
+            else if (menuList[index].name.toString() == "New Voter") {
+              startActivity(context,  const AddNewVoterScreen());
+            }
           },
           child: Container(
             padding: const EdgeInsets.only(left: 10, right: 6, bottom: 10, top: 10),
@@ -186,7 +191,7 @@ class _HomePage extends BaseState<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(menuList[index].itemIcon, height: 36, width: 36),
+                Image.asset(menuList[index].itemIcon, height: 36, width: 36,color: darOrange),
                 const Gap(12),
                 Text(menuList[index].name.toString(),
                     textAlign: TextAlign.center,

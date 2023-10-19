@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -514,3 +515,37 @@ makePhoneCall(String phoneNumber) async {
   );
   await launchUrl(launchUri);
 }
+
+whatsapp(String conatctNo,String text,BuildContext? context)
+async{
+  var androidUrl =
+      "whatsapp://send?phone=${conatctNo}" +
+          "&text=${Uri.encodeComponent(text)}";
+
+  print(conatctNo);
+  var conatctNoNew = conatctNo.replaceAll(" ", "");
+  var iosUrl =
+      "https://wa.me/$conatctNoNew?text=${Uri.parse('')}";
+
+  try{
+    if(Platform.isIOS){
+      await launchUrl(Uri.parse(iosUrl));
+    }
+    else{
+      await launchUrl(Uri.parse(androidUrl));
+    }
+  } on Exception{
+  }
+}
+
+sendSMSCall(String conatctNo,String text,BuildContext? context)
+async{
+  String uri = 'sms:${conatctNo}?body=${text}';
+  if (await canLaunchUrl(Uri.parse(uri))) {
+    await launchUrl(Uri.parse(uri));
+  } else {
+    throw 'Could not launch $uri';
+  }
+}
+
+
