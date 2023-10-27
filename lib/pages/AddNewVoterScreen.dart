@@ -1,8 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:pretty_http_logger/pretty_http_logger.dart';
+import '../constant/api_end_point.dart';
 import '../constant/colors.dart';
 import '../constant/global_context.dart';
+import '../model/AddVoterApiData.dart';
+import '../model/AddVoterResponseModel.dart';
+import '../model/BasicResponseModel.dart';
+import '../model/VoterApiData.dart';
 import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
 import '../utils/common_widget.dart';
@@ -32,6 +40,7 @@ class _AddNewVoterScreen extends BaseState<AddNewVoterScreen> {
   TextEditingController instagramController = TextEditingController();
   TextEditingController twitterController = TextEditingController();
   DateTime selectedDate = DateTime.now();
+  num professionId = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -44,12 +53,24 @@ class _AddNewVoterScreen extends BaseState<AddNewVoterScreen> {
             elevation: 3,
             titleSpacing: 12,
             centerTitle: false,
-            leading: Image.asset(
-              'assets/images/ic_logo.jpg',
-              width: 42,
-              height: 42,
+            title: Row(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Image.asset(
+                    'assets/images/ic_logo.jpg',
+                    width: 42,
+                    height: 42,
+                  ),
+                ),
+                const Gap(12),
+                getTitle("Add New Voter"),
+              ],
             ),
-            title: getTitle("Congress Party"),
+            actions: [
+            ],
           ),
           body: Column(
             children: [
@@ -309,14 +330,6 @@ class _AddNewVoterScreen extends BaseState<AddNewVoterScreen> {
                         {
                           showToast("Please enter name", context);
                         }
-                      else if (genderController.value.text.isEmpty)
-                        {
-                          showToast("Please select gender", context);
-                        }
-                      else if (ageController.value.text.isEmpty)
-                        {
-                          showToast("Please enter age", context);
-                        }
                       else if (mobNoController.value.text.isEmpty)
                         {
                           showToast("Please enter mobile number", context);
@@ -325,57 +338,47 @@ class _AddNewVoterScreen extends BaseState<AddNewVoterScreen> {
                         {
                           showToast("Please enter valid number", context);
                         }
-                      else if (whatsAppController.value.text.isEmpty)
-                      {
-                        showToast("Please enter whatsapp number", context);
-                      }
-                      else if (whatsAppController.value.text.length != 10)
+                      else if (whatsAppController.value.text.isNotEmpty && whatsAppController.value.text.length != 10)
                       {
                         showToast("Please enter valid whatsapp number", context);
                       }
-                      else if (addressController.value.text.isEmpty)
-                        {
-                          showToast("Please enter address", context);
-                        }
-                      else if (houseNoController.value.text.isEmpty)
-                      {
-                        showToast("Please enter house no", context);
-                      }
-                      else if (dobController.value.text.isEmpty)
-                        {
-                          showToast("Please enter birthdate", context);
-                        }
-                      else if (aadharCardController.value.text.isEmpty)
-                        {
-                          showToast("Please enter aadharcard number", context);
-                        }
-                      else if (aadharCardController.value.text.length != 12)
+                      else if (aadharCardController.value.text.isNotEmpty && aadharCardController.value.text.length != 12)
                         {
                           showToast("Please enter valid aadharcard number", context);
                         }
-                      else if (emailController.value.text.isEmpty)
-                        {
-                          showToast("Please enter email address", context);
-                        }
-                      else if (!isValidEmail(emailController.value.text))
+                      else if (emailController.value.text.isNotEmpty && !isValidEmail(emailController.value.text))
                         {
                           showToast("Please enter email id", context);
                         }
-                      else if (referanceNameController.value.text.isEmpty)
-                        {
-                          showToast("Please enter reference name", context);
-                        }
-                      else if (bloodGroupController.value.text.isEmpty)
-                        {
-                          showToast("Please select blood group", context);
-                        }
-                      else if (professionController.value.text.isEmpty)
-                        {
-                          showToast("Please select profession", context);
-                        }
                       else
                         {
-                          //Save
+                          var apiData = VoterAdd(
+                              id: null,
+                              assemblyNo: int.parse(getAcNoWithOutZero()),
+                              voterName: nameController.text.toString().trim(),
+                              gender: genderController.text.toString().trim() == "Male" ? "M" : "F",
+                              age: ageController.text.toString().trim().isNotEmpty ? int.parse(ageController.text.toString().trim()) : null,
+                              dob: dobController.text.toString().trim(),
+                              mobileNo: mobNoController.text.toString().trim(),
+                              whatsappNo: whatsAppController.text.toString().trim(),
+                              address: addressController.text.toString().trim(),
+                              houseNo: houseNoController.text.toString().trim(),
+                              aadhaarNo: aadharCardController.text.toString().trim(),
+                              email: emailController.text.toString().trim(),
+                              referenceName:referanceNameController.text.toString().trim(),
+                              bloodGroup: bloodGroupController.text.toString().trim(),
+                              profession: professionId == 0 ? null : professionId,
+                              colorCode: 0,
+                              facebookUrl: facebookController.text.toString().trim(),
+                              instagramUrl: instagramController.text.toString().trim(),
+                              twitterUrl: twitterController.text.toString().trim(),
+                              otherDetails: ""
+                          );
+
+                          var list = List<VoterAdd>.empty(growable: true);
+                          list.add(apiData);
+                          var addVoter = AddVoterApiData(workerId: int.parse(sessionManager.getId().toString().trim()), voters: list);
+                          saveVoterDetails(jsonEncode(addVoter).toString().trim());
                         }
                     },
                     child: Padding(
@@ -413,6 +416,47 @@ class _AddNewVoterScreen extends BaseState<AddNewVoterScreen> {
           return Future.value(true);
         },
     );
+  }
+
+  //API Call func...
+  void saveVoterDetails(String jsonData) async {
+    setState(() {
+      _isLoading = true;
+    });
+    HttpWithMiddleware http = HttpWithMiddleware.build(middlewares: [
+      HttpLogger(logLevel: LogLevel.BODY),
+    ]);
+
+    var url = Uri.parse("$API_URL/voter/new");
+    Map<String, String> jsonBody = {'token': Token, 'voters': jsonData};
+
+    final response = await http.post(url, body: jsonBody);
+    final statusCode = response.statusCode;
+    final body = response.body;
+    Map<String, dynamic> user = jsonDecode(body);
+    var dataResponse = AddVoterResponseModel.fromJson(user);
+
+    if (checkValidString(dataResponse.message.toString().trim()) == "Success")
+    {
+      try {
+        showToast("Voter Details Saved Successfully", context);
+        Navigator.pop(context);
+      } catch (e) {
+        print(e);
+      }
+      setState(() {
+        _isLoading = false;
+      });
+    }else {
+      setState(() {
+        _isLoading = false;
+      });
+      apiFailed(context);
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   void _selectBloodGroup() {
@@ -529,6 +573,7 @@ class _AddNewVoterScreen extends BaseState<AddNewVoterScreen> {
                                 FocusScope.of(context).unfocus();
                                 if (NavigationService.professions[index].professionNameEn != professionController.value.text) {
                                   setState(() {
+                                    professionId = NavigationService.professions[index].id!;
                                     professionController.text = checkValidString(NavigationService.professions[index].professionNameEn);
                                   });
                                   Navigator.pop(context);

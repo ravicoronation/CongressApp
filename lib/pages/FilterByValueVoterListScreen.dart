@@ -14,6 +14,7 @@ import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
 import '../utils/common_widget.dart';
 import '../utils/loading_home.dart';
+import '../utils/voter_color.dart';
 
 class FilterByValueVoterListScreen extends StatefulWidget {
    final String filterType;
@@ -120,17 +121,6 @@ class _FilterByValueVoterListScreen extends BaseState<FilterByValueVoterListScre
             ],
           ),
           actions: [
-            InkWell(
-              customBorder: const CircleBorder(),
-              onTap: () async {
-              },
-              child: Container(
-                width: 40,
-                height: 40,
-                alignment: Alignment.center,
-                child: Padding(padding: const EdgeInsets.all(10.0), child: Image.asset('assets/images/ic_more.png', width: 24, height: 24)),
-              ),
-            ),
           ],
         ),
         body: Column(
@@ -292,7 +282,7 @@ class _FilterByValueVoterListScreen extends BaseState<FilterByValueVoterListScre
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "${index + 1}.",//"${toDisplayCase(listVoters[index].id.toString().trim())}.",
+                          "${listVoters[index].slnoinpart.toString()}.",//"${toDisplayCase(listVoters[index].id.toString().trim())}.",
                           overflow: TextOverflow.clip,
                           style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: contentSizeSmall),
                         ),
@@ -315,18 +305,26 @@ class _FilterByValueVoterListScreen extends BaseState<FilterByValueVoterListScre
                           ],
                         )),
                         const Gap(10),
-                        Visibility(
-                            visible: checkValidString(listVoters[index].mobileNo).toString().isNotEmpty,
-                            child: GestureDetector(
-                                onTap: () {
-                                  makePhoneCall(checkValidString(listVoters[index].mobileNo).toString().trim());
-                                },
-                                child: Image.asset(
-                                  'assets/images/ic_call_new.png',
-                                  width: 18,
-                                  height: 18,
-                                  color: darOrange,
-                                )))
+                        Column(
+                          children: [
+                            Visibility(
+                                visible: checkValidString(listVoters[index].mobileNo).toString().isNotEmpty,
+                                child: GestureDetector(
+                                    onTap: () {
+                                      makePhoneCall(checkValidString(listVoters[index].mobileNo).toString().trim());
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.only(bottom: 8),
+                                      child: Image.asset(
+                                        'assets/images/ic_call_new.png',
+                                        width: 18,
+                                        height: 18,
+                                        color: darOrange,
+                                      ),
+                                    ))),
+                            VoterColorWidget(colorCode: listVoters[index].colorCode)
+                          ],
+                        )
                       ],
                     )),
                 const Divider(

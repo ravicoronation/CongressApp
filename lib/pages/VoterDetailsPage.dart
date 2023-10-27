@@ -1,6 +1,6 @@
-import 'package:congress_app/constant/global_context.dart';
 import 'dart:convert';
-
+import 'dart:ui';
+import 'package:congress_app/constant/global_context.dart';
 import 'package:congress_app/pages/login_screen.dart';
 import 'package:congress_app/utils/session_manager_new.dart';
 import 'package:flutter/foundation.dart';
@@ -12,11 +12,13 @@ import '../constant/api_end_point.dart';
 import '../constant/colors.dart';
 import '../local_storage/db_helper.dart';
 import '../model/BasicResponseModel.dart';
+import '../model/VoterApiData.dart';
 import '../model/VoterListResponse.dart';
 import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
 import '../utils/common_widget.dart';
 import '../utils/loading_home.dart';
+import '../utils/voter_color.dart';
 import 'FilterByValueVoterListScreen.dart';
 
 class VoterDetailsPage extends StatefulWidget {
@@ -33,6 +35,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
   Voters voterDataItem = Voters();
   final dbHelper = DbHelper.instance;
   DateTime selectedDate = DateTime.now();
+  bool isFamilyWiseColorChange = false;
 
   @override
   void initState() {
@@ -68,20 +71,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
             getTitle("Voter Details"),
           ],
         ),
-        actions: [
-          InkWell(
-            customBorder: const CircleBorder(),
-            onTap: () async {
-              // showActionDialog();
-            },
-            child: Container(
-              width: 40,
-              height: 40,
-              alignment: Alignment.center,
-              child: Padding(padding: const EdgeInsets.all(10.0), child: Image.asset('assets/images/ic_more.png', width: 24, height: 24)),
-            ),
-          ),
-        ],
+        actions: [],
       ),
       body: Column(
         children: [
@@ -97,129 +87,137 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
       children: [
-        Padding(padding: EdgeInsets.all(5),
-         child: Row(
-           children: [
-             Expanded(child: GestureDetector(
-               onTap: () {
-                 if(checkValidString(voterDataItem.whatsappNo).toString().trim().isNotEmpty)
-                 {
-                     whatsapp(voterDataItem.whatsappNo.toString(), getShareTextData(), context);
-                 }
-                 else
-                   {
-                     showToast("Whatsapp Not Found", context);
-                   }
-               },
-               child: Padding(
-                 padding: EdgeInsets.all(5),
-                 child:  Image.asset(
-                   'assets/images/ic_whatsapp.png',
-                   width: 28,
-                   height: 28,
-                 ),
-               ),
-             )),
-             Expanded(child: GestureDetector(
-               onTap: () {
-                 if(checkValidString(voterDataItem.mobileNo).toString().trim().isNotEmpty)
-                 {
-                   sendSMSCall(voterDataItem.mobileNo.toString(), getShareTextData(), context);
-                 }
-                 else
-                 {
-                   showToast("Mobile No Not Found", context);
-                 }
-               },
-               child: Padding(
-                 padding: EdgeInsets.all(5),
-                 child:  Image.asset(
-                   'assets/images/ic_sms.png',
-                   width: 30,
-                   height: 30,
-                 ),
-               ),
-             )),
-             Expanded(child: GestureDetector(
-               onTap: () {
-               },
-               child: Padding(
-                 padding: EdgeInsets.all(5),
-                 child:  Image.asset(
-                   'assets/images/ic_printer.png',
-                   width: 28,
-                   height: 28,
-                 ),
-               ),
-             )),
-             Expanded(child:  GestureDetector(
-               onTap: () {
-               },
-               child: Padding(
-                 padding: EdgeInsets.all(5),
-                 child:  Image.asset(
-                   'assets/images/ic_fav_unselected.png',
-                   width: 28,
-                   height: 28,
-                 ),
-               ),
-             )),
-             Expanded(child: GestureDetector(
-               onTap: () {
-                 if(checkValidString(voterDataItem.sectionNameEn).toString().isNotEmpty)
-                 {
-                   startActivity(context, FilterByValueVoterListScreen(voterDataItem.chouseNo.toString(),voterDataItem.chouseNo.toString(),"House No Wise",voterDataItem.partNameEn.toString()));
-                 }
-                 else
-                 {
-                   showToast("House No Not Found", context);
-                 }
-
-               },
-               child: Padding(
-                 padding: EdgeInsets.all(5),
-                 child:  Image.asset(
-                   'assets/images/ic_family_wise.png',
-                   width: 28,
-                   height: 28,
-                 ),
-               ),
-             )),
-             Expanded(child: GestureDetector(
-               onTap: () {
-                 if(checkValidString(voterDataItem.sectionNameEn).toString().isNotEmpty)
-                   {
-                     startActivity(context, FilterByValueVoterListScreen(voterDataItem.sectionNameEn.toString(),voterDataItem.sectionNameEn.toString(),"Address Wise",voterDataItem.partNameEn.toString()));
-                   }
-                 else
-                 {
-                   showToast("Address Not Found", context);
-                 }
-               },
-               child: Padding(
-                 padding: const EdgeInsets.all(5),
-                 child:  Image.asset(
-                   'assets/images/ic_address_wise.png',
-                   width: 28,
-                   height: 28,
-                 ),
-               ),
-             )),
-             Expanded(child: GestureDetector(
-               onTap: () {
-                 Navigator.pop(context);
-               },
-               child: Padding(
-                 padding: const EdgeInsets.all(5),
-                 child:  Image.asset(
-                   'assets/images/ic_house_wise.png',
-                   width: 28,
-                   height: 28,
-                 ),
-               ),
-             ))
-           ],
-         )),
+        Padding(
+            padding: const EdgeInsets.all(5),
+            child: Row(
+              children: [
+                Expanded(
+                    child: GestureDetector(
+                  onTap: () {
+                    if (checkValidString(voterDataItem.whatsappNo).toString().trim().isNotEmpty) {
+                      whatsapp("91${voterDataItem.whatsappNo}", getShareTextData(), context);
+                    } else {
+                      showToast("Whatsapp Not Found", context);
+                    }
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.all(5),
+                    child: Image.asset(
+                      'assets/images/ic_whatsapp.png',
+                      width: 28,
+                      height: 28,
+                    ),
+                  ),
+                )),
+                Expanded(
+                    child: GestureDetector(
+                  onTap: () {
+                    if (checkValidString(voterDataItem.mobileNo).toString().trim().isNotEmpty) {
+                      sendSMSCall(voterDataItem.mobileNo.toString(), getShareTextData(), context);
+                    } else {
+                      showToast("Mobile No Not Found", context);
+                    }
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.all(5),
+                    child: Image.asset(
+                      'assets/images/ic_sms.png',
+                      width: 30,
+                      height: 30,
+                    ),
+                  ),
+                )),
+                Expanded(
+                    child: GestureDetector(
+                  onTap: () {},
+                  child: Padding(
+                    padding: EdgeInsets.all(5),
+                    child: Image.asset(
+                      'assets/images/ic_printer.png',
+                      width: 28,
+                      height: 28,
+                    ),
+                  ),
+                )),
+                Expanded(
+                    child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      if (voterDataItem.isFavourite == 1) {
+                        voterDataItem.isFavourite = 0;
+                      } else {
+                        voterDataItem.isFavourite = 1;
+                      }
+                    });
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.all(5),
+                    child: Image.asset(
+                      voterDataItem.isFavourite == 1 ? 'assets/images/ic_fav_selected.png' : 'assets/images/ic_fav_unselected.png',
+                      width: 28,
+                      height: 28,
+                    ),
+                  ),
+                )),
+                Expanded(
+                    child: GestureDetector(
+                  onTap: () {
+                    if (checkValidString(voterDataItem.sectionNameEn).toString().isNotEmpty) {
+                      startActivity(
+                          context,
+                          FilterByValueVoterListScreen(voterDataItem.chouseNo.toString(), voterDataItem.chouseNo.toString(), "House No Wise",
+                              voterDataItem.partNameEn.toString()));
+                    } else {
+                      showToast("House No Not Found", context);
+                    }
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.all(5),
+                    child: Image.asset(
+                      'assets/images/ic_family.png',
+                      width: 28,
+                      height: 28,
+                    ),
+                  ),
+                )),
+                Expanded(
+                    child: GestureDetector(
+                  onTap: () {
+                    if (checkValidString(voterDataItem.sectionNameEn).toString().isNotEmpty) {
+                      startActivity(
+                          context,
+                          FilterByValueVoterListScreen(voterDataItem.sectionNameEn.toString(), voterDataItem.sectionNameEn.toString(), "Address Wise",
+                              voterDataItem.partNameEn.toString()));
+                    } else {
+                      showToast("Address Not Found", context);
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: Image.asset(
+                      'assets/images/ic_location.png',
+                      width: 28,
+                      height: 28,
+                    ),
+                  ),
+                )),
+                Expanded(
+                    child: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: Image.asset(
+                      'assets/images/ic_home.png',
+                      width: 28,
+                      height: 28,
+                      color: darOrange,
+                    ),
+                  ),
+                ))
+              ],
+            )),
         Expanded(
             child: SingleChildScrollView(
           child: Column(
@@ -350,12 +348,9 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                 child: GestureDetector(
                                   behavior: HitTestBehavior.opaque,
                                   onTap: () {
-                                    if(checkValidString(voterDataItem.mobileNo).toString().isNotEmpty)
-                                    {
+                                    if (checkValidString(voterDataItem.mobileNo).toString().isNotEmpty) {
                                       mobileNumberAction(false);
-                                    }
-                                    else
-                                    {
+                                    } else {
                                       _showSelectionDialog(1);
                                     }
                                   },
@@ -397,12 +392,9 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                 child: GestureDetector(
                                   behavior: HitTestBehavior.opaque,
                                   onTap: () {
-                                    if(checkValidString(voterDataItem.whatsappNo).toString().isNotEmpty)
-                                    {
+                                    if (checkValidString(voterDataItem.whatsappNo).toString().isNotEmpty) {
                                       mobileNumberAction(true);
-                                    }
-                                    else
-                                    {
+                                    } else {
                                       _showSelectionDialog(2);
                                     }
                                   },
@@ -497,9 +489,12 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                               ],
                             ),
                             Text(
-                              toDisplayCase(checkValidString(voterDataItem.sectionNameEn)) +
-                                  ", " +
-                                  toDisplayCase(checkValidString(voterDataItem.postoffNameEn)),
+                              "${toDisplayCase(checkValidString(voterDataItem.acNo.toString()))},"
+                              " ${toDisplayCase(checkValidString(voterDataItem.partNo.toString()))},"
+                              " ${toDisplayCase(checkValidString(voterDataItem.slnoinpart.toString()))}, "
+                              "${toDisplayCase(checkValidString(voterDataItem.sectionNameEn.toString()))},"
+                              " ${toDisplayCase(checkValidString(voterDataItem.tahsilNameEn.toString()))}, "
+                              "${toDisplayCase(checkValidString(voterDataItem.acNameEn.toString()))}",
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                             )
@@ -521,7 +516,10 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                               style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                             ),
                             Text(
-                              "${toDisplayCase(checkValidString(voterDataItem.partNo.toString()))},${toDisplayCase(checkValidString(voterDataItem.partNameEn.toString()))},${toDisplayCase(checkValidString(voterDataItem.psbuildingNameEn.toString()))}",
+                              "${toDisplayCase(checkValidString(voterDataItem.partNo.toString()))},"
+                              "${toDisplayCase(checkValidString(voterDataItem.partNameEn.toString()))},"
+                              "${toDisplayCase(checkValidString(voterDataItem.psbuildingNameEn.toString()))},"
+                              "${toDisplayCase(checkValidString(voterDataItem.tahsilNameEn.toString()))}",
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                             )
@@ -550,31 +548,36 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                             Expanded(
                                 flex: 2,
                                 child: GestureDetector(
-                                  behavior: HitTestBehavior.opaque,
-                                  onTap: () {
-                                    if (NavigationService.colorCodeList.isNotEmpty) {
-                                      _selectColor();
-                                    } else {
-                                      showToast("List not found.", context);
-                                    }
-                                  },
-                                  child: voterDataItem.colorCode != 0
-                                      ? Text(
-                                          checkValidString(getColorName()),
-                                          overflow: TextOverflow.clip,
-                                          style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
-                                        )
-                                      : Text(
-                                          "Select Color",
-                                          overflow: TextOverflow.clip,
-                                          style: TextStyle(
-                                            color: darOrange,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: contentSize,
-                                            decoration: TextDecoration.underline,
-                                          ),
-                                        ),
-                                ))
+                                    behavior: HitTestBehavior.opaque,
+                                    onTap: () {
+                                      if (NavigationService.colorCodeList.isNotEmpty) {
+                                        _selectColor();
+                                      } else {
+                                        showToast("List not found.", context);
+                                      }
+                                    },
+                                    child: Row(
+                                      children: [
+                                        voterDataItem.colorCode != 0
+                                            ? Text(
+                                                checkValidString(getColorName()),
+                                                overflow: TextOverflow.clip,
+                                                style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
+                                              )
+                                            : Text(
+                                                "Select Color",
+                                                overflow: TextOverflow.clip,
+                                                style: TextStyle(
+                                                  color: darOrange,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: contentSize,
+                                                  decoration: TextDecoration.underline,
+                                                ),
+                                              ),
+                                        Gap(10),
+                                        VoterColorWidget(colorCode: voterDataItem.colorCode)
+                                      ],
+                                    ))),
                           ],
                         )),
                     const Divider(
@@ -848,7 +851,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                   },
                                   child: checkValidString(voterDataItem.profession).toString().isNotEmpty
                                       ? Text(
-                                          checkValidString(voterDataItem.profession),
+                                          checkValidString(getProfessionName()),
                                           overflow: TextOverflow.clip,
                                           style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                                         )
@@ -875,11 +878,11 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                             child: GestureDetector(
                           onTap: () {
                             setState(() {
-                              if (voterDataItem.isDead == true) {
-                                voterDataItem.isDead = false;
+                              if (voterDataItem.isDead == 1) {
+                                voterDataItem.isDead = 0;
                               } else {
-                                voterDataItem.isDead = true;
-                                voterDataItem.hasVoted = false;
+                                voterDataItem.isDead = 1;
+                                voterDataItem.hasVoted = 0;
                               }
                             });
                           },
@@ -895,7 +898,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                   ),
                                   const Gap(6),
                                   Image.asset(
-                                    voterDataItem.isDead == true ? 'assets/images/ic_checked.png' : 'assets/images/ic_un_checked.png',
+                                    voterDataItem.isDead == 1 ? 'assets/images/ic_checked.png' : 'assets/images/ic_un_checked.png',
                                     width: 26,
                                     height: 26,
                                   )
@@ -912,10 +915,10 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                             child: GestureDetector(
                           onTap: () {
                             setState(() {
-                              if (voterDataItem.isVisited == true) {
-                                voterDataItem.isVisited = false;
+                              if (voterDataItem.isVisited == 1) {
+                                voterDataItem.isVisited = 0;
                               } else {
-                                voterDataItem.isVisited = true;
+                                voterDataItem.isVisited = 1;
                               }
                             });
                           },
@@ -931,7 +934,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                   ),
                                   const Gap(6),
                                   Image.asset(
-                                    voterDataItem.isVisited == true ? 'assets/images/ic_checked.png' : 'assets/images/ic_un_checked.png',
+                                    voterDataItem.isVisited == 1 ? 'assets/images/ic_checked.png' : 'assets/images/ic_un_checked.png',
                                     width: 26,
                                     height: 26,
                                   )
@@ -948,11 +951,11 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                             child: GestureDetector(
                           onTap: () {
                             setState(() {
-                              if (voterDataItem.isDead == false) {
-                                if (voterDataItem.hasVoted == true) {
-                                  voterDataItem.hasVoted = false;
+                              if (voterDataItem.isDead == 0) {
+                                if (voterDataItem.hasVoted == 1) {
+                                  voterDataItem.hasVoted = 0;
                                 } else {
-                                  voterDataItem.hasVoted = true;
+                                  voterDataItem.hasVoted = 1;
                                 }
                               } else {
                                 showToast("Dead option selected", context);
@@ -970,14 +973,14 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                     style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                                   ),
                                   const Gap(6),
-                                  voterDataItem.isDead == true
+                                  voterDataItem.isDead == 1
                                       ? Image.asset(
                                           'assets/images/ic_un_checked.png',
                                           width: 26,
                                           height: 26,
                                         )
                                       : Image.asset(
-                                          voterDataItem.hasVoted == true ? 'assets/images/ic_checked.png' : 'assets/images/ic_un_checked.png',
+                                          voterDataItem.hasVoted == 1 ? 'assets/images/ic_checked.png' : 'assets/images/ic_un_checked.png',
                                           width: 26,
                                           height: 26,
                                         )
@@ -1173,13 +1176,180 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                   backgroundColor: MaterialStateProperty.all<Color>(darOrange)),
               onPressed: () async {
                 FocusScope.of(context).requestFocus(FocusNode());
+                print("<><> COLOR OPTION : " + isFamilyWiseColorChange.toString() + " <><>");
                 if (isOnline) {
-                  var list = List<Voters>.empty(growable: true);
-                  list.add(voterDataItem);
-                  Map<String, dynamic> jsonObjMain = <String, dynamic>{};
-                  jsonObjMain[jsonEncode("workerId")] = jsonEncode(sessionManager.getId()).toString().trim();
-                  jsonObjMain[jsonEncode("voters")] = jsonEncode(list).toString().trim();
-                  saveVoterDetails(jsonObjMain.toString());
+
+                  if(isFamilyWiseColorChange)
+                    {
+                      setState(() {
+                        _isLoading = true;
+                      });
+                      final voterListData = await dbHelper.getAllVoterFormFilterValue(
+                          200,
+                          0,
+                          "",
+                          voterDataItem.chouseNo.toString(),
+                          voterDataItem.chouseNo.toString(),
+                          "House No Wise",
+                          voterDataItem.partNameEn.toString().trim());
+
+                      if (voterListData != null)
+                      {
+                        if (voterListData.isNotEmpty)
+                        {
+                          var list = List<VoterApi>.empty(growable: true);
+                          for(int i=0; i< voterListData.length; i++)
+                          {
+                            if(voterDataItem.id != voterListData[i].id)
+                            {
+                              voterListData[i].colorCode = voterDataItem.colorCode;
+                              var apiDataInner = VoterApi(
+                                  partNo: voterListData[i].partNo,
+                                  partNameEn: voterListData[i].partNameEn,
+                                  email: voterListData[i].email,
+                                  id: voterListData[i].id,
+                                  aadhaarNo: voterListData[i].aadhaarNo,
+                                  acNameEn: voterListData[i].acNameEn,
+                                  acNameV1: voterListData[i].acNameV1,
+                                  acNo: voterListData[i].acNo,
+                                  age: voterListData[i].age,
+                                  bloodGroup: voterListData[i].bloodGroup,
+                                  chouseNo: voterListData[i].chouseNo,
+                                  chouseNoV1: voterListData[i].chouseNoV1,
+                                  colorCode: voterListData[i].colorCode,
+                                  dob: voterListData[i].dob,
+                                  epicNo: voterListData[i].epicNo,
+                                  facebookUrl: voterListData[i].facebookUrl,
+                                  fmNameEn: voterListData[i].fmNameEn,
+                                  fmNameV1: voterListData[i].fmNameV1,
+                                  fullNameEn: voterListData[i].fullNameEn,
+                                  fullNameV1: voterListData[i].fullNameV1,
+                                  gender: voterListData[i].gender,
+                                  hasVoted: voterListData[i].hasVoted == 1 ? true : false,
+                                  instagramUrl: voterListData[i].instagramUrl,
+                                  isDead: voterListData[i].isDead == 1 ? true : false,
+                                  isDuplicate: voterListData[i].isDuplicate == 1 ? true : false,
+                                  isVisited: voterListData[i].isVisited == 1 ? true : false,
+                                  lastnameEn: voterListData[i].lastnameEn,
+                                  lastnameV1: voterListData[i].lastnameV1,
+                                  mobileNo: voterListData[i].mobileNo,
+                                  newAddress: voterListData[i].newAddress,
+                                  otherDetails: voterListData[i].otherDetails,
+                                  partNameV1: voterListData[i].partNameV1,
+                                  pcnameEn: voterListData[i].pcnameEn,
+                                  pcnameV1: voterListData[i].pcnameV1,
+                                  pcNo: voterListData[i].pcNo,
+                                  policestNameEn: voterListData[i].policestNameEn,
+                                  policestNameV1: voterListData[i].policestNameV1,
+                                  postoffNameEn: voterListData[i].postoffNameEn,
+                                  postoffNameV1: voterListData[i].postoffNameV1,
+                                  postoffPin: voterListData[i].postoffPin,
+                                  profession: voterListData[i].profession,
+                                  psbuildingNameEn: voterListData[i].psbuildingNameEn,
+                                  psbuildingNameV1: voterListData[i].psbuildingNameV1,
+                                  psbuildingNo: voterListData[i].psbuildingNo,
+                                  referenceName: voterListData[i].referenceName,
+                                  rlnFmNmEn: voterListData[i].rlnFmNmEn,
+                                  rlnFmNmV1: voterListData[i].rlnFmNmV1,
+                                  rlnLNmEn: voterListData[i].rlnLNmEn,
+                                  rlnLNmV1: voterListData[i].rlnLNmV1,
+                                  rlnType: voterListData[i].rlnType,
+                                  sectionNameEn: voterListData[i].sectionNameEn,
+                                  sectionNameV1: voterListData[i].sectionNameV1,
+                                  sectionNo: voterListData[i].sectionNo,
+                                  slnoinpart: voterListData[i].slnoinpart,
+                                  tahsilNameEn: voterListData[i].tahsilNameEn,
+                                  tahsilNameV1: voterListData[i].tahsilNameV1,
+                                  totalCount: voterListData[i].totalCount,
+                                  twitterUrl: voterListData[i].twitterUrl,
+                                  villageNameEn: voterListData[i].villageNameEn,
+                                  villageNameV1: voterListData[i].villageNameV1,
+                                  whatsappNo: voterListData[i].whatsappNo,
+                                  isFavourite: voterListData[i].isFavourite == 1 ? true : false);
+                              list.add(apiDataInner);
+                            }
+                          }
+                          var apiData = VoterApi(
+                              partNo: voterDataItem.partNo,
+                              partNameEn: voterDataItem.partNameEn,
+                              email: voterDataItem.email,
+                              id: voterDataItem.id,
+                              aadhaarNo: voterDataItem.aadhaarNo,
+                              acNameEn: voterDataItem.acNameEn,
+                              acNameV1: voterDataItem.acNameV1,
+                              acNo: voterDataItem.acNo,
+                              age: voterDataItem.age,
+                              bloodGroup: voterDataItem.bloodGroup,
+                              chouseNo: voterDataItem.chouseNo,
+                              chouseNoV1: voterDataItem.chouseNoV1,
+                              colorCode: voterDataItem.colorCode,
+                              dob: voterDataItem.dob,
+                              epicNo: voterDataItem.epicNo,
+                              facebookUrl: voterDataItem.facebookUrl,
+                              fmNameEn: voterDataItem.fmNameEn,
+                              fmNameV1: voterDataItem.fmNameV1,
+                              fullNameEn: voterDataItem.fullNameEn,
+                              fullNameV1: voterDataItem.fullNameV1,
+                              gender: voterDataItem.gender,
+                              hasVoted: voterDataItem.hasVoted == 1 ? true : false,
+                              instagramUrl: voterDataItem.instagramUrl,
+                              isDead: voterDataItem.isDead == 1 ? true : false,
+                              isDuplicate: voterDataItem.isDuplicate == 1 ? true : false,
+                              isVisited: voterDataItem.isVisited == 1 ? true : false,
+                              lastnameEn: voterDataItem.lastnameEn,
+                              lastnameV1: voterDataItem.lastnameV1,
+                              mobileNo: voterDataItem.mobileNo,
+                              newAddress: voterDataItem.newAddress,
+                              otherDetails: voterDataItem.otherDetails,
+                              partNameV1: voterDataItem.partNameV1,
+                              pcnameEn: voterDataItem.pcnameEn,
+                              pcnameV1: voterDataItem.pcnameV1,
+                              pcNo: voterDataItem.pcNo,
+                              policestNameEn: voterDataItem.policestNameEn,
+                              policestNameV1: voterDataItem.policestNameV1,
+                              postoffNameEn: voterDataItem.postoffNameEn,
+                              postoffNameV1: voterDataItem.postoffNameV1,
+                              postoffPin: voterDataItem.postoffPin,
+                              profession: voterDataItem.profession,
+                              psbuildingNameEn: voterDataItem.psbuildingNameEn,
+                              psbuildingNameV1: voterDataItem.psbuildingNameV1,
+                              psbuildingNo: voterDataItem.psbuildingNo,
+                              referenceName: voterDataItem.referenceName,
+                              rlnFmNmEn: voterDataItem.rlnFmNmEn,
+                              rlnFmNmV1: voterDataItem.rlnFmNmV1,
+                              rlnLNmEn: voterDataItem.rlnLNmEn,
+                              rlnLNmV1: voterDataItem.rlnLNmV1,
+                              rlnType: voterDataItem.rlnType,
+                              sectionNameEn: voterDataItem.sectionNameEn,
+                              sectionNameV1: voterDataItem.sectionNameV1,
+                              sectionNo: voterDataItem.sectionNo,
+                              slnoinpart: voterDataItem.slnoinpart,
+                              tahsilNameEn: voterDataItem.tahsilNameEn,
+                              tahsilNameV1: voterDataItem.tahsilNameV1,
+                              totalCount: voterDataItem.totalCount,
+                              twitterUrl: voterDataItem.twitterUrl,
+                              villageNameEn: voterDataItem.villageNameEn,
+                              villageNameV1: voterDataItem.villageNameV1,
+                              whatsappNo: voterDataItem.whatsappNo,
+                              isFavourite: voterDataItem.isFavourite == 1 ? true : false);
+                          list.add(apiData);
+                          Map<String, dynamic> jsonObjMain = <String, dynamic>{};
+                          jsonObjMain[jsonEncode("workerId")] = jsonEncode(sessionManager.getId()).toString().trim();
+                          jsonObjMain[jsonEncode("voters")] = jsonEncode(list).toString().trim();
+                          saveVoterDetails(jsonObjMain.toString(),voterListData);
+                        } else {
+                          saveSingleVoter();
+                        }
+                      }
+                      else
+                        {
+                          saveSingleVoter();
+                        }
+                    }
+                  else
+                    {
+                      saveSingleVoter();
+                    }
                 } else {
                   noInterNet(context);
                 }
@@ -1448,7 +1618,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
             Container(
               margin: const EdgeInsets.all(15),
               decoration:
-              const BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12)), color: white),
+                  const BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12)), color: white),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -1481,13 +1651,10 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                       backgroundColor: MaterialStateProperty.all<Color>(darOrange)),
                                   onPressed: () {
                                     Navigator.pop(context);
-                                    if(isForWhats)
-                                    {
-                                        _showSelectionDialog(2);
-                                    }
-                                    else
-                                    {
-                                        _showSelectionDialog(1);
+                                    if (isForWhats) {
+                                      _showSelectionDialog(2);
+                                    } else {
+                                      _showSelectionDialog(1);
                                     }
                                   },
                                   child: const Text("Update", style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: white)),
@@ -1506,14 +1673,11 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                   backgroundColor: MaterialStateProperty.all<Color>(darOrange)),
                               onPressed: () async {
                                 Navigator.pop(context);
-                                if(isForWhats)
-                                {
-                                 setState(() {
-                                   voterDataItem.whatsappNo = "";
-                                 });
-                                }
-                                else
-                                {
+                                if (isForWhats) {
+                                  setState(() {
+                                    voterDataItem.whatsappNo = "";
+                                  });
+                                } else {
                                   setState(() {
                                     voterDataItem.mobileNo = "";
                                   });
@@ -1537,12 +1701,9 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                   backgroundColor: MaterialStateProperty.all<Color>(darOrange)),
                               onPressed: () async {
                                 Navigator.pop(context);
-                                if(isForWhats)
-                                {
+                                if (isForWhats) {
                                   makePhoneCall(voterDataItem.whatsappNo.toString());
-                                }
-                                else
-                                {
+                                } else {
                                   makePhoneCall(voterDataItem.mobileNo.toString());
                                 }
                               },
@@ -1674,9 +1835,9 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                             return InkWell(
                               onTap: () {
                                 FocusScope.of(context).unfocus();
-                                if (NavigationService.professions[index].professionNameEn != voterDataItem.partNameEn) {
+                                if (NavigationService.professions[index].id.toString() != voterDataItem.profession) {
                                   setState(() {
-                                    voterDataItem.profession = checkValidString(NavigationService.professions[index].professionNameEn);
+                                    voterDataItem.profession = checkValidString(NavigationService.professions[index].id.toString());
                                   });
                                   Navigator.pop(context);
                                 }
@@ -1731,6 +1892,9 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
 
   void _selectColor() {
     String title = "Select Color";
+    setState(() {
+      isFamilyWiseColorChange = false;
+    });
 
     showModalBottomSheet(
         isScrollControlled: true,
@@ -1740,7 +1904,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
         builder: (context) {
           return StatefulBuilder(builder: (BuildContext context, StateSetter setStatenew) {
             return Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 20),
+              padding: const EdgeInsets.only(top: 15, bottom: 20),
               child: Wrap(
                 children: [
                   Column(
@@ -1772,6 +1936,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                     voterDataItem.colorCode = NavigationService.colorCodeList[index].colorCode;
                                   });
                                   Navigator.pop(context);
+                                  setColorOption();
                                 }
                               },
                               child: Column(
@@ -1779,7 +1944,8 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.only(top: 12, bottom: 12, left: 8, right: 8),
+                                    color: Color(int.parse(NavigationService.colorCodeList[index].colorCodeHEX.toString().replaceAll('#', '0x'))),
+                                    padding: const EdgeInsets.only(top: 12, bottom: 12, left: 22, right: 22),
                                     alignment: Alignment.centerLeft,
                                     child: Row(
                                       children: [
@@ -1788,8 +1954,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                           style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w600,
-                                              color:
-                                                  NavigationService.colorCodeList[index].colorCode != voterDataItem.colorCode ? black : darOrange),
+                                              color: NavigationService.colorCodeList[index].colorCode != voterDataItem.colorCode ? black : darOrange),
                                         ),
                                         Visibility(
                                           visible: NavigationService.colorCodeList[index].colorNameV1 != null &&
@@ -1818,6 +1983,93 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
             );
           });
         });
+  }
+
+  void setColorOption() {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: white,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+      elevation: 5,
+      isDismissible: true,
+      builder: (BuildContext context) {
+        return Wrap(
+          children: [
+            Padding(
+                padding: const EdgeInsets.all(0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      height: 2,
+                      width: 28,
+                      alignment: Alignment.center,
+                      color: black,
+                      margin: const EdgeInsets.only(top: 10, bottom: 12),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      child: Text("Set Color To", style: const TextStyle(color: black, fontWeight: FontWeight.bold, fontSize: 18)),
+                    ),
+                    Container(height: 2, width: 40, color: darOrange, margin: const EdgeInsets.only(bottom: 12)),
+                    InkWell(
+                      onTap: () async {
+                        setState(() {
+                          isFamilyWiseColorChange = true;
+                        });
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 25, right: 25, top: 15, bottom: 15),
+                        child: const Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Text(
+                              "All Family Members",
+                              textAlign: TextAlign.start,
+                              style: TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.normal),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Divider(
+                      color: grayLight,
+                      height: 1,
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        setState(() {
+                          isFamilyWiseColorChange = false;
+                        });
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 25, right: 25, top: 15, bottom: 15),
+                        child: const Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Text(
+                              "Single Voter",
+                              textAlign: TextAlign.start,
+                              style: TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.normal),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(height: 20)
+                  ],
+                ))
+          ],
+        );
+      },
+    );
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -1932,7 +2184,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
   }
 
   //API Call func...
-  void saveVoterDetails(String jsonData) async {
+  void saveVoterDetails(String jsonData, List<Voters> voterListData) async {
     setState(() {
       _isLoading = true;
     });
@@ -1951,7 +2203,21 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
 
     if (checkValidString(dataResponse.message.toString().trim()) == "Success") {
       try {
-        dbHelper.updateVoter(voterDataItem);
+        if(voterListData.isEmpty)
+        {
+            dbHelper.updateVoter(voterDataItem);
+        }
+        else
+        {
+            await dbHelper.updateVoter(voterDataItem);
+            for(int i=0; i< voterListData.length; i++)
+            {
+              if(voterDataItem.id != voterListData[i].id)
+              {
+                await dbHelper.updateVoter(voterListData[i]);
+              }
+            }
+        }
         showToast("Voter Details Saved Successfully", context);
       } catch (e) {
         print(e);
@@ -1980,48 +2246,117 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
 
   String getColorName() {
     String colorName = "";
-    for (int i = 0; i < NavigationService.colorCodeList.length; i++)
-    {
-      if (voterDataItem.colorCode == NavigationService.colorCodeList[i].colorCode)
-      {
+    for (int i = 0; i < NavigationService.colorCodeList.length; i++) {
+      if (voterDataItem.colorCode == NavigationService.colorCodeList[i].colorCode) {
         if (checkValidString(NavigationService.colorCodeList[i].colorNameEn).toString().trim().isNotEmpty &&
-            checkValidString(NavigationService.colorCodeList[i].colorNameV1).toString().trim().isNotEmpty)
-        {
+            checkValidString(NavigationService.colorCodeList[i].colorNameV1).toString().trim().isNotEmpty) {
           colorName = NavigationService.colorCodeList[i].colorNameEn.toString() + " - " + NavigationService.colorCodeList[i].colorNameV1.toString();
-        } else if (checkValidString(NavigationService.colorCodeList[i].colorNameEn).toString().trim().isNotEmpty){
+        } else if (checkValidString(NavigationService.colorCodeList[i].colorNameEn).toString().trim().isNotEmpty) {
           colorName = NavigationService.colorCodeList[i].colorNameEn.toString();
-        }
-        else
-        {
-            colorName = "";
+        } else {
+          colorName = "";
         }
       }
     }
     return colorName;
   }
 
+  String getProfessionName() {
+    String name = "";
+    for (int i = 0; i < NavigationService.professions.length; i++) {
+      if (voterDataItem.profession == NavigationService.professions[i].id.toString()) {
+        name = NavigationService.professions[i].professionNameEn.toString();
+      }
+    }
+    return name;
+  }
+
   String getShareTextData() {
     String shareText = "";
-    shareText = voterDataItem.acNo.toString() + " ";
-    if (NavigationService.statisticsData.isNotEmpty)
-    {
-      for (int i = 0; i < NavigationService.statisticsData.length; i++)
-      {
-        if (NavigationService.statisticsData[i].name == "ac_name")
-        {
-          shareText = shareText + "" + NavigationService.statisticsData[i].value.toString().trim();
-        }
-      }
-      shareText = "$shareText General Election 2023\n";
-    }
-
-    shareText = shareText + "SrNo-" + voterDataItem.slnoinpart.toString() + "\n";
-    shareText = shareText + "Const No-" + voterDataItem.acNo.toString() + "\n\n";
-    shareText = shareText + "Name-" + voterDataItem.fullNameEn.toString() + "\n";
-    shareText = shareText + "Booth No-" + voterDataItem.partNo.toString() + "\n";
-    shareText = shareText + "Booth Name-" + "${toDisplayCase(checkValidString(voterDataItem.partNo.toString()))},${toDisplayCase(checkValidString(voterDataItem.partNameEn.toString()))},${toDisplayCase(checkValidString(voterDataItem.psbuildingNameEn.toString()))}" + "\n";
-    shareText = shareText + "Address-" + toDisplayCase(checkValidString(voterDataItem.sectionNameEn)) + ", " + toDisplayCase(checkValidString(voterDataItem.postoffNameEn)) + "\n\n\n";
-    shareText = shareText + "From-Congress Party";
+    String acNo = "";
+    acNo = voterDataItem.acNo.toString() + " " + voterDataItem.acNameEn.toString();
+    shareText = "Telangana Assembly Election 2023\n" +
+        "${acNo}\n\n" +
+        "Sr No : ${voterDataItem.slnoinpart.toString()}\n" +
+        "Name : ${voterDataItem.fullNameEn.toString()}\n" +
+        "Gender/Age : ${voterDataItem.gender}/${voterDataItem.age}\n" +
+        "Booth Name : ${checkValidString(voterDataItem.partNo.toString())} - ${checkValidString(voterDataItem.partNameEn.toString())}\n" +
+        "Address : ${voterDataItem.psbuildingNameEn}, ${voterDataItem.tahsilNameEn}\n\n" +
+        "From Congress Party";
     return shareText;
+  }
+
+  void saveSingleVoter() {
+    var apiData = VoterApi(
+        partNo: voterDataItem.partNo,
+        partNameEn: voterDataItem.partNameEn,
+        email: voterDataItem.email,
+        id: voterDataItem.id,
+        aadhaarNo: voterDataItem.aadhaarNo,
+        acNameEn: voterDataItem.acNameEn,
+        acNameV1: voterDataItem.acNameV1,
+        acNo: voterDataItem.acNo,
+        age: voterDataItem.age,
+        bloodGroup: voterDataItem.bloodGroup,
+        chouseNo: voterDataItem.chouseNo,
+        chouseNoV1: voterDataItem.chouseNoV1,
+        colorCode: voterDataItem.colorCode,
+        dob: voterDataItem.dob,
+        epicNo: voterDataItem.epicNo,
+        facebookUrl: voterDataItem.facebookUrl,
+        fmNameEn: voterDataItem.fmNameEn,
+        fmNameV1: voterDataItem.fmNameV1,
+        fullNameEn: voterDataItem.fullNameEn,
+        fullNameV1: voterDataItem.fullNameV1,
+        gender: voterDataItem.gender,
+        hasVoted: voterDataItem.hasVoted == 1 ? true : false,
+        instagramUrl: voterDataItem.instagramUrl,
+        isDead: voterDataItem.isDead == 1 ? true : false,
+        isDuplicate: voterDataItem.isDuplicate == 1 ? true : false,
+        isVisited: voterDataItem.isVisited == 1 ? true : false,
+        lastnameEn: voterDataItem.lastnameEn,
+        lastnameV1: voterDataItem.lastnameV1,
+        mobileNo: voterDataItem.mobileNo,
+        newAddress: voterDataItem.newAddress,
+        otherDetails: voterDataItem.otherDetails,
+        partNameV1: voterDataItem.partNameV1,
+        pcnameEn: voterDataItem.pcnameEn,
+        pcnameV1: voterDataItem.pcnameV1,
+        pcNo: voterDataItem.pcNo,
+        policestNameEn: voterDataItem.policestNameEn,
+        policestNameV1: voterDataItem.policestNameV1,
+        postoffNameEn: voterDataItem.postoffNameEn,
+        postoffNameV1: voterDataItem.postoffNameV1,
+        postoffPin: voterDataItem.postoffPin,
+        profession: voterDataItem.profession,
+        psbuildingNameEn: voterDataItem.psbuildingNameEn,
+        psbuildingNameV1: voterDataItem.psbuildingNameV1,
+        psbuildingNo: voterDataItem.psbuildingNo,
+        referenceName: voterDataItem.referenceName,
+        rlnFmNmEn: voterDataItem.rlnFmNmEn,
+        rlnFmNmV1: voterDataItem.rlnFmNmV1,
+        rlnLNmEn: voterDataItem.rlnLNmEn,
+        rlnLNmV1: voterDataItem.rlnLNmV1,
+        rlnType: voterDataItem.rlnType,
+        sectionNameEn: voterDataItem.sectionNameEn,
+        sectionNameV1: voterDataItem.sectionNameV1,
+        sectionNo: voterDataItem.sectionNo,
+        slnoinpart: voterDataItem.slnoinpart,
+        tahsilNameEn: voterDataItem.tahsilNameEn,
+        tahsilNameV1: voterDataItem.tahsilNameV1,
+        totalCount: voterDataItem.totalCount,
+        twitterUrl: voterDataItem.twitterUrl,
+        villageNameEn: voterDataItem.villageNameEn,
+        villageNameV1: voterDataItem.villageNameV1,
+        whatsappNo: voterDataItem.whatsappNo,
+        isFavourite: voterDataItem.isFavourite == 1 ? true : false);
+    var list = List<VoterApi>.empty(growable: true);
+    list.add(apiData);
+    Map<String, dynamic> jsonObjMain = <String, dynamic>{};
+    jsonObjMain[jsonEncode("workerId")] = jsonEncode(sessionManager.getId()).toString().trim();
+    jsonObjMain[jsonEncode("voters")] = jsonEncode(list).toString().trim();
+
+    var listEmpty = List<Voters>.empty(growable: true);
+    saveVoterDetails(jsonObjMain.toString(),listEmpty);
   }
 }

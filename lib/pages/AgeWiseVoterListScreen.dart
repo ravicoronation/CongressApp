@@ -14,6 +14,7 @@ import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
 import '../utils/common_widget.dart';
 import '../utils/loading_home.dart';
+import '../utils/voter_color.dart';
 
 class AgeWiseVoterListScreen extends StatefulWidget {
    const AgeWiseVoterListScreen({Key? key}) : super(key: key);
@@ -25,7 +26,7 @@ class AgeWiseVoterListScreen extends StatefulWidget {
 class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
   bool _isLoading = false;
   var listVoters = List<Voters>.empty(growable: true);
-  var listBooth = List<String>.empty(growable: true);
+  var listBooth = List<Voters>.empty(growable: true);
   var listFromAge = List<String>.empty(growable: true);
   var listToAge = List<String>.empty(growable: true);
 
@@ -39,6 +40,8 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
   bool isScrollingDown = false;
 
   String filterBoothName = "All Booth";
+  String filterBoothPartNo = "";
+
   String searchHint = "Search by name...";
   String searchParam = "";
 
@@ -119,17 +122,6 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
             ],
           ),
           actions: [
-            InkWell(
-              customBorder: const CircleBorder(),
-              onTap: () async {
-              },
-              child: Container(
-                width: 40,
-                height: 40,
-                alignment: Alignment.center,
-                child: Padding(padding: const EdgeInsets.all(10.0), child: Image.asset('assets/images/ic_more.png', width: 24, height: 24)),
-              ),
-            ),
           ],
         ),
         body: Column(
@@ -212,22 +204,22 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
                                 children: [
                                   Gap(10),
                                   Expanded(child: Text(
-                                    filterBoothName,
+                                    "$filterBoothPartNo - $filterBoothName",
                                     overflow: TextOverflow.clip,
-                                    style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
+                                    style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                                   )),
                                   Visibility(visible: listBooth.length >1, child: Image.asset(
                                     'assets/images/ic_arrow_down.png',
                                     width: 14,
                                     height: 14,
-                                    color: black,
+                                    color: white,
                                   )),
                                   const Gap(10)
                                 ],
                               )),
                           const Divider(
                             height: 0.5,
-                            color: black,
+                            color: white,
                           ),
                         ],
                       ),
@@ -281,20 +273,20 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
                                       Expanded(child: Text(
                                         fromAge,
                                         overflow: TextOverflow.clip,
-                                        style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
+                                        style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                                       )),
                                       Image.asset(
                                         'assets/images/ic_arrow_down.png',
                                         width: 14,
                                         height: 14,
-                                        color: black,
+                                        color: white,
                                       ),
                                       Gap(10)
                                     ],
                                   )),
                               const Divider(
                                 height: 0.5,
-                                color: black,
+                                color: white,
                               ),
                             ],
                           ),
@@ -323,20 +315,20 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
                                       Expanded(child: Text(
                                         toAge,
                                         overflow: TextOverflow.clip,
-                                        style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
+                                        style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                                       )),
                                       Image.asset(
                                         'assets/images/ic_arrow_down.png',
                                         width: 14,
                                         height: 14,
-                                        color: black,
+                                        color: white,
                                       ),
                                       Gap(10)
                                     ],
                                   )),
                               const Divider(
                                 height: 0.5,
-                                color: black,
+                                color: white,
                               ),
                             ],
                           ),
@@ -469,7 +461,7 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "${index + 1}.",//"${toDisplayCase(listVoters[index].id.toString().trim())}.",
+                          "${listVoters[index].slnoinpart.toString()}.",//"${toDisplayCase(listVoters[index].id.toString().trim())}.",
                           overflow: TextOverflow.clip,
                           style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: contentSizeSmall),
                         ),
@@ -492,18 +484,26 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
                           ],
                         )),
                         const Gap(10),
-                        Visibility(
-                            visible: checkValidString(listVoters[index].mobileNo).toString().isNotEmpty,
-                            child: GestureDetector(
-                                onTap: () {
-                                  makePhoneCall(checkValidString(listVoters[index].mobileNo).toString().trim());
-                                },
-                                child: Image.asset(
-                                  'assets/images/ic_call_new.png',
-                                  width: 18,
-                                  height: 18,
-                                  color: darOrange,
-                                )))
+                        Column(
+                          children: [
+                            Visibility(
+                                visible: checkValidString(listVoters[index].mobileNo).toString().isNotEmpty,
+                                child: GestureDetector(
+                                    onTap: () {
+                                      makePhoneCall(checkValidString(listVoters[index].mobileNo).toString().trim());
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.only(bottom: 8),
+                                      child: Image.asset(
+                                        'assets/images/ic_call_new.png',
+                                        width: 18,
+                                        height: 18,
+                                        color: darOrange,
+                                      ),
+                                    ))),
+                            VoterColorWidget(colorCode: listVoters[index].colorCode)
+                          ],
+                        )
                       ],
                     )),
                 const Divider(
@@ -533,7 +533,8 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
             {
               setState(() {
                 listBooth.addAll(boothListData);
-                filterBoothName = listBooth[0].toString().trim();
+                filterBoothName = listBooth[0].partNameEn.toString().trim();
+                filterBoothPartNo = listBooth[0].partNo.toString().trim();
               });
             }
           }
@@ -658,9 +659,10 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
                                   FocusScope.of(context).unfocus();
                                   if (isFor == 2)
                                   {
-                                    if (listBooth[index].toString() != filterBoothName)
+                                    if (listBooth[index].partNameEn.toString() != filterBoothName)
                                     {
-                                      filterBoothName = checkValidString(listBooth[index].toString());
+                                      filterBoothName = checkValidString(listBooth[index].partNameEn.toString());
+                                      filterBoothPartNo = checkValidString(listBooth[index].partNo.toString().trim());
                                       Navigator.pop(context);
                                       Timer(const Duration(milliseconds: 300), () =>  getFirstPage(false));
                                     }
@@ -737,11 +739,11 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
   setTextData(int isFor, int index) {
     if (isFor == 2) {
       return Text(
-          "${index + 1}. " +checkValidString(listBooth[index]),
+          "${checkValidString(listBooth[index].partNo.toString())}. " +checkValidString(listBooth[index].partNameEn),
         style: TextStyle(
             fontSize: 16,
-            fontWeight: listBooth[index].toString() == filterBoothName.toString() ? FontWeight.w600 : FontWeight.w400,
-            color: listBooth[index].toString() == filterBoothName.toString() ? darOrange : black),
+            fontWeight: listBooth[index].partNameEn.toString() == filterBoothName.toString() ? FontWeight.w600 : FontWeight.w400,
+            color: listBooth[index].partNameEn.toString() == filterBoothName.toString() ? darOrange : black),
       );
     }
     else  if (isFor == 3) {
@@ -770,23 +772,6 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
     widget is AgeWiseVoterListScreen;
   }
 
-  Future<void> getBoothFromMandal() async {
-    listBooth = [];
-    final boothListData = await dbHelper.getAllBooth();
-    if (boothListData != null)
-    {
-      if (boothListData.isNotEmpty)
-      {
-        listBooth.addAll(boothListData);
-        filterBoothName = listBooth[0].toString().trim();
-        getFirstPage(false);
-      }
-    }
-    else
-    {
-        getFirstPage(false);
-    }
-  }
 
   void setStaticListData() {
     listFromAge.add("From");

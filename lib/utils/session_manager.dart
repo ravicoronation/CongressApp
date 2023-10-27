@@ -22,6 +22,7 @@ class SessionManager {
   final String staticData = "staticData";
   final String colorData = "colorData";
   final String professionData = "professionData";
+  final String language = "language";
 
   Future createLoginSession(String idParam, String workerNameParam, String workerPhoneParam,
       String assemblyNumberParam, String boothAssignedParam, bool isActiveParam) async {
@@ -32,6 +33,7 @@ class SessionManager {
     await SessionManagerNew.setString(assemblyNumber, assemblyNumberParam);
     await SessionManagerNew.setString(boothAssigned, boothAssignedParam);
     await SessionManagerNew.setBool(isActive, isActiveParam);
+    await SessionManagerNew.setBool(language, true);
   }
 
   Future<void> setIsLoggedIn(bool isLoginIn)
@@ -59,6 +61,23 @@ class SessionManager {
 
   String? getDeviceToken() {
     return SessionManagerNew.getString(deviceToken);
+  }
+
+  Future<void> setLanguage(bool data)
+  async {
+    await SessionManagerNew.setBool(language, data);
+  }
+
+  bool? isLanguageEnglish() {
+    return SessionManagerNew.getBool(language);
+  }
+
+  String? getWorkerName() {
+    return SessionManagerNew.getString(workerName);
+  }
+
+  String? getWorkerPhone() {
+    return SessionManagerNew.getString(workerPhone);
   }
 
   String? getAcNo() {

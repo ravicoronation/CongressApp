@@ -52,8 +52,8 @@ class MyApp extends StatelessWidget {
             ),
             hintStyle: const TextStyle(color: black, fontSize: 16, fontWeight: FontWeight.w400),
           ),
-          textTheme: GoogleFonts.openSansTextTheme(Theme.of(context).textTheme)),
-      home: const MyHomePage(),
+          textTheme : GoogleFonts.openSansTextTheme(Theme.of(context).textTheme)),
+      home : const MyHomePage(),
     );
   }
 }

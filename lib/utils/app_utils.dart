@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
+import 'dart:math';
+import 'package:congress_app/utils/session_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,7 +9,9 @@ import 'package:intl/intl.dart';
 import 'package:regexed_validator/regexed_validator.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:whatsapp_share2/whatsapp_share2.dart';
 import '../constant/colors.dart';
+import '../constant/global_context.dart';
 
 /*show message to user*/
 showSnackBar(String? message, BuildContext? context) {
@@ -497,6 +500,8 @@ openMail(String email) async {
   await launch(url);
 }
 
+
+
 openWhatsApp(String conatctNo, BuildContext? context) async {
   FocusManager.instance.primaryFocus?.unfocus();
   var whatsappUrl = "whatsapp://send?phone=${conatctNo}" + "&text=${Uri.encodeComponent("")}";
@@ -518,9 +523,51 @@ makePhoneCall(String phoneNumber) async {
 
 whatsapp(String conatctNo,String text,BuildContext? context)
 async{
-  var androidUrl =
+  await WhatsappShare.share(
+    text: text,
+    phone: conatctNo,
+  );
+
+ /* final bytes = await rootBundle.load('assets/images/ic_logo.jpg');
+  final list = bytes.buffer.asUint8List();
+
+  final tempDir = await getTemporaryDirectory();
+  final file = await File('${tempDir.path}/image.jpg').create();
+  file.writeAsBytesSync(list);
+
+  await WhatsappShare.shareFile(
+    text: text,
+    phone: conatctNo,
+    filePath: [file.path]
+  );*/
+
+  /*var phoneNumber = conatctNo;
+  var fileUrl = "https://imasfoundation.org/wp-content/uploads/2020/03/favicon.png"; // Replace with the URL of the file you want to send
+  var url = "whatsapp://send?phone=${phoneNumber}" +
+      "&text=${Uri.encodeComponent(text)}&file=${list}";
+
+  await launchUrl(Uri.parse(url));*/
+
+  /*
+    final bytes = await rootBundle.load('assets/images/ic_logo.jpg');
+  final list = bytes.buffer.asUint8List();
+
+  final tempDir = await getTemporaryDirectory();
+  final file = await File('${tempDir.path}/image.jpg').create();
+  file.writeAsBytesSync(list);*/
+
+ /**/
+
+
+  /*var androidUrl =
       "whatsapp://send?phone=${conatctNo}" +
-          "&text=${Uri.encodeComponent(text)}";
+          "&text=${Uri.encodeComponent(text)}&file=${file.path}";
+
+  await WhatsappShare.shareFile(
+    text: Uri.encodeComponent(text),
+    phone: conatctNo,
+    filePath: [file.path],
+  );
 
   print(conatctNo);
   var conatctNoNew = conatctNo.replaceAll(" ", "");
@@ -535,7 +582,58 @@ async{
       await launchUrl(Uri.parse(androidUrl));
     }
   } on Exception{
+  }*/
+}
+
+getRandomOTP () {
+  try {
+    var r = Random();
+    const _chars = '1234567890';
+    return List.generate(4, (index) => _chars[r.nextInt(_chars.length)]).join();
+  } catch (e) {
+    if (kDebugMode) {
+      print(e);
+    }
   }
+}
+
+getAcNoWithOutZero()
+{
+  var sessionManager = SessionManager();
+  String temp = sessionManager.getAcNo().toString().replaceAll("ac", "");
+  String acNo = temp.replaceFirst(RegExp(r'^0+(?!$)'), "");
+  return acNo;
+}
+
+isLanguageEnglish()
+{
+  var sessionManager = SessionManager();
+  if(sessionManager.isLanguageEnglish() == true)
+    {
+      return true;
+    }
+  else
+    {
+      return false;
+    }
+}
+
+getCodeNameFromId(num? code)
+{
+  if(code !=null)
+    {
+      for (int i = 0; i < NavigationService.colorCodeList.length; i++)
+      {
+        if (code == NavigationService.colorCodeList[i].colorCode)
+        {
+          return NavigationService.colorCodeList[i].colorCodeHEX;
+        }
+      }
+    }
+  else
+    {
+      return "#ffebf0f4";
+    }
 }
 
 sendSMSCall(String conatctNo,String text,BuildContext? context)

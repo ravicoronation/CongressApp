@@ -9,7 +9,7 @@ import '../model/VoterListResponse.dart';
 
 class DbHelper {
   static const _DATA_BASE_NAME = "voters_data.db";
-  static const _DATA_BASE_VERSION = 8;
+  static const _DATA_BASE_VERSION = 12;
   static const _TABLE_VOTERS = 'voters';
   static const _TABLE_BOOTHS = 'booths';
 
@@ -60,7 +60,7 @@ class DbHelper {
         "rlnLNmV1 TEXT,"
         "epicNo TEXT,"
         "gender TEXT,"
-        "age TEXT,"
+        "age INTEGER,"
         "dob TEXT,"
         "mobileNo TEXT,"
         "pcNo INTEGER,"
@@ -97,11 +97,12 @@ class DbHelper {
         "otherDetails TEXT,"
         "chouseNo TEXT,"
         "chouseNoV1 TEXT,"
-        "isDuplicate BOOLEAN,"
-        "isDead BOOLEAN,"
-        "isVisited BOOLEAN,"
-        "hasVoted BOOLEAN,"
+        "isDuplicate INTEGER,"
+        "isDead INTEGER,"
+        "isVisited INTEGER,"
+        "hasVoted INTEGER,"
         "total_count INTEGER,"
+        "isFavourite INTEGER,"
         "colorCode INTEGER"
         ")");
   }
@@ -159,7 +160,7 @@ class DbHelper {
     var response = await db?.query(_TABLE_VOTERS, where: "id = ?", whereArgs: [id]);
     if(response !=null)
       {
-        return response.isNotEmpty ? Voters.fromJson(response.first) : Voters();
+        return response.isNotEmpty ? Voters.fromJsonMap(response.first) : Voters();
       }
     else
       {
@@ -214,7 +215,7 @@ class DbHelper {
 
       if(search.isNotEmpty)
       {
-        if(filterSearchBy == "Name-Regular Search")
+        if(filterSearchBy == "Name-Regular Search" || filterSearchBy == "పేరు-సాధారణ శోధన")
         {
           searchBy = "fullNameEn";
         }
@@ -222,15 +223,15 @@ class DbHelper {
         {
           searchBy = "slnoinpart";
         }
-        else  if(filterSearchBy == "CardNo")
+        else  if(filterSearchBy == "CardNo" || filterSearchBy == "కార్డు నెంబరు")
         {
           searchBy = "epicNo";
         }
-        else  if(filterSearchBy == "MobileNo")
+        else  if(filterSearchBy == "MobileNo" || filterSearchBy == "మొబైల్ నెం")
         {
           searchBy = "mobileNo";
         }
-        else if(filterSearchBy == "Name-Match Case")
+        else if(filterSearchBy == "Name-Match Case" || filterSearchBy == "పేరు-మ్యాచ్ కేస్")
         {
           searchBy = "fullNameEn";
         }
@@ -283,10 +284,10 @@ class DbHelper {
 
       if(whereArgs.isEmpty)
       {
-          var response = await db?.rawQuery('SELECT * FROM voters LIMIT $limit OFFSET $off');
+          var response = await db?.rawQuery('SELECT * FROM voters ORDER By slnoinpart ASC LIMIT $limit OFFSET $off');
           if(response !=null)
           {
-            listItem = response.map((c) => Voters.fromJson(c)).toList();
+            listItem = response.map((c) => Voters.fromJsonMap(c)).toList();
           }
           else
           {
@@ -295,12 +296,12 @@ class DbHelper {
       }
       else
       {
-          String query = 'SELECT * FROM voters $whereArgs LIMIT $limit OFFSET $off';
+          String query = 'SELECT * FROM voters $whereArgs ORDER By slnoinpart ASC LIMIT $limit OFFSET $off';
           print("<><> Query Data :: " + query);
           var response = await db?.rawQuery(query);
           if(response !=null)
           {
-            listItem = response.map((c) => Voters.fromJson(c)).toList();
+            listItem = response.map((c) => Voters.fromJsonMap(c)).toList();
           }
           else
           {
@@ -356,11 +357,11 @@ class DbHelper {
   }
 
 
-  Future<List<String>?> getAllBooth() async {
-    List<String>? listItem = List<String>.empty(growable: true);
+  Future<List<Voters>?> getAllBooth() async {
+    List<Voters>? listItem = List<Voters>.empty(growable: true);
     try {
       final db = await database;
-      var response = await db?.rawQuery('SELECT DISTINCT partNameEn FROM voters ORDER BY partNameEn');
+      var response = await db?.rawQuery('SELECT DISTINCT partNameEn,partNo FROM voters ORDER BY partNameEn');
       if(response !=null)
       {
         int count = response.length;
@@ -369,23 +370,24 @@ class DbHelper {
           {
             if(checkValidString(response[i]['partNameEn'].toString()) != "0")
             {
-              listItem.add(response[i]['partNameEn'].toString());
+              Voters votersItem = Voters(partNameEn: response[i]['partNameEn'].toString(),partNo: int.parse(response[i]['partNo'].toString()));
+              listItem.add(votersItem);
             }
           }
         }
       }
       else
       {
-        listItem = List<String>.empty(growable: true);
+        listItem = List<Voters>.empty(growable: true);
       }
     } catch (e) {
       print(e);
-      listItem = List<String>.empty(growable: true);
+      listItem = List<Voters>.empty(growable: true);
     }
     return listItem;
   }
 
-  Future<List<Voters>?> getAllVotersFilterTypeWise(int limit,int off, String boothId,String search,String filterType)
+  Future<List<Voters>?> getAllVotersFilterTypeWise(int limit,int off, String boothId,String search,String filterType,String sortBy)
   async {
     List<Voters>? listItem = List<Voters>.empty(growable: true);
     final db = await database;
@@ -412,8 +414,8 @@ class DbHelper {
       }
       else if(filterType == "Duplicate Voters")
       {
-        filterTypeParam = "isDuplicate";
-        searchBy = "isDuplicate";
+        filterTypeParam = "fullNameEn";
+        searchBy = "fullNameEn";
       }
       else
       {
@@ -438,10 +440,10 @@ class DbHelper {
         {
           if(whereArgs.isEmpty)
           {
-            var response = await db?.rawQuery('SELECT *, COUNT (*) as total_count FROM voters GROUP BY $filterTypeParam ORDER BY total_count DESC LIMIT $limit OFFSET $off');
+            var response = await db?.rawQuery('SELECT *, COUNT (id) as total_count FROM voters GROUP BY $filterTypeParam ORDER BY COUNT (id) $sortBy LIMIT $limit OFFSET $off');
             if(response !=null)
             {
-              listItem = response.map((c) => Voters.fromJson(c)).toList();
+              listItem = response.map((c) => Voters.fromJsonMap(c)).toList();
             }
             else
             {
@@ -450,12 +452,12 @@ class DbHelper {
           }
           else
           {
-            String query = 'SELECT *, COUNT (*) as total_count FROM voters $whereArgs GROUP BY $filterTypeParam ORDER BY total_count DESC LIMIT $limit OFFSET $off';
+            String query = 'SELECT *, COUNT (id) as total_count FROM voters $whereArgs GROUP BY $filterTypeParam ORDER BY COUNT (id) $sortBy LIMIT $limit OFFSET $off';
             print("<><> Query Data :: " + query);
             var response = await db?.rawQuery(query);
             if(response !=null)
             {
-              listItem = response.map((c) => Voters.fromJson(c)).toList();
+              listItem = response.map((c) => Voters.fromJsonMap(c)).toList();
             }
             else
             {
@@ -464,14 +466,43 @@ class DbHelper {
           }
 
         }
+      else if(filterType == "Duplicate Voters")
+      {
+        if(whereArgs.isEmpty)
+        {
+          var response = await db?.rawQuery('SELECT *, COUNT (id) as total_count FROM voters GROUP BY $filterTypeParam having count(id) > 1 ORDER by COUNT (id)  $sortBy LIMIT $limit OFFSET $off');
+          if(response !=null)
+          {
+            listItem = response.map((c) => Voters.fromJsonMap(c)).toList();
+          }
+          else
+          {
+            listItem = List<Voters>.empty(growable: true);
+          }
+        }
+        else
+        {
+          String query = 'SELECT *, COUNT (id) as total_count FROM voters $whereArgs GROUP BY $filterTypeParam having count(id) > 1 ORDER by COUNT (id)  $sortBy LIMIT $limit OFFSET $off';
+          print("<><> Query Data :: " + query);
+          var response = await db?.rawQuery(query);
+          if(response !=null)
+          {
+            listItem = response.map((c) => Voters.fromJsonMap(c)).toList();
+          }
+          else
+          {
+            listItem = List<Voters>.empty(growable: true);
+          }
+        }
+      }
       else
         {
           if(whereArgs.isEmpty)
           {
-            var response = await db?.rawQuery('SELECT *, COUNT (*) as total_count FROM voters GROUP BY $filterTypeParam LIMIT $limit OFFSET $off');
+            var response = await db?.rawQuery('SELECT *, COUNT (id) as total_count FROM voters GROUP BY $filterTypeParam ORDER by COUNT (id)  $sortBy LIMIT $limit OFFSET $off');
             if(response !=null)
             {
-              listItem = response.map((c) => Voters.fromJson(c)).toList();
+              listItem = response.map((c) => Voters.fromJsonMap(c)).toList();
             }
             else
             {
@@ -480,12 +511,12 @@ class DbHelper {
           }
           else
           {
-            String query = 'SELECT *, COUNT (*) as total_count FROM voters $whereArgs GROUP BY $filterTypeParam LIMIT $limit OFFSET $off';
+            String query = 'SELECT *, COUNT (id) as total_count FROM voters $whereArgs GROUP BY $filterTypeParam ORDER by COUNT (id)  $sortBy LIMIT $limit OFFSET $off';
             print("<><> Query Data :: " + query);
             var response = await db?.rawQuery(query);
             if(response !=null)
             {
-              listItem = response.map((c) => Voters.fromJson(c)).toList();
+              listItem = response.map((c) => Voters.fromJsonMap(c)).toList();
             }
             else
             {
@@ -534,10 +565,10 @@ class DbHelper {
 
       if(whereArgs.isEmpty)
       {
-        var response = await db?.rawQuery('SELECT * FROM voters LIMIT $limit OFFSET $off');
+        var response = await db?.rawQuery('SELECT * FROM voters ORDER By slnoinpart ASC LIMIT $limit OFFSET $off');
         if(response !=null)
         {
-          listItem = response.map((c) => Voters.fromJson(c)).toList();
+          listItem = response.map((c) => Voters.fromJsonMap(c)).toList();
         }
         else
         {
@@ -546,12 +577,12 @@ class DbHelper {
       }
       else
       {
-        String query = 'SELECT * FROM voters $whereArgs LIMIT $limit OFFSET $off';
+        String query = 'SELECT * FROM voters $whereArgs ORDER By slnoinpart ASC LIMIT $limit OFFSET $off';
         print("<><> Query Data :: " + query);
         var response = await db?.rawQuery(query);
         if(response !=null)
         {
-          listItem = response.map((c) => Voters.fromJson(c)).toList();
+          listItem = response.map((c) => Voters.fromJsonMap(c)).toList();
         }
         else
         {
@@ -611,10 +642,10 @@ class DbHelper {
 
       if(whereArgs.isEmpty)
       {
-        var response = await db?.rawQuery('SELECT * FROM voters LIMIT $limit OFFSET $off');
+        var response = await db?.rawQuery('SELECT * FROM voters ORDER By slnoinpart ASC LIMIT $limit OFFSET $off');
         if(response !=null)
         {
-          listItem = response.map((c) => Voters.fromJson(c)).toList();
+          listItem = response.map((c) => Voters.fromJsonMap(c)).toList();
         }
         else
         {
@@ -623,12 +654,12 @@ class DbHelper {
       }
       else
       {
-        String query = 'SELECT * FROM voters $whereArgs LIMIT $limit OFFSET $off';
+        String query = 'SELECT * FROM voters $whereArgs ORDER By slnoinpart ASC LIMIT $limit OFFSET $off';
         print("<><> Query Data :: " + query);
         var response = await db?.rawQuery(query);
         if(response !=null)
         {
-          listItem = response.map((c) => Voters.fromJson(c)).toList();
+          listItem = response.map((c) => Voters.fromJsonMap(c)).toList();
         }
         else
         {
@@ -651,7 +682,7 @@ class DbHelper {
 
       String whereArgs = "";
       whereArgs = " WHERE partNameEn = '$boothId' And colorCode = '$colorCode' ";
-      String query = 'SELECT *, COUNT (*) as total_count FROM voters $whereArgs';
+      String query = 'SELECT *, COUNT (id) as total_count FROM voters $whereArgs';
       print("<><> Query Data :: " + query);
       var response = await db?.rawQuery(query);
       if(response !=null)
@@ -699,7 +730,7 @@ class DbHelper {
       }
       else if(title == "Duplicate Voters")
       {
-        whereArgs = " WHERE partNameEn = '$boothId' Or fullNameEn = '$filterValue' ";
+        whereArgs = " WHERE partNameEn = '$boothId' And fullNameEn = '$filterValue' ";
       }
 
       if(search.toString().trim().isNotEmpty)
@@ -707,18 +738,67 @@ class DbHelper {
         whereArgs = whereArgs + " And " + searchBy + " like '%" +search+ "%' " ;
       }
 
-      String query = 'SELECT * FROM voters $whereArgs LIMIT $limit OFFSET $off';
+      String query = 'SELECT * FROM voters $whereArgs ORDER By slnoinpart ASC LIMIT $limit OFFSET $off';
       print("<><> Query Data :: " + query);
       var response = await db?.rawQuery(query);
       if(response !=null)
       {
-        listItem = response.map((c) => Voters.fromJson(c)).toList();
+        listItem = response.map((c) => Voters.fromJsonMap(c)).toList();
       }
       else
       {
         listItem = List<Voters>.empty(growable: true);
       }
 
+    } catch (e) {
+      print(e);
+      listItem = List<Voters>.empty(growable: true);
+    }
+    return listItem;
+  }
+
+  Future<List<Voters>?> getAllFavVoters(int limit,int off,
+      String boothId,String search) async {
+    List<Voters>? listItem = List<Voters>.empty(growable: true);
+    final db = await database;
+    try {
+
+      String whereArgs = "";
+      String searchBy = "fullNameEn";
+
+      whereArgs = " WHERE partNameEn = '$boothId' And isFavourite = '1' ";
+
+      if(search.toString().trim().isNotEmpty)
+      {
+        whereArgs = "$whereArgs And $searchBy like '%$search%' " ;
+      }
+
+      if(whereArgs.isEmpty)
+      {
+        var response = await db?.rawQuery('SELECT * FROM voters ORDER By slnoinpart ASC LIMIT $limit OFFSET $off');
+        if(response !=null)
+        {
+          listItem = response.map((c) => Voters.fromJsonMap(c)).toList();
+        }
+        else
+        {
+          listItem = List<Voters>.empty(growable: true);
+        }
+      }
+      else
+      {
+        String query = 'SELECT * FROM voters $whereArgs ORDER By slnoinpart ASC LIMIT $limit OFFSET $off';
+        print("<><> Query Data :: " + query);
+        var response = await db?.rawQuery(query);
+        if(response !=null)
+        {
+          listItem = response.map((c) => Voters.fromJsonMap(c)).toList();
+        }
+        else
+        {
+          listItem = List<Voters>.empty(growable: true);
+        }
+      }
     } catch (e) {
       print(e);
       listItem = List<Voters>.empty(growable: true);

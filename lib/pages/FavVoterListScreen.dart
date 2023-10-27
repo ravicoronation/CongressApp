@@ -14,21 +14,20 @@ import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
 import '../utils/common_widget.dart';
 import '../utils/loading_home.dart';
-import 'FilterByValueVoterListScreen.dart';
+import '../utils/voter_color.dart';
 
-class WiseFilterVoterListScreen extends StatefulWidget {
-  final String type;
-
-  const WiseFilterVoterListScreen(this.type, {Key? key}) : super(key: key);
+class FavVoterListScreen extends StatefulWidget {
+   const FavVoterListScreen({Key? key}) : super(key: key);
 
   @override
-  _WiseFilterVoterListScreen createState() => _WiseFilterVoterListScreen();
+  _FavVoterListScreen createState() => _FavVoterListScreen();
 }
 
-class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
+class _FavVoterListScreen extends BaseState<FavVoterListScreen> {
   bool _isLoading = false;
   var listVoters = List<Voters>.empty(growable: true);
   var listBooth = List<Voters>.empty(growable: true);
+
   final dbHelper = DbHelper.instance;
   DateTime preBackPressTime = DateTime.now();
   ScrollController _scrollViewController = ScrollController();
@@ -37,19 +36,18 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
   final int _pageResult = 200;
   bool _isLastPage = false;
   bool isScrollingDown = false;
+
   String filterBoothName = "All Booth";
   String filterBoothPartNo = "";
+
   String searchHint = "Search by name...";
   String searchParam = "";
-  String type = "";
-  String sortBy = "DESC";
 
   final TextEditingController _searchController = TextEditingController();
   FocusNode inputNode = FocusNode();
 
   @override
   void initState() {
-    type = (widget as WiseFilterVoterListScreen).type;
     _scrollViewController = ScrollController();
     _scrollViewController.addListener(() {
       if (_scrollViewController.position.userScrollDirection == ScrollDirection.reverse) {
@@ -66,7 +64,7 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
       }
       pagination();
     });
-    Timer(const Duration(milliseconds: 300), () => getFirstPage(true));
+    Timer(const Duration(milliseconds: 300), () =>  getFirstPage(true));
     super.initState();
   }
 
@@ -113,7 +111,7 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
                 ),
               ),
               const Gap(12),
-              getTitle(type),
+              getTitle("Favourite Voter"),
             ],
           ),
           actions: [
@@ -122,30 +120,27 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
         body: Column(
           children: [
             filterData(),
-            _isLoading
-                ? const Expanded(child: LoadingHomeWidget())
-                : Expanded(
-                    child: listVoters.isEmpty
-                        ? const MyNoDataWidget(msg: "No Voters Found.")
-                        : SingleChildScrollView(controller: _scrollViewController, child: setData())),
+            _isLoading ? const Expanded(child: LoadingHomeWidget()) : Expanded(child: listVoters.isEmpty ? const MyNoDataWidget(msg: "No Voters Found.") : SingleChildScrollView(
+                controller: _scrollViewController,
+                child: setData())),
             Visibility(
-              visible: _isLoadingMore,
-              child: Container(
-                color: dashboardBg,
-                padding: const EdgeInsets.only(top: 5, bottom: 20),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                        width: 40,
-                        height: 40,
-                        child: Lottie.asset('assets/images/loader.json', repeat: true, animate: true, frameRate: FrameRate.max)),
-                    const Text(' Loading more...', style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16))
-                  ],
+                visible: _isLoadingMore,
+                child: Container(
+                  color: dashboardBg,
+                  padding: const EdgeInsets.only(top: 5, bottom: 20),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                          width: 40,
+                          height: 40,
+                          child: Lottie.asset('assets/images/loader.json', repeat: true, animate: true, frameRate: FrameRate.max)),
+                      const Text(' Loading more...', style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16))
+                    ],
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),
@@ -161,15 +156,15 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
             children: [
               Expanded(
                   child: Container(
-                margin: const EdgeInsets.only(left: 10),
-                child: Text(
-                  listBooth.length == 1 ? "Booth Name" : "Select Booth",
-                  overflow: TextOverflow.clip,
-                  style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
-                ),
-              )),
+                    margin: const EdgeInsets.only(left: 10),
+                    child: Text(
+                      listBooth.length == 1 ? "Booth Name" : "Select Booth",
+                      overflow: TextOverflow.clip,
+                      style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
+                    ),
+                  )),
               Container(
-                margin: const EdgeInsets.only(left: 8, right: 8),
+                margin: const EdgeInsets.only(left: 8,right: 8),
                 child: Text(
                   ":",
                   overflow: TextOverflow.clip,
@@ -179,39 +174,39 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
               Expanded(
                   flex: 3,
                   child: GestureDetector(
-                    onTap: () {
-                      if (listBooth.isNotEmpty) {
-                        if (listBooth.length > 1) {
+                    onTap: (){
+                      if(listBooth.isNotEmpty)
+                      {
+                        if(listBooth.length >1)
+                        {
                           _showSelectionDialog(2);
                         }
-                      } else {
+                      }
+                      else
+                      {
                         showToast("Data not found.", context);
                       }
                     },
                     child: Container(
                       alignment: Alignment.center,
-                      margin: const EdgeInsets.only(right: 10, top: 6, bottom: 6),
+                      margin: const EdgeInsets.only(right: 10,top: 6,bottom: 6),
                       child: Column(
                         children: [
-                          Padding(
-                              padding: EdgeInsets.only(top: 6, bottom: 6),
+                          Padding(padding: EdgeInsets.only(top: 6,bottom: 6),
                               child: Row(
                                 children: [
                                   Gap(10),
-                                  Expanded(
-                                      child: Text(
-                                        "$filterBoothPartNo - $filterBoothName",
+                                  Expanded(child: Text(
+                                    "$filterBoothPartNo - $filterBoothName",
                                     overflow: TextOverflow.clip,
                                     style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                                   )),
-                                  Visibility(
-                                      visible: listBooth.length > 1,
-                                      child: Image.asset(
-                                        'assets/images/ic_arrow_down.png',
-                                        width: 14,
-                                        height: 14,
-                                        color: white,
-                                      )),
+                                  Visibility(visible: listBooth.length >1, child: Image.asset(
+                                    'assets/images/ic_arrow_down.png',
+                                    width: 14,
+                                    height: 14,
+                                    color: white,
+                                  )),
                                   const Gap(10)
                                 ],
                               )),
@@ -226,7 +221,7 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
             ],
           ),
           Container(
-            margin: const EdgeInsets.only(left: 10, right: 10, top: 6, bottom: 8),
+            margin: const EdgeInsets.only(left: 10,right: 10,top: 6,bottom: 8),
             height: 42,
             decoration: BoxDecoration(
               color: white,
@@ -234,8 +229,7 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
             ),
             child: Row(
               children: [
-                Expanded(
-                    child: TextField(
+                Expanded(child: TextField(
                   cursorColor: black,
                   controller: _searchController,
                   keyboardType: TextInputType.text,
@@ -262,26 +256,30 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
                   decoration: InputDecoration(
                       hintText: searchHint,
                       contentPadding: const EdgeInsets.only(left: 12, right: 12, top: 0, bottom: 0),
-                      hintStyle: const TextStyle(color: black, fontSize: 14, fontWeight: FontWeight.w400),
+                      hintStyle: const TextStyle(color: black, fontSize: 14,fontWeight: FontWeight.w400),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(kButtonCornerRadius),
-                          borderSide: const BorderSide(width: 0.5, style: BorderStyle.solid, color: white)),
+                          borderSide:  const BorderSide(width: 0.5, style: BorderStyle.solid, color: white)),
                       focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(kButtonCornerRadius),
                           borderSide: const BorderSide(width: 0.5, style: BorderStyle.solid, color: white)),
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(kButtonCornerRadius),
-                          borderSide: const BorderSide(width: 0.5, style: BorderStyle.solid, color: white)),
+                          borderSide: const BorderSide(width:0.5, style: BorderStyle.solid, color: white)),
                       suffixIcon: GestureDetector(
-                        onTap: () {
-                          if (searchParam.isNotEmpty) {
+                        onTap: ()
+                        {
+                          if(searchParam.isNotEmpty)
+                          {
                             setState(() {
                               searchParam = "";
                               _searchController.clear();
                             });
 
                             getFirstPage(false);
-                          } else {
+                          }
+                          else
+                          {
                             setState(() {
                               searchParam = "";
                               _searchController.clear();
@@ -299,7 +297,8 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
                             ),
                           ),
                         ),
-                      )),
+                      )
+                  ),
                 )),
               ],
             ),
@@ -315,76 +314,6 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
       children: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15),
-                child: IntrinsicHeight(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                          flex: 2,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 10, bottom: 10),
-                            child: Text(
-                              type,
-                              overflow: TextOverflow.clip,
-                              style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
-                            ),
-                          )),
-                      const VerticalDivider(
-                        thickness: 0.5,
-                        color: gray,
-                      ),
-                      Expanded(
-                          flex: 1,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 10, bottom: 10),
-                            child: GestureDetector(
-                              onTap: (){
-                                setState(() {
-                                  if(sortBy == "DESC")
-                                  {
-                                    sortBy = "ASC";
-                                  }
-                                  else
-                                  {
-                                    sortBy = "DESC";
-                                  }
-                                });
-                                getFirstPage(true);
-                              },
-                              child: Row(
-                                children: [
-                                  Expanded(child: Text(
-                                    "Total Qty",
-                                    textAlign: TextAlign.center,
-                                    overflow: TextOverflow.clip,
-                                    style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
-                                  )),
-                                  Image.asset(
-                                    'assets/images/ic_sort_by.png',
-                                    color: darOrange,
-                                    width: 22,
-                                    height: 22,
-                                  )
-                                ],
-                              ),
-                            ),
-                          )),
-                    ],
-                  ),
-                )),
-            const Divider(
-              height: 0.5,
-              color: gray,
-            )
-          ],
-        ),
         setProjectList()
       ],
     );
@@ -401,64 +330,67 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
         return GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-
-              if (type == "House No Wise") {
-                startActivity(context, FilterByValueVoterListScreen(listVoters[index].chouseNo.toString(),listVoters[index].chouseNo.toString(),"House No Wise",filterBoothName));
-              } else if (type == "Address Wise") {
-                startActivity(context, FilterByValueVoterListScreen(listVoters[index].sectionNameEn.toString(),listVoters[index].sectionNameEn.toString(),"Address Wise",filterBoothName));
-              } else if (type == "Family Wise") {
-                startActivity(context, FilterByValueVoterListScreen(listVoters[index].chouseNo.toString(),listVoters[index].chouseNo.toString(),"Family Wise",filterBoothName));
-              } else if (type == "Duplicate Voters") {
-                startActivity(context, FilterByValueVoterListScreen(listVoters[index].fullNameEn.toString(),listVoters[index].fullNameEn.toString(),"Duplicate Voters",filterBoothName));
-              } else {
-                startActivity(context, VoterDetailsPage(listVoters[index]));
-              }
-
-
-
+              startActivity(context, VoterDetailsPage(listVoters[index]));
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                    padding: const EdgeInsets.only(left: 15, right: 15),
-                    child: IntrinsicHeight(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                              flex: 2,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 10, bottom: 10),
-                                child: Text(
-                                  getParamData(listVoters[index]),
-                                  overflow: TextOverflow.clip,
-                                  style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
-                                ),
-                              )),
-                          const VerticalDivider(
-                            thickness: 0.5,
-                            color: gray,
-                          ),
-                          Expanded(
-                              flex: 1,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 10, bottom: 10),
-                                child: Text(
-                                  checkValidString(listVoters[index].totalCount.toString()),
-                                  overflow: TextOverflow.clip,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
-                                ),
-                              )),
-                        ],
-                      ),
+                    padding: const EdgeInsets.only(left: 15,right: 15,top: 10,bottom: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "${listVoters[index].slnoinpart.toString()}.",//"${toDisplayCase(listVoters[index].id.toString().trim())}.",
+                          overflow: TextOverflow.clip,
+                          style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: contentSizeSmall),
+                        ),
+                        const Gap(6),
+                        Expanded(
+                            child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              toDisplayCase(listVoters[index].fullNameEn.toString().trim()),
+                              overflow: TextOverflow.clip,
+                              style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSizeSmall),
+                            ),
+                            Text(
+                              "${toDisplayCase(listVoters[index].gender.toString().trim())} - ${toDisplayCase(listVoters[index].age.toString().trim())}",
+                              overflow: TextOverflow.clip,
+                              style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: contentSizeSmall),
+                            )
+                          ],
+                        )),
+                        const Gap(10),
+                        Column(
+                          children: [
+                            Visibility(
+                                visible: checkValidString(listVoters[index].mobileNo).toString().isNotEmpty,
+                                child: GestureDetector(
+                                    onTap: () {
+                                      makePhoneCall(checkValidString(listVoters[index].mobileNo).toString().trim());
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.only(bottom: 8),
+                                      child: Image.asset(
+                                        'assets/images/ic_call_new.png',
+                                        width: 18,
+                                        height: 18,
+                                        color: darOrange,
+                                      ),
+                                    ))),
+                            VoterColorWidget(colorCode: listVoters[index].colorCode)
+                          ],
+                        )
+                      ],
                     )),
                 const Divider(
                   height: 0.5,
-                  color: gray,
+                  color: grayLight,
                 )
               ],
             ));
@@ -474,40 +406,51 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
         _isLoading = true;
       });
 
-      if (isFromInit) {
-        final boothListData = await dbHelper.getAllBooth();
-        if (boothListData != null) {
-          if (boothListData.isNotEmpty) {
-            setState(() {
-              listBooth.addAll(boothListData);
-              filterBoothName = listBooth[0].partNameEn.toString().trim();
-              filterBoothPartNo = listBooth[0].partNo.toString().trim();
-            });
+      if(isFromInit)
+        {
+          final boothListData = await dbHelper.getAllBooth();
+          if (boothListData != null)
+          {
+            if (boothListData.isNotEmpty)
+            {
+              setState(() {
+                listBooth.addAll(boothListData);
+                filterBoothName = listBooth[0].partNameEn.toString().trim();
+                filterBoothPartNo = listBooth[0].partNo.toString().trim();
+              });
+            }
           }
         }
-      }
 
-      final voterListData = await dbHelper.getAllVotersFilterTypeWise(
-          _pageResult, _pageIndex, filterBoothName == "All Booth" ? "" : filterBoothName, searchParam, type,sortBy);
+      final voterListData = await dbHelper.getAllFavVoters(_pageResult,_pageIndex,filterBoothName == "All Booth" ? "" : filterBoothName,searchParam);
+
       listVoters = [];
-      if (voterListData != null) {
-        if (voterListData.isNotEmpty) {
+      if (voterListData != null)
+      {
+        if (voterListData.isNotEmpty)
+        {
           setState(() {
             listVoters.addAll(voterListData);
             _isLoading = false;
           });
-        } else {
+        }
+        else
+        {
           setState(() {
             listVoters = [];
             _isLoading = false;
           });
+
         }
-      } else {
+      }
+      else
+      {
         setState(() {
           listVoters = [];
           _isLoading = false;
         });
       }
+
     } catch (e) {
       print(e);
     }
@@ -520,10 +463,10 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
       });
       int? count = await dbHelper.getCount();
       if (count! > 0) {
-        final voterListData = await dbHelper.getAllVotersFilterTypeWise(
-            _pageResult, _pageIndex * _pageResult, filterBoothName == "All Booth" ? "" : filterBoothName, searchParam, type,sortBy);
+        final voterListData = await dbHelper.getAllFavVoters(_pageResult,_pageIndex*_pageResult,filterBoothName == "All Booth" ? "" : filterBoothName,searchParam);
         if (voterListData != null) {
-          if (voterListData.isNotEmpty) {
+          if (voterListData.isNotEmpty)
+          {
             setState(() {
               if (voterListData.isNotEmpty) {
                 if (voterListData.isEmpty || voterListData.length % _pageResult != 0) {
@@ -559,11 +502,10 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
         builder: (context) {
           return StatefulBuilder(builder: (BuildContext context, StateSetter setStatenew) {
             return SizedBox(
-              height: getItemCount(isFor) <= 5
-                  ? MediaQuery.of(context).size.height * 0.35
-                  : getItemCount(isFor) > 10
-                      ? MediaQuery.of(context).size.height * 0.85
-                      : MediaQuery.of(context).size.height * 0.60,
+              height:
+              getItemCount(isFor) <= 5 ? MediaQuery.of(context).size.height * 0.35 :
+              getItemCount(isFor) > 10 ? MediaQuery.of(context).size.height * 0.85 :
+              MediaQuery.of(context).size.height * 0.60,
               child: Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 20),
                 child: Column(
@@ -582,7 +524,7 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
                       child: Text(title, style: const TextStyle(color: black, fontWeight: FontWeight.bold, fontSize: 18)),
                     ),
                     Expanded(
-                        child: ListView.builder(
+                        child:  ListView.builder(
                             itemCount: getItemCount(isFor),
                             shrinkWrap: true,
                             physics: const AlwaysScrollableScrollPhysics(),
@@ -591,12 +533,14 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
                               return InkWell(
                                 onTap: () {
                                   FocusScope.of(context).unfocus();
-                                  if (isFor == 2) {
-                                    if (listBooth[index].partNameEn.toString() != filterBoothName) {
+                                  if (isFor == 2)
+                                  {
+                                    if (listBooth[index].partNameEn.toString() != filterBoothName)
+                                    {
                                       filterBoothName = checkValidString(listBooth[index].partNameEn.toString());
                                       filterBoothPartNo = checkValidString(listBooth[index].partNo.toString().trim());
                                       Navigator.pop(context);
-                                      Timer(const Duration(milliseconds: 300), () => getFirstPage(false));
+                                      Timer(const Duration(milliseconds: 300), () =>  getFirstPage(false));
                                     }
                                   }
                                 },
@@ -631,7 +575,7 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
   setTextData(int isFor, int index) {
     if (isFor == 2) {
       return Text(
-        "${checkValidString(listBooth[index].partNo.toString())}. " + checkValidString(listBooth[index].partNameEn),
+          "${checkValidString(listBooth[index].partNo.toString())}. " +checkValidString(listBooth[index].partNameEn),
         style: TextStyle(
             fontSize: 16,
             fontWeight: listBooth[index].partNameEn.toString() == filterBoothName.toString() ? FontWeight.w600 : FontWeight.w400,
@@ -640,22 +584,11 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
     }
   }
 
+
   @override
   void castStatefulWidget() {
-    widget is WiseFilterVoterListScreen;
+    widget is FavVoterListScreen;
   }
 
-  String getParamData(Voters listItem) {
-    if (type == "House No Wise") {
-      return checkValidString(listItem.chouseNo);
-    } else if (type == "Address Wise") {
-      return checkValidString(listItem.sectionNameEn);
-    } else if (type == "Family Wise") {
-      return checkValidString(listItem.chouseNo);
-    } else if (type == "Duplicate Voters") {
-      return checkValidString(listItem.fullNameEn);
-    } else {
-      return "";
-    }
-  }
+
 }

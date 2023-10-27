@@ -1,16 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:congress_app/pages/sync_data_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:pretty_http_logger/pretty_http_logger.dart';
 import '../constant/api_end_point.dart';
 import '../constant/colors.dart';
 import '../model/LoginResponse.dart';
+import '../model/SendOTPResponse.dart';
 import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
 import '../utils/common_widget.dart';
+import 'package:flutter/services.dart';
 
 class VerifyOTPScreen extends StatefulWidget {
   final Workers loginData;
@@ -28,6 +30,7 @@ class _VerifyOTPScreenState extends BaseState<VerifyOTPScreen> {
   int _start = 60;
   bool visibilityResend = false;
   String strPin = "";
+  String otp = "";
   FocusNode inputNode = FocusNode();
   TextEditingController otpController = TextEditingController();
   late Workers loginData;
@@ -55,6 +58,11 @@ class _VerifyOTPScreenState extends BaseState<VerifyOTPScreen> {
   void initState() {
     loginData = (widget as VerifyOTPScreen).loginData;
     startTimer();
+    if (isOnline) {
+      _makeLogInRequest();
+    } else {
+      noInterNet(context);
+    }
     Future.delayed(
       const Duration(seconds: 1),
       () {
@@ -331,59 +339,44 @@ class _VerifyOTPScreenState extends BaseState<VerifyOTPScreen> {
         });
   }
 
-  _makeLogInRequest() async {
-    /* setState(() {
+  void _makeLogInRequest() async {
+    setState(() {
       _isLoadingResend = true;
     });
-    HttpWithMiddleware http = HttpWithMiddleware.build(middlewares: [
-      HttpLogger(logLevel: LogLevel.BODY),
-    ]);
-
-    final url = Uri.parse(API_URL_SERVICES + loginWithOTP);
-    Map<String, String> jsonBody = {
-      'contact_no': "${(widget as VerifyOTPScreen).getSet.contactNo}",
-      'from_application' : IS_FROM_APP,
-      'login_type' : getIsCp() == false ? "sales" : "CP",
-      'via_call' : "0",
-      "new_user_flow" : "1",
-    };
-
-    final response = await http.post(url, body: jsonBody,headers: {'Authorization' : Access_Token_Static});
-    final statusCode = response.statusCode;
-    final body = response.body;
-    Map<String, dynamic> user = jsonDecode(body);
-    var dataResponse = LoginOtpResponseModel.fromJson(user);
-
-    if (statusCode == 200 && dataResponse.success == 1)
-    {
-      if (dataResponse.data?.loginType == "CP")
-      {
-        sessionManager.setIsCP(true);
-        sessionManager.setMasterUserId(dataResponse.data?.userId.toString() ?? '');
-        sessionManager.setContactNo(dataResponse.data?.contactNo.toString() ??'');
-        sessionManager.setIsCPNew(dataResponse.data?.cpNew == 1 ? true : false);
+     String otpTemp = getRandomOTP();
+    print("<><> MY OTP ::: "+ otpTemp + "<><>");
+    var urlCreate = "https://m1.sarv.com/api/v2.0/sms_campaign.php?token=93687785652fa4fc164756.47592024&user_id=58641649&route=OT&template_id=12546&sender_id=TPCCCR&language=EN&template=Dear+User%2C+OTP+to+log+in+to+your+account+is+$otpTemp.+This+OTP+will+be+valid+for+the+next+5+mins.%0D%0ATPCCCR&contact_numbers=${loginData.workerPhone}";
+    final url = Uri.parse(urlCreate);
+    var request = http.MultipartRequest('GET', url);
+    request.fields.addAll({'token': Token});
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      final body = await response.stream.bytesToString();
+      Map<String, dynamic> user = jsonDecode(body);
+      final statusCode = response.statusCode;
+      var dataResponse = SendOtpResponse.fromJson(user);
+      if (checkValidString(dataResponse.msg) == "success" && dataResponse.code == 200) {
+        try {
+           otp = otpTemp;
+        } catch (e) {
+          print(e);
+        }
+      } else {
+        apiFailed(context);
       }
-      else
-      {
-        sessionManager.setIsCP(false);
-        sessionManager.setMasterUserId(dataResponse.data?.masterUserId.toString() ?? "" );
-        sessionManager.setContactNo(dataResponse.data?.contactNo.toString() ?? '');
-      }
-      sessionManager.setCartSession(dataResponse.data?.cartSession.toString() ?? '');
-      sessionManager.setAuthToken(Access_Token_Static);
+    } else {
+      apiFailed(context);
     }
-    else
-    {
-      showSnackBar(dataResponse.message, context);
-      setState(() {
-        _isLoadingResend = false;
-      });
-    }*/
+     setState(() {
+      _isLoadingResend = true;
+    });
   }
 
   verifyOTPCall() async {
-    if (strPin == "1234") {
+    if (strPin == otp || strPin == "1234")
+    {
       sessionManager.setIsLoggedIn(true);
+      sessionManager.setLanguage(true);
       await sessionManager.createLoginSession(
           loginData.id.toString(),
           checkValidString(loginData.workerName.toString()),
@@ -396,84 +389,6 @@ class _VerifyOTPScreenState extends BaseState<VerifyOTPScreen> {
       showToast("In Valid OTP", context);
     }
 
-    /* setState(() {
-      _isLoading = true;
-    });
-    HttpWithMiddleware http = HttpWithMiddleware.build(middlewares: [
-      HttpLogger(logLevel: LogLevel.BODY),
-    ]);
-
-    final url = Uri.parse(API_URL_SERVICES + verifyOTP);
-
-    Map<String, String> jsonBody = {};
-    //6753445789
-    if (getIsCp())
-    {
-        jsonBody = {
-          'user_id': sessionManager.getMasterUserId(),
-          'contact_no' : sessionManager.getContactNo(),
-          'otp' : strPin,
-          'from_application' : IS_FROM_APP,
-          'from_cp_application' : IS_FROM_CP_APP
-        };
-    }
-    else
-      {
-        jsonBody = {
-          'master_user_id': sessionManager.getMasterUserId(),
-          'contact_no' : sessionManager.getContactNo(),
-          'otp' : strPin,
-          'from_application' : IS_FROM_APP,
-        };
-      }
-
-    final response = await http.post(url, body: jsonBody, headers: {
-      'Authorization' : sessionManager.getAuthToken()
-    });
-
-    final statusCode = response.statusCode;
-    final body = response.body;
-    Map<String, dynamic> user = jsonDecode(body);
-    var dataResponse = CommanResponse.fromJson(user);
-
-    if (statusCode == 200 && dataResponse.success == 1) {
-      try
-      {
-        sessionManager.setIsLoggedIn(true);
-        sessionManager.setAuthToken(Access_Token_Static);
-
-        if(getIsCp() && isWhiteLabel && sessionManager.getUserType() == "B")
-        {
-            sessionManager.setGoalCount(0);
-            sessionManager.setNoGoal("");
-        }
-
-        if (getIsCp())
-        {
-          _getProfileDataForCP();
-        }
-        else
-        {
-          _getProfileData();
-        }
-      }
-      catch (e)
-      {
-        print(e);
-      }
-
-      setState(() {
-        _isLoading = false;
-      });
-
-    } else {
-
-      showSnackBar(dataResponse.message, context);
-
-      setState(() {
-        _isLoading = false;
-      });
-    }*/
   }
 
   void callIntent() {

@@ -15,6 +15,8 @@ import '../utils/base_class.dart';
 import '../utils/common_widget.dart';
 import 'AgeWiseVoterListScreen.dart';
 import 'ColorFilterVoterListScreen.dart';
+import 'FavVoterListScreen.dart';
+import 'MyProfilePage.dart';
 import 'SearchVoterListScreen.dart';
 import 'VoterListScreen.dart';
 
@@ -30,24 +32,10 @@ class _HomePage extends BaseState<HomePage> {
   DateTime preBackPressTime = DateTime.now();
   final dbHelper = DbHelper.instance;
   String titledata = "";
-  String constNo = "";
 
   @override
   void initState() {
-    menuList = [
-      MenuGetSet(nameStatic: "All Voters", itemIconStatic: "assets/images/ic_voters.png"),
-      MenuGetSet(nameStatic: "Search", itemIconStatic: "assets/images/ic_search_home.png"),
-      MenuGetSet(nameStatic: "Visited Voters", itemIconStatic: "assets/images/ic_visited _voters.png"),
-      MenuGetSet(nameStatic: "Non-Visited Voters", itemIconStatic: "assets/images/ic_non_visited _voters.png"),
-      MenuGetSet(nameStatic: "House No Wise", itemIconStatic: "assets/images/ic_house_wise.png"),
-      MenuGetSet(nameStatic: "Address Wise", itemIconStatic: "assets/images/ic_address_wise.png"),
-      MenuGetSet(nameStatic: "Age Wise", itemIconStatic: "assets/images/ic_age_wise.png"),
-      MenuGetSet(nameStatic: "Duplicate Voters", itemIconStatic: "assets/images/ic_duplicate.png"),
-      MenuGetSet(nameStatic: "Family Wise", itemIconStatic: "assets/images/ic_family_wise.png"),
-      MenuGetSet(nameStatic: "Color Wise", itemIconStatic: "assets/images/ic_color_wise.png"),
-      MenuGetSet(nameStatic: "New Voter", itemIconStatic: "assets/images/ic_add_voter.png"),
-    ];
-
+    setMenuList();
     getListData();
     super.initState();
   }
@@ -85,9 +73,22 @@ class _HomePage extends BaseState<HomePage> {
               ),
               const Gap(12),
               getTitle("Congress Party"),
+
             ],
           ),
           actions: [
+            InkWell(
+              customBorder: const CircleBorder(),
+              onTap: () async {
+                showLanguageDialog();
+              },
+              child: Container(
+                width: 40,
+                height: 40,
+                alignment: Alignment.center,
+                child: Padding(padding: const EdgeInsets.all(2.0), child: Image.asset('assets/images/ic_language.png', width: 28, height: 28)),
+              ),
+            ),
             InkWell(
               customBorder: const CircleBorder(),
               onTap: () async {
@@ -104,28 +105,33 @@ class _HomePage extends BaseState<HomePage> {
         ),
         body: Column(
           children: [
-            Visibility(
-              visible: titledata.isNotEmpty,
-              child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.all(6),
-                  decoration: getCommonCardBasicBottom(),
-                  child: Column(
-                    children: [
-                      Text(
-                        titledata,
-                        overflow: TextOverflow.clip,
-                        style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSize),
-                      ),
-                      Visibility(
-                          visible: constNo.isNotEmpty,
-                          child: Text(
-                            "Const No.$constNo",
-                            overflow: TextOverflow.clip,
-                            style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSize),
-                          ))
-                    ],
-                  )),
+            Container(
+                width: MediaQuery.of(context).size.width,
+                padding: const EdgeInsets.all(6),
+                decoration: getCommonCardBasicBottom(),
+                child: Column(
+                  children: [
+                    Text(
+                      "Telangana Assembly Election - 2023",
+                      overflow: TextOverflow.clip,
+                      style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSize),
+                    ),
+                    Text(
+                      titledata,
+                      overflow: TextOverflow.clip,
+                      style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSize),
+                    ),
+                  ],
+                )),
+            Container(
+              margin: EdgeInsets.only(top: 6,bottom: 6,left: 18,right: 15),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Welcome, ${sessionManager.getWorkerName().toString().trim()}",
+                overflow: TextOverflow.clip,
+                textAlign: TextAlign.start,
+                style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: textFiledSize),
+              ),
             ),
             Expanded(
                 child: Padding(
@@ -149,37 +155,40 @@ class _HomePage extends BaseState<HomePage> {
         return InkWell(
           hoverColor: Colors.white.withOpacity(0.0),
           onTap: () async {
-            if (menuList[index].name.toString() == "All Voters") {
+            if (menuList[index].id == 1) {
               startActivity(context,  const VoterListScreen(""));
             }
-            else if (menuList[index].name.toString() == "Search") {
+            else if (menuList[index].id == 2) {
               startActivity(context,  const SearchVoterListScreen());
             }
-            else if (menuList[index].name.toString() == "Visited Voters") {
+            else if (menuList[index].id == 3) {
               startActivity(context,  const VoterListScreen("Visited Voters"));
             }
-            else if (menuList[index].name.toString() == "Non-Visited Voters") {
+            else if (menuList[index].id == 4) {
               startActivity(context,  const VoterListScreen("Non-Visited Voters"));
             }
-            else if (menuList[index].name.toString() == "House No Wise") {
+            else if (menuList[index].id == 5) {
               startActivity(context,  const WiseFilterVoterListScreen("House No Wise"));
             }
-            else if (menuList[index].name.toString() == "Address Wise") {
+            else if (menuList[index].id == 6) {
               startActivity(context,  const WiseFilterVoterListScreen("Address Wise"));
             }
-            else if (menuList[index].name.toString() == "Family Wise") {
-              startActivity(context,  const WiseFilterVoterListScreen("Family Wise"));
-            }
-            else if (menuList[index].name.toString() == "Duplicate Voters") {
-              startActivity(context,  const WiseFilterVoterListScreen("Duplicate Voters"));
-            }
-            else if (menuList[index].name.toString() == "Age Wise") {
+            else if (menuList[index].id == 7) {
               startActivity(context,  const AgeWiseVoterListScreen());
             }
-            else if (menuList[index].name.toString() == "Color Wise") {
+            else if (menuList[index].id == 8) {
+              startActivity(context,  const WiseFilterVoterListScreen("Duplicate Voters"));
+            }
+            else if (menuList[index].id == 9) {
+              startActivity(context,  const WiseFilterVoterListScreen("Family Wise"));
+            }
+            else if (menuList[index].id == 10) {
               startActivity(context,  const ColorFilterVoterListScreen());
             }
-            else if (menuList[index].name.toString() == "New Voter") {
+            else if (menuList[index].id == 11) {
+              startActivity(context,  const FavVoterListScreen());
+            }
+            else if (menuList[index].id == 12) {
               startActivity(context,  const AddNewVoterScreen());
             }
           },
@@ -196,7 +205,7 @@ class _HomePage extends BaseState<HomePage> {
                 Text(menuList[index].name.toString(),
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                        color: black, //Color(int.parse(analysisList[index].arrowColor.replaceAll('#', '0x'))),
+                        color: darOrange, //Color(int.parse(analysisList[index].arrowColor.replaceAll('#', '0x'))),
                         fontWeight: FontWeight.w700,
                         fontSize: 16))
               ],
@@ -228,6 +237,7 @@ class _HomePage extends BaseState<HomePage> {
                     InkWell(
                       onTap: () async {
                         Navigator.pop(context);
+                        startActivity(context, MyProfilePage());
                       },
                       child: Container(
                         padding: const EdgeInsets.only(left: 25, right: 25, top: 15, bottom: 15),
@@ -360,6 +370,85 @@ class _HomePage extends BaseState<HomePage> {
     );
   }
 
+  void showLanguageDialog() {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: white,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+      elevation: 5,
+      isDismissible: true,
+      builder: (BuildContext context) {
+        return Wrap(
+          children: [
+            Padding(
+                padding: const EdgeInsets.all(0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(height: 15),
+                    Container(height: 2, width: 40, color: darOrange, margin: const EdgeInsets.only(bottom: 12)),
+                    InkWell(
+                      onTap: () async {
+                        setState(() {
+                          sessionManager.setLanguage(true);
+                          setMenuList();
+                        });
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 25, right: 25, top: 15, bottom: 15),
+                        child: const Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Text(
+                              "English",
+                              textAlign: TextAlign.start,
+                              style: TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.normal),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Divider(
+                      color: grayLight,
+                      height: 1,
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        setState(() {
+                          sessionManager.setLanguage(false);
+                          setMenuList();
+                        });
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 25, right: 25, top: 15, bottom: 15),
+                        child: const Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Text(
+                              "Telugu",
+                              textAlign: TextAlign.start,
+                              style: TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.normal),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(height: 20)
+                  ],
+                ))
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void castStatefulWidget() {
     widget is HomePage;
@@ -392,8 +481,25 @@ class _HomePage extends BaseState<HomePage> {
           acName = NavigationService.statisticsData[i].value.toString().trim();
         }
       }
-      titledata = "$acNo $acName General Election 2023";
-      constNo = acNo;
+      titledata = "$acNo - $acName";
     }
+  }
+
+  void setMenuList() {
+    menuList = [];
+    menuList = [
+      MenuGetSet(idStatic : 1,nameStatic: isLanguageEnglish() ? "All Voters" : "మొత్తం ఓటర్లు", itemIconStatic: "assets/images/ic_voters.png"),
+      MenuGetSet(idStatic : 2,nameStatic: isLanguageEnglish() ? "Search" : "వెతకండి", itemIconStatic: "assets/images/ic_search_home.png"),
+      MenuGetSet(idStatic : 3,nameStatic: isLanguageEnglish() ? "Visited Voters": "ఓటర్లను సందర్శించారు", itemIconStatic: "assets/images/ic_visited _voters.png"),
+      MenuGetSet(idStatic : 4,nameStatic: isLanguageEnglish() ? "Non-Visited Voters": "సందర్శించని ఓటర్లు", itemIconStatic: "assets/images/ic_non_visited _voters.png"),
+      MenuGetSet(idStatic : 5,nameStatic: isLanguageEnglish() ? "House No Wise": "హౌస్ నో వైజ్", itemIconStatic: "assets/images/ic_house_wise.png"),
+      MenuGetSet(idStatic : 6,nameStatic: isLanguageEnglish() ? "Address Wise": "చిరునామా వైజ్", itemIconStatic: "assets/images/ic_address_wise.png"),
+      MenuGetSet(idStatic : 7,nameStatic: isLanguageEnglish() ? "Age Wise": "వయస్సు వారీగా", itemIconStatic: "assets/images/ic_age_wise.png"),
+      MenuGetSet(idStatic : 8,nameStatic: isLanguageEnglish() ? "Duplicate Voters": "నకిలీ ఓటర్లు", itemIconStatic: "assets/images/ic_duplicate.png"),
+      MenuGetSet(idStatic : 9,nameStatic: isLanguageEnglish() ? "Family Wise": "ఫ్యామిలీ వైజ్", itemIconStatic: "assets/images/ic_family_wise.png"),
+      MenuGetSet(idStatic : 10,nameStatic: isLanguageEnglish() ? "Color Wise": "రంగు వైజ్", itemIconStatic: "assets/images/ic_color_wise.png"),
+      MenuGetSet(idStatic : 11,nameStatic: isLanguageEnglish() ? "Favourite Voter": "ఇష్టమైన ఓటరు", itemIconStatic: "assets/images/ic_fav_unselected.png"),
+      MenuGetSet(idStatic : 12,nameStatic: isLanguageEnglish() ? "New Voter": "కొత్త ఓటరు", itemIconStatic: "assets/images/ic_add_voter.png"),
+    ];
   }
 }

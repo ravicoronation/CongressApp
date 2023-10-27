@@ -14,6 +14,7 @@ import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
 import '../utils/common_widget.dart';
 import '../utils/loading_home.dart';
+import '../utils/voter_color.dart';
 
 class SearchVoterListScreen extends StatefulWidget {
    const SearchVoterListScreen({Key? key}) : super(key: key);
@@ -106,21 +107,10 @@ class _SearchVoterListScreen extends BaseState<SearchVoterListScreen> {
                 ),
               ),
               const Gap(12),
-              getTitle("Voter List"),
+              getTitle("Search Voter"),
             ],
           ),
           actions: [
-            InkWell(
-              customBorder: const CircleBorder(),
-              onTap: () async {
-              },
-              child: Container(
-                width: 40,
-                height: 40,
-                alignment: Alignment.center,
-                child: Padding(padding: const EdgeInsets.all(10.0), child: Image.asset('assets/images/ic_more.png', width: 24, height: 24)),
-              ),
-            ),
           ],
         ),
         body: Column(
@@ -387,7 +377,9 @@ class _SearchVoterListScreen extends BaseState<SearchVoterListScreen> {
                           "${toDisplayCase(listVoters[index].gender.toString().trim())} - ${toDisplayCase(listVoters[index].age.toString().trim())}",
                           overflow: TextOverflow.clip,
                           style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: contentSizeSmall),
-                        )
+                        ),
+                        const Gap(5),
+                        VoterColorWidget(colorCode: listVoters[index].colorCode)
                       ],
                     )),
                 const Divider(

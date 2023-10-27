@@ -28,13 +28,14 @@ class ColorFilterVoterListScreen extends StatefulWidget {
 
 class _ColorFilterVoterListScreen extends BaseState<ColorFilterVoterListScreen> {
   bool _isLoading = false;
-  var listBooth = List<String>.empty(growable: true);
+  var listBooth = List<Voters>.empty(growable: true);
   var colorCodeList = List<Colorcode>.empty(growable: true);
   final dbHelper = DbHelper.instance;
   DateTime preBackPressTime = DateTime.now();
   ScrollController _scrollViewController = ScrollController();
   bool isScrollingDown = false;
   String filterBoothName = "All Booth";
+  String filterBoothPartNo = "";
 
   @override
   void initState() {
@@ -76,16 +77,6 @@ class _ColorFilterVoterListScreen extends BaseState<ColorFilterVoterListScreen> 
             ],
           ),
           actions: [
-            InkWell(
-              customBorder: const CircleBorder(),
-              onTap: () async {},
-              child: Container(
-                width: 40,
-                height: 40,
-                alignment: Alignment.center,
-                child: Padding(padding: const EdgeInsets.all(10.0), child: Image.asset('assets/images/ic_more.png', width: 24, height: 24)),
-              ),
-            ),
           ],
         ),
         body: Column(
@@ -152,9 +143,9 @@ class _ColorFilterVoterListScreen extends BaseState<ColorFilterVoterListScreen> 
                                   Gap(10),
                                   Expanded(
                                       child: Text(
-                                    filterBoothName,
+                                        filterBoothPartNo + " - " +filterBoothName,
                                     overflow: TextOverflow.clip,
-                                    style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
+                                    style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                                   )),
                                   Visibility(
                                       visible: listBooth.length > 1,
@@ -162,14 +153,14 @@ class _ColorFilterVoterListScreen extends BaseState<ColorFilterVoterListScreen> 
                                         'assets/images/ic_arrow_down.png',
                                         width: 14,
                                         height: 14,
-                                        color: black,
+                                        color: white,
                                       )),
                                   const Gap(10)
                                 ],
                               )),
                           const Divider(
                             height: 0.5,
-                            color: black,
+                            color: white,
                           ),
                         ],
                       ),
@@ -314,7 +305,8 @@ class _ColorFilterVoterListScreen extends BaseState<ColorFilterVoterListScreen> 
         if (boothListData.isNotEmpty) {
           setState(() {
             listBooth.addAll(boothListData);
-            filterBoothName = listBooth[0].toString().trim();
+            filterBoothName = listBooth[0].partNameEn.toString().trim();
+            filterBoothPartNo = listBooth[0].partNo.toString().trim();
           });
         }
       }
@@ -390,8 +382,9 @@ class _ColorFilterVoterListScreen extends BaseState<ColorFilterVoterListScreen> 
                                 onTap: () {
                                   FocusScope.of(context).unfocus();
                                   if (isFor == 2) {
-                                    if (listBooth[index].toString() != filterBoothName) {
-                                      filterBoothName = checkValidString(listBooth[index].toString());
+                                    if (listBooth[index].partNameEn.toString() != filterBoothName) {
+                                      filterBoothName = checkValidString(listBooth[index].partNameEn.toString());
+                                      filterBoothPartNo = checkValidString(listBooth[index].partNo.toString().trim());
                                       Navigator.pop(context);
                                       Timer(const Duration(milliseconds: 300), () => getCountFromCode());
                                     }
@@ -428,11 +421,11 @@ class _ColorFilterVoterListScreen extends BaseState<ColorFilterVoterListScreen> 
   setTextData(int isFor, int index) {
     if (isFor == 2) {
       return Text(
-        "${index + 1}. " + checkValidString(listBooth[index]),
+        "${checkValidString(listBooth[index].partNo.toString())}. " + checkValidString(listBooth[index].partNameEn),
         style: TextStyle(
             fontSize: 16,
-            fontWeight: listBooth[index].toString() == filterBoothName.toString() ? FontWeight.w600 : FontWeight.w400,
-            color: listBooth[index].toString() == filterBoothName.toString() ? darOrange : black),
+            fontWeight: listBooth[index].partNameEn.toString() == filterBoothName.toString() ? FontWeight.w600 : FontWeight.w400,
+            color: listBooth[index].partNameEn.toString() == filterBoothName.toString() ? darOrange : black),
       );
     }
   }

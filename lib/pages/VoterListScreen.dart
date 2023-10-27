@@ -14,10 +14,12 @@ import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
 import '../utils/common_widget.dart';
 import '../utils/loading_home.dart';
+import '../utils/voter_color.dart';
 
 class VoterListScreen extends StatefulWidget {
   final String vistedVoterFilter;
-   const VoterListScreen(this.vistedVoterFilter,{Key? key}) : super(key: key);
+
+  const VoterListScreen(this.vistedVoterFilter, {Key? key}) : super(key: key);
 
   @override
   _VoterListScreen createState() => _VoterListScreen();
@@ -26,7 +28,7 @@ class VoterListScreen extends StatefulWidget {
 class _VoterListScreen extends BaseState<VoterListScreen> {
   bool _isLoading = false;
   var listVoters = List<Voters>.empty(growable: true);
-  var listBooth = List<String>.empty(growable: true);
+  var listBooth = List<Voters>.empty(growable: true);
   var listSearchBy = List<String>.empty(growable: true);
 
   final dbHelper = DbHelper.instance;
@@ -39,6 +41,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
   bool isScrollingDown = false;
 
   String filterBoothName = "All Booth";
+  String filterBoothPartNo = "";
   String filterSearchBy = "Name-Regular Search";
   String searchHint = "Search by name...";
   String searchParam = "";
@@ -68,7 +71,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
       }
       pagination();
     });
-    Timer(const Duration(milliseconds: 300), () =>  getFirstPage(true));
+    Timer(const Duration(milliseconds: 300), () => getFirstPage(true));
     super.initState();
   }
 
@@ -118,44 +121,35 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
               getTitle(vistedVoterFilter.isEmpty ? "All Voter List" : vistedVoterFilter),
             ],
           ),
-          actions: [
-            InkWell(
-              customBorder: const CircleBorder(),
-              onTap: () async {
-              },
-              child: Container(
-                width: 40,
-                height: 40,
-                alignment: Alignment.center,
-                child: Padding(padding: const EdgeInsets.all(10.0), child: Image.asset('assets/images/ic_more.png', width: 24, height: 24)),
-              ),
-            ),
-          ],
+          actions: [],
         ),
         body: Column(
           children: [
             filterData(),
-            _isLoading ? const Expanded(child: LoadingHomeWidget()) : Expanded(child: listVoters.isEmpty ? const MyNoDataWidget(msg: "No Voters Found.") : SingleChildScrollView(
-                controller: _scrollViewController,
-                child: setData())),
+            _isLoading
+                ? const Expanded(child: LoadingHomeWidget())
+                : Expanded(
+                    child: listVoters.isEmpty
+                        ? const MyNoDataWidget(msg: "No Voters Found.")
+                        : SingleChildScrollView(controller: _scrollViewController, child: setData())),
             Visibility(
-                visible: _isLoadingMore,
-                child: Container(
-                  color: dashboardBg,
-                  padding: const EdgeInsets.only(top: 5, bottom: 20),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                          width: 40,
-                          height: 40,
-                          child: Lottie.asset('assets/images/loader.json', repeat: true, animate: true, frameRate: FrameRate.max)),
-                      const Text(' Loading more...', style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16))
-                    ],
-                  ),
+              visible: _isLoadingMore,
+              child: Container(
+                color: dashboardBg,
+                padding: const EdgeInsets.only(top: 5, bottom: 20),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: Lottie.asset('assets/images/loader.json', repeat: true, animate: true, frameRate: FrameRate.max)),
+                    const Text(' Loading more...', style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16))
+                  ],
                 ),
               ),
+            ),
           ],
         ),
       ),
@@ -171,15 +165,21 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
             children: [
               Expanded(
                   child: Container(
-                    margin: const EdgeInsets.only(left: 10),
-                    child: Text(
-                      listBooth.length == 1 ? "Booth Name" : "Select Booth",
-                      overflow: TextOverflow.clip,
-                      style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
-                    ),
-                  )),
+                margin: const EdgeInsets.only(left: 10),
+                child: Text(
+                  listBooth.length == 1
+                      ? isLanguageEnglish()
+                          ? "Booth Name"
+                          : "బూత్ పేరు"
+                      : isLanguageEnglish()
+                          ? "Select Booth"
+                          : "బూత్ ఎంచుకోండి",
+                  overflow: TextOverflow.clip,
+                  style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
+                ),
+              )),
               Container(
-                margin: const EdgeInsets.only(left: 8,right: 8),
+                margin: const EdgeInsets.only(left: 8, right: 8),
                 child: Text(
                   ":",
                   overflow: TextOverflow.clip,
@@ -189,45 +189,45 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
               Expanded(
                   flex: 3,
                   child: GestureDetector(
-                    onTap: (){
-                      if(listBooth.isNotEmpty)
-                      {
-                        if(listBooth.length >1)
-                        {
+                    onTap: () {
+                      if (listBooth.isNotEmpty) {
+                        if (listBooth.length > 1) {
                           _showSelectionDialog(2);
                         }
-                      }
-                      else
-                      {
+                      } else {
                         showToast("Data not found.", context);
                       }
                     },
                     child: Container(
                       alignment: Alignment.center,
-                      margin: const EdgeInsets.only(right: 10,top: 6,bottom: 6),
+                      margin: const EdgeInsets.only(right: 10, top: 6, bottom: 6),
                       child: Column(
                         children: [
-                          Padding(padding: EdgeInsets.only(top: 6,bottom: 6),
+                          Padding(
+                              padding: EdgeInsets.only(top: 6, bottom: 6),
                               child: Row(
                                 children: [
                                   Gap(10),
-                                  Expanded(child: Text(
-                                    filterBoothName,
+                                  Expanded(
+                                      child: Text(
+                                    "$filterBoothPartNo - $filterBoothName",
                                     overflow: TextOverflow.clip,
-                                    style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
+                                    style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                                   )),
-                                  Visibility(visible: listBooth.length >1, child: Image.asset(
-                                    'assets/images/ic_arrow_down.png',
-                                    width: 14,
-                                    height: 14,
-                                    color: black,
-                                  )),
+                                  Visibility(
+                                      visible: listBooth.length > 1,
+                                      child: Image.asset(
+                                        'assets/images/ic_arrow_down.png',
+                                        width: 14,
+                                        height: 14,
+                                        color: white,
+                                      )),
                                   const Gap(10)
                                 ],
                               )),
                           const Divider(
                             height: 0.5,
-                            color: black,
+                            color: white,
                           ),
                         ],
                       ),
@@ -239,15 +239,15 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
             children: [
               Expanded(
                   child: Container(
-                    margin: const EdgeInsets.only(left: 10),
-                    child: Text(
-                      "Search By",
-                      overflow: TextOverflow.clip,
-                      style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
-                    ),
-                  )),
+                margin: const EdgeInsets.only(left: 10),
+                child: Text(
+                  "Search By",
+                  overflow: TextOverflow.clip,
+                  style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
+                ),
+              )),
               Container(
-                margin: const EdgeInsets.only(left: 8,right: 8),
+                margin: const EdgeInsets.only(left: 8, right: 8),
                 child: Text(
                   ":",
                   overflow: TextOverflow.clip,
@@ -257,42 +257,41 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
               Expanded(
                   flex: 3,
                   child: GestureDetector(
-                    onTap: (){
-                      if(listSearchBy.isNotEmpty)
-                      {
+                    onTap: () {
+                      if (listSearchBy.isNotEmpty) {
                         _showSelectionDialog(3);
-                      }
-                      else
-                      {
+                      } else {
                         showToast("Data not found.", context);
                       }
                     },
                     child: Container(
                       alignment: Alignment.center,
-                      margin: const EdgeInsets.only(right: 10,top: 6,bottom: 6),
+                      margin: const EdgeInsets.only(right: 10, top: 6, bottom: 6),
                       child: Column(
                         children: [
-                          Padding(padding: EdgeInsets.only(top: 6,bottom: 6),
+                          Padding(
+                              padding: const EdgeInsets.only(top: 6, bottom: 6),
                               child: Row(
                                 children: [
-                                  Gap(10),
-                                  Expanded(child: Text(
+                                  const Gap(10),
+                                  Expanded(
+                                      child: Text(
                                     filterSearchBy,
                                     overflow: TextOverflow.clip,
-                                    style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
+                                    style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                                   )),
                                   Image.asset(
                                     'assets/images/ic_arrow_down.png',
                                     width: 14,
                                     height: 14,
-                                    color: black,
+                                    color: white,
                                   ),
                                   Gap(10)
                                 ],
                               )),
                           const Divider(
                             height: 0.5,
-                            color: black,
+                            color: white,
                           ),
                         ],
                       ),
@@ -301,7 +300,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
             ],
           ),
           Container(
-            margin: const EdgeInsets.only(left: 10,right: 10,top: 6,bottom: 8),
+            margin: const EdgeInsets.only(left: 10, right: 10, top: 6, bottom: 8),
             height: 42,
             decoration: BoxDecoration(
               color: white,
@@ -309,7 +308,8 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
             ),
             child: Row(
               children: [
-                Expanded(child: TextField(
+                Expanded(
+                    child: TextField(
                   cursorColor: black,
                   controller: _searchController,
                   keyboardType: TextInputType.text,
@@ -336,30 +336,26 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
                   decoration: InputDecoration(
                       hintText: searchHint,
                       contentPadding: const EdgeInsets.only(left: 12, right: 12, top: 0, bottom: 0),
-                      hintStyle: const TextStyle(color: black, fontSize: 14,fontWeight: FontWeight.w400),
+                      hintStyle: const TextStyle(color: black, fontSize: 14, fontWeight: FontWeight.w400),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(kButtonCornerRadius),
-                          borderSide:  const BorderSide(width: 0.5, style: BorderStyle.solid, color: white)),
+                          borderSide: const BorderSide(width: 0.5, style: BorderStyle.solid, color: white)),
                       focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(kButtonCornerRadius),
                           borderSide: const BorderSide(width: 0.5, style: BorderStyle.solid, color: white)),
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(kButtonCornerRadius),
-                          borderSide: const BorderSide(width:0.5, style: BorderStyle.solid, color: white)),
+                          borderSide: const BorderSide(width: 0.5, style: BorderStyle.solid, color: white)),
                       suffixIcon: GestureDetector(
-                        onTap: ()
-                        {
-                          if(searchParam.isNotEmpty)
-                          {
+                        onTap: () {
+                          if (searchParam.isNotEmpty) {
                             setState(() {
                               searchParam = "";
                               _searchController.clear();
                             });
 
                             getFirstPage(false);
-                          }
-                          else
-                          {
+                          } else {
                             setState(() {
                               searchParam = "";
                               _searchController.clear();
@@ -377,8 +373,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
                             ),
                           ),
                         ),
-                      )
-                  ),
+                      )),
                 )),
               ],
             ),
@@ -393,9 +388,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
-      children: [
-        setProjectList()
-      ],
+      children: [setProjectList()],
     );
   }
 
@@ -417,13 +410,13 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                    padding: const EdgeInsets.only(left: 15,right: 15,top: 10,bottom: 10),
+                    padding: const EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "${index + 1}.",//"${toDisplayCase(listVoters[index].id.toString().trim())}.",
+                          "${listVoters[index].slnoinpart.toString()}.", //"${toDisplayCase(listVoters[index].id.toString().trim())}.",
                           overflow: TextOverflow.clip,
                           style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: contentSizeSmall),
                         ),
@@ -446,18 +439,28 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
                           ],
                         )),
                         const Gap(10),
-                        Visibility(
-                            visible: checkValidString(listVoters[index].mobileNo).toString().isNotEmpty,
-                            child: GestureDetector(
-                                onTap: () {
-                                  makePhoneCall(checkValidString(listVoters[index].mobileNo).toString().trim());
-                                },
-                                child: Image.asset(
-                                  'assets/images/ic_call_new.png',
-                                  width: 18,
-                                  height: 18,
-                                  color: darOrange,
-                                )))
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Visibility(
+                                visible: checkValidString(listVoters[index].mobileNo).toString().isNotEmpty,
+                                child: GestureDetector(
+                                    onTap: () {
+                                      makePhoneCall(checkValidString(listVoters[index].mobileNo).toString().trim());
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.only(bottom: 8),
+                                      child: Image.asset(
+                                        'assets/images/ic_call_new.png',
+                                        width: 18,
+                                        height: 18,
+                                        color: darOrange,
+                                      ),
+                                    ))),
+                            VoterColorWidget(colorCode: listVoters[index].colorCode)
+                          ],
+                        )
                       ],
                     )),
                 const Divider(
@@ -478,50 +481,41 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
         _isLoading = true;
       });
 
-      if(isFromInit)
-        {
-          final boothListData = await dbHelper.getAllBooth();
-          if (boothListData != null)
-          {
-            if (boothListData.isNotEmpty)
-            {
-              setState(() {
-                listBooth.addAll(boothListData);
-                filterBoothName = listBooth[0].toString().trim();
-              });
-            }
+      if (isFromInit) {
+        final boothListData = await dbHelper.getAllBooth();
+        if (boothListData != null) {
+          if (boothListData.isNotEmpty) {
+            setState(() {
+              listBooth.addAll(boothListData);
+              filterBoothName = listBooth[0].partNameEn.toString().trim();
+              filterBoothPartNo = listBooth[0].partNo.toString().trim();
+            });
           }
         }
+      }
 
-      final voterListData = await dbHelper.getAllVoters(_pageResult,_pageIndex,filterBoothName == "All Booth" ? "" : filterBoothName,searchParam,filterSearchBy,vistedVoterFilter);
+      final voterListData = await dbHelper.getAllVoters(
+          _pageResult, _pageIndex, filterBoothName == "All Booth" ? "" : filterBoothName, searchParam, filterSearchBy, vistedVoterFilter);
 
       listVoters = [];
-      if (voterListData != null)
-      {
-        if (voterListData.isNotEmpty)
-        {
+      if (voterListData != null) {
+        if (voterListData.isNotEmpty) {
           setState(() {
             listVoters.addAll(voterListData);
             _isLoading = false;
           });
-        }
-        else
-        {
+        } else {
           setState(() {
             listVoters = [];
             _isLoading = false;
           });
-
         }
-      }
-      else
-      {
+      } else {
         setState(() {
           listVoters = [];
           _isLoading = false;
         });
       }
-
     } catch (e) {
       print(e);
     }
@@ -534,10 +528,10 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
       });
       int? count = await dbHelper.getCount();
       if (count! > 0) {
-        final voterListData = await dbHelper.getAllVoters(_pageResult,_pageIndex*_pageResult,filterBoothName == "All Booth" ? "" : filterBoothName,searchParam,filterSearchBy,vistedVoterFilter);
+        final voterListData = await dbHelper.getAllVoters(_pageResult, _pageIndex * _pageResult,
+            filterBoothName == "All Booth" ? "" : filterBoothName, searchParam, filterSearchBy, vistedVoterFilter);
         if (voterListData != null) {
-          if (voterListData.isNotEmpty)
-          {
+          if (voterListData.isNotEmpty) {
             setState(() {
               if (voterListData.isNotEmpty) {
                 if (voterListData.isEmpty || voterListData.length % _pageResult != 0) {
@@ -563,11 +557,9 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
     String title = "";
     if (isFor == 1) {
       title = "Select Mandal";
-    }
-    else if (isFor == 2) {
+    } else if (isFor == 2) {
       title = "Select Booth";
-    }
-    else if (isFor == 3) {
+    } else if (isFor == 3) {
       title = "Select Search By";
     }
 
@@ -579,10 +571,11 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
         builder: (context) {
           return StatefulBuilder(builder: (BuildContext context, StateSetter setStatenew) {
             return SizedBox(
-              height:
-              getItemCount(isFor) <= 5 ? MediaQuery.of(context).size.height * 0.35 :
-              getItemCount(isFor) > 10 ? MediaQuery.of(context).size.height * 0.85 :
-              MediaQuery.of(context).size.height * 0.60,
+              height: getItemCount(isFor) <= 5
+                  ? MediaQuery.of(context).size.height * 0.35
+                  : getItemCount(isFor) > 10
+                      ? MediaQuery.of(context).size.height * 0.85
+                      : MediaQuery.of(context).size.height * 0.60,
               child: Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 20),
                 child: Column(
@@ -601,7 +594,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
                       child: Text(title, style: const TextStyle(color: black, fontWeight: FontWeight.bold, fontSize: 18)),
                     ),
                     Expanded(
-                        child:  ListView.builder(
+                        child: ListView.builder(
                             itemCount: getItemCount(isFor),
                             shrinkWrap: true,
                             physics: const AlwaysScrollableScrollPhysics(),
@@ -610,50 +603,35 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
                               return InkWell(
                                 onTap: () {
                                   FocusScope.of(context).unfocus();
-                                  if (isFor == 2)
-                                  {
-                                    if (listBooth[index].toString() != filterBoothName)
-                                    {
-                                      filterBoothName = checkValidString(listBooth[index].toString());
+                                  if (isFor == 2) {
+                                    if (listBooth[index].partNameEn.toString() != filterBoothName) {
+                                      filterBoothName = checkValidString(listBooth[index].partNameEn.toString());
+                                      filterBoothPartNo = checkValidString(listBooth[index].partNo.toString());
                                       Navigator.pop(context);
-                                      Timer(const Duration(milliseconds: 300), () =>  getFirstPage(false));
+                                      Timer(const Duration(milliseconds: 300), () => getFirstPage(false));
                                     }
-                                  }
-                                  else if (isFor == 3)
-                                  {
+                                  } else if (isFor == 3) {
                                     setState(() {
-                                      if (listSearchBy[index] != filterSearchBy)
-                                      {
+                                      if (listSearchBy[index] != filterSearchBy) {
                                         filterSearchBy = checkValidString(listSearchBy[index]);
                                         Navigator.pop(context);
-                                        if(searchParam.isNotEmpty)
-                                        {
+                                        if (searchParam.isNotEmpty) {
                                           searchParam = "";
                                           _searchController.clear();
-                                          Timer(const Duration(milliseconds: 300), () =>  getFirstPage(false));
+                                          Timer(const Duration(milliseconds: 300), () => getFirstPage(false));
                                         }
 
-                                        if(filterSearchBy == "Name-Regular Search")
-                                        {
+                                        if (filterSearchBy == "Name-Regular Search") {
                                           searchHint = "Search by name...";
-                                        }
-                                        else  if(filterSearchBy == "SRNO")
-                                        {
+                                        } else if (filterSearchBy == "SRNO") {
                                           searchHint = "Search by srno...";
-                                        }
-                                        else  if(filterSearchBy == "CardNo")
-                                        {
+                                        } else if (filterSearchBy == "CardNo") {
                                           searchHint = "Search by card no...";
-                                        }
-                                        else  if(filterSearchBy == "MobileNo")
-                                        {
+                                        } else if (filterSearchBy == "MobileNo") {
                                           searchHint = "Search by mobile no...";
-                                        }
-                                        else  if(filterSearchBy == "Name-Match Case")
-                                        {
+                                        } else if (filterSearchBy == "Name-Match Case") {
                                           searchHint = "Search by name match case...";
                                         }
-
                                       }
                                     });
                                   }
@@ -683,8 +661,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
   getItemCount(int isFor) {
     if (isFor == 2) {
       return listBooth.length;
-    }
-    else if (isFor == 3) {
+    } else if (isFor == 3) {
       return listSearchBy.length;
     }
   }
@@ -692,16 +669,15 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
   setTextData(int isFor, int index) {
     if (isFor == 2) {
       return Text(
-          "${index + 1}. " +checkValidString(listBooth[index]),
+        "${checkValidString(listBooth[index].partNo.toString())}. " + checkValidString(listBooth[index].partNameEn),
         style: TextStyle(
             fontSize: 16,
-            fontWeight: listBooth[index].toString() == filterBoothName.toString() ? FontWeight.w600 : FontWeight.w400,
-            color: listBooth[index].toString() == filterBoothName.toString() ? darOrange : black),
+            fontWeight: listBooth[index].partNameEn.toString() == filterBoothName.toString() ? FontWeight.w600 : FontWeight.w400,
+            color: listBooth[index].partNameEn.toString() == filterBoothName.toString() ? darOrange : black),
       );
-    }
-    else  if (isFor == 3) {
+    } else if (isFor == 3) {
       return Text(
-        "${index + 1}. " +checkValidString(listSearchBy[index]),
+        "${index + 1}. " + checkValidString(listSearchBy[index]),
         style: TextStyle(
             fontSize: 16,
             fontWeight: listSearchBy[index] == filterSearchBy.toString() ? FontWeight.w600 : FontWeight.w400,
@@ -710,28 +686,9 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
     }
   }
 
-
   @override
   void castStatefulWidget() {
     widget is VoterListScreen;
-  }
-
-  Future<void> getBoothFromMandal() async {
-    listBooth = [];
-    final boothListData = await dbHelper.getAllBooth();
-    if (boothListData != null)
-    {
-      if (boothListData.isNotEmpty)
-      {
-        listBooth.addAll(boothListData);
-        filterBoothName = listBooth[0].toString().trim();
-        getFirstPage(false);
-      }
-    }
-    else
-    {
-        getFirstPage(false);
-    }
   }
 
   void setStaticListData() {
@@ -740,5 +697,13 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
     listSearchBy.add("CardNo");
     listSearchBy.add("MobileNo");
     listSearchBy.add("Name-Match Case");
+  }
+
+  getTitleText(String vistedVoterFilter) {
+    if (vistedVoterFilter == "Visited Voters") {
+      return isLanguageEnglish() ? vistedVoterFilter : "ఓటర్లను సందర్శించారు";
+    } else {
+      return isLanguageEnglish() ? vistedVoterFilter : "సందర్శించని ఓటర్లు";
+    }
   }
 }
