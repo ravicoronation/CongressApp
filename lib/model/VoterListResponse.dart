@@ -621,6 +621,15 @@ Voters copyWith({  num? id,
   String? get chouseNo => _chouseNo;
   String? get chouseNoV1 => _chouseNoV1;
 
+
+  set acNameV1(String? value) {
+    _acNameV1 = value;
+  }
+
+  set fullNameV1(String? value) {
+    _fullNameV1 = value;
+  }
+
   set totalCount(num? value) {
     _totalCount = value;
   }
@@ -767,5 +776,42 @@ Voters copyWith({  num? id,
     map['chouseNo'] = checkValidString(_chouseNo);
     map['chouseNoV1'] = checkValidString(_chouseNoV1);
     return map;
+  }
+
+
+  set pcnameV1(String? value) {
+    _pcnameV1 = value;
+  }
+
+  set postoffNameV1(String? value) {
+    _postoffNameV1 = value;
+  }
+
+  set psbuildingNameV1(String? value) {
+    _psbuildingNameV1 = value;
+  }
+
+  set tahsilNameV1(String? value) {
+    _tahsilNameV1 = value;
+  }
+
+  set policestNameV1(String? value) {
+    _policestNameV1 = value;
+  }
+
+  set villageNameV1(String? value) {
+    _villageNameV1 = value;
+  }
+
+  set partNameV1(String? value) {
+    _partNameV1 = value;
+  }
+
+  set chouseNoV1(String? value) {
+    _chouseNoV1 = value;
+  }
+
+  set sectionNameV1(String? value) {
+    _sectionNameV1 = value;
   }
 }

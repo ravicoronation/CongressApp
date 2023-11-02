@@ -107,7 +107,7 @@ class _SearchVoterListScreen extends BaseState<SearchVoterListScreen> {
                 ),
               ),
               const Gap(12),
-              getTitle("Search Voter"),
+              getTitle(isLanguageEnglish() ? "Search Voter" : "ఓటరును శోధించు"),
             ],
           ),
           actions: [
@@ -185,7 +185,7 @@ class _SearchVoterListScreen extends BaseState<SearchVoterListScreen> {
                 });
               },
               decoration: InputDecoration(
-                  hintText: "Search by name...",
+                  hintText: isLanguageEnglish() ? "Search by name..." : "పేరు ద్వారా శోధించండి...",
                   contentPadding: const EdgeInsets.only(left: 12, right: 12, top: 0, bottom: 0),
                   hintStyle: const TextStyle(color: black, fontSize: 14,fontWeight: FontWeight.w400),
                   border: OutlineInputBorder(
@@ -268,7 +268,7 @@ class _SearchVoterListScreen extends BaseState<SearchVoterListScreen> {
                 });
               },
               decoration: InputDecoration(
-                  hintText:  "Search by card no...",
+                  hintText:  isLanguageEnglish() ? "Search by card no..." : "కార్డ్ నంబర్ ద్వారా శోధించండి...",
                   contentPadding: const EdgeInsets.only(left: 12, right: 12, top: 0, bottom: 0),
                   hintStyle: const TextStyle(color: black, fontSize: 14,fontWeight: FontWeight.w400),
                   border: OutlineInputBorder(
@@ -366,7 +366,7 @@ class _SearchVoterListScreen extends BaseState<SearchVoterListScreen> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                              toDisplayCase(listVoters[index].fullNameEn.toString().trim()),
+                              toDisplayCase(isLanguageEnglish() ? listVoters[index].fullNameEn.toString().trim() : listVoters[index].fullNameV1.toString().trim()),
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSizeSmall),
                             )

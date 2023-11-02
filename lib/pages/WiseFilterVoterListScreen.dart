@@ -18,8 +18,9 @@ import 'FilterByValueVoterListScreen.dart';
 
 class WiseFilterVoterListScreen extends StatefulWidget {
   final String type;
+  final String typeTitle;
 
-  const WiseFilterVoterListScreen(this.type, {Key? key}) : super(key: key);
+  const WiseFilterVoterListScreen(this.type,this.typeTitle, {Key? key}) : super(key: key);
 
   @override
   _WiseFilterVoterListScreen createState() => _WiseFilterVoterListScreen();
@@ -37,11 +38,14 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
   final int _pageResult = 200;
   bool _isLastPage = false;
   bool isScrollingDown = false;
+
   String filterBoothName = "All Booth";
+  String filterBoothNameTitle = isLanguageEnglish() ? "All Booth" : "అన్ని బూత్";
   String filterBoothPartNo = "";
-  String searchHint = "Search by name...";
+  String searchHint = isLanguageEnglish() ? "Search by name..." : "పేరు ద్వారా శోధించండి...";
   String searchParam = "";
   String type = "";
+  String typeTitle = "";
   String sortBy = "DESC";
 
   final TextEditingController _searchController = TextEditingController();
@@ -50,6 +54,7 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
   @override
   void initState() {
     type = (widget as WiseFilterVoterListScreen).type;
+    typeTitle = (widget as WiseFilterVoterListScreen).typeTitle;
     _scrollViewController = ScrollController();
     _scrollViewController.addListener(() {
       if (_scrollViewController.position.userScrollDirection == ScrollDirection.reverse) {
@@ -161,13 +166,19 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
             children: [
               Expanded(
                   child: Container(
-                margin: const EdgeInsets.only(left: 10),
-                child: Text(
-                  listBooth.length == 1 ? "Booth Name" : "Select Booth",
-                  overflow: TextOverflow.clip,
-                  style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
-                ),
-              )),
+                    margin: const EdgeInsets.only(left: 10),
+                    child: Text(
+                      listBooth.length == 1
+                          ? isLanguageEnglish()
+                          ? "Booth Name"
+                          : "బూత్ పేరు"
+                          : isLanguageEnglish()
+                          ? "Select Booth"
+                          : "బూత్ ఎంచుకోండి",
+                      overflow: TextOverflow.clip,
+                      style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
+                    ),
+                  )),
               Container(
                 margin: const EdgeInsets.only(left: 8, right: 8),
                 child: Text(
@@ -200,10 +211,10 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
                                   Gap(10),
                                   Expanded(
                                       child: Text(
-                                        "$filterBoothPartNo - $filterBoothName",
-                                    overflow: TextOverflow.clip,
-                                    style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
-                                  )),
+                                        "$filterBoothPartNo - $filterBoothNameTitle",
+                                        overflow: TextOverflow.clip,
+                                        style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
+                                      )),
                                   Visibility(
                                       visible: listBooth.length > 1,
                                       child: Image.asset(
@@ -331,7 +342,7 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
                           child: Padding(
                             padding: const EdgeInsets.only(top: 10, bottom: 10),
                             child: Text(
-                              type,
+                              typeTitle,
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                             ),
@@ -361,7 +372,7 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
                               child: Row(
                                 children: [
                                   Expanded(child: Text(
-                                    "Total Qty",
+                                    isLanguageEnglish() ? "Total Qty" : "మొత్తం క్యూటీ",
                                     textAlign: TextAlign.center,
                                     overflow: TextOverflow.clip,
                                     style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
@@ -401,7 +412,6 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
         return GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-
               if (type == "House No Wise") {
                 startActivity(context, FilterByValueVoterListScreen(listVoters[index].chouseNo.toString(),listVoters[index].chouseNo.toString(),"House No Wise",filterBoothName));
               } else if (type == "Address Wise") {
@@ -413,10 +423,7 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
               } else {
                 startActivity(context, VoterDetailsPage(listVoters[index]));
               }
-
-
-
-            },
+           },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -482,6 +489,7 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
               listBooth.addAll(boothListData);
               filterBoothName = listBooth[0].partNameEn.toString().trim();
               filterBoothPartNo = listBooth[0].partNo.toString().trim();
+              filterBoothNameTitle = isLanguageEnglish() ? listBooth[0].partNameEn.toString().trim() : listBooth[0].partNameV1.toString().trim();
             });
           }
         }
@@ -595,6 +603,7 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
                                     if (listBooth[index].partNameEn.toString() != filterBoothName) {
                                       filterBoothName = checkValidString(listBooth[index].partNameEn.toString());
                                       filterBoothPartNo = checkValidString(listBooth[index].partNo.toString().trim());
+                                      filterBoothNameTitle = isLanguageEnglish() ? listBooth[index].partNameEn.toString().trim() : listBooth[index].partNameV1.toString().trim();
                                       Navigator.pop(context);
                                       Timer(const Duration(milliseconds: 300), () => getFirstPage(false));
                                     }

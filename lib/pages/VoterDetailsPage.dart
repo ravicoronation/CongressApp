@@ -68,7 +68,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
               ),
             ),
             const Gap(12),
-            getTitle("Voter Details"),
+            getTitle(isLanguageEnglish() ? "Voter Details" : "ఓటరు వివరాలు"),
           ],
         ),
         actions: [],
@@ -238,7 +238,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          toDisplayCase(voterDataItem.fullNameEn.toString().trim()),
+                          isLanguageEnglish()? toDisplayCase(voterDataItem.fullNameEn.toString().trim()) : toDisplayCase(voterDataItem.fullNameV1.toString().trim()),
                           overflow: TextOverflow.clip,
                           style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                         ),
@@ -255,7 +255,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                 child: Row(
                               children: [
                                 Text(
-                                  "Const No.",
+                                  isLanguageEnglish()? "Const No." : "కాన్స్ట్ నం.",
                                   overflow: TextOverflow.clip,
                                   style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                                 ),
@@ -270,7 +270,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                 child: Row(
                               children: [
                                 Text(
-                                  "Booth.",
+                                  isLanguageEnglish() ? "Booth." : "బూత్.",
                                   overflow: TextOverflow.clip,
                                   style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                                 ),
@@ -285,7 +285,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                 child: Row(
                               children: [
                                 Text(
-                                  "SrNo.",
+                                  isLanguageEnglish() ? "SrNo." : "శ్రీ నం.",
                                   overflow: TextOverflow.clip,
                                   style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                                 ),
@@ -316,7 +316,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                           children: [
                             Expanded(
                                 child: Text(
-                              "Card No ",
+                              isLanguageEnglish() ?"Card No " : "కార్డు నెంబరు ",
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                             )),
@@ -339,7 +339,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                           children: [
                             Expanded(
                                 child: Text(
-                              "Mob No ",
+                                  isLanguageEnglish() ? "Mob No " : "మాబ్ నం ",
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                             )),
@@ -361,7 +361,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                           style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                                         )
                                       : Text(
-                                          "No Number",
+                                          isLanguageEnglish() ? "No Number" : "సంఖ్య లేదు",
                                           overflow: TextOverflow.clip,
                                           style: TextStyle(
                                             color: darOrange,
@@ -383,7 +383,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                           children: [
                             Expanded(
                                 child: Text(
-                              "WhatsApp No ",
+                                  isLanguageEnglish() ? "WhatsApp No " : "వాట్సాప్ నెం ",
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                             )),
@@ -408,7 +408,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                                   style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                                                 )
                                               : Text(
-                                                  "WhatsApp No",
+                                                  isLanguageEnglish() ? "WhatsApp No" : "వాట్సాప్ నెం",
                                                   overflow: TextOverflow.clip,
                                                   style: TextStyle(
                                                     color: darOrange,
@@ -429,7 +429,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                           alignment: Alignment.centerRight,
                                           margin: const EdgeInsets.only(right: 10),
                                           child: Text(
-                                            "Same As\nMobile",
+                                            isLanguageEnglish() ? "Same As\nMobile" : "మొబైల్\nలాగానే",
                                             textAlign: TextAlign.end,
                                             overflow: TextOverflow.clip,
                                             style: TextStyle(color: darOrange, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
@@ -465,7 +465,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                               children: [
                                 Expanded(
                                     child: Text(
-                                  "Address",
+                                  isLanguageEnglish() ? "Address" : "చిరునామా",
                                   overflow: TextOverflow.clip,
                                   style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                                 )),
@@ -474,7 +474,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "House No.",
+                                      isLanguageEnglish() ? "House No." : "హౌస్ సంఖ్య.",
                                       overflow: TextOverflow.clip,
                                       style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                                     ),
@@ -489,12 +489,19 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                               ],
                             ),
                             Text(
+                              isLanguageEnglish() ?
                               "${toDisplayCase(checkValidString(voterDataItem.acNo.toString()))},"
                               " ${toDisplayCase(checkValidString(voterDataItem.partNo.toString()))},"
                               " ${toDisplayCase(checkValidString(voterDataItem.slnoinpart.toString()))}, "
                               "${toDisplayCase(checkValidString(voterDataItem.sectionNameEn.toString()))},"
                               " ${toDisplayCase(checkValidString(voterDataItem.tahsilNameEn.toString()))}, "
-                              "${toDisplayCase(checkValidString(voterDataItem.acNameEn.toString()))}",
+                              "${toDisplayCase(checkValidString(voterDataItem.acNameEn.toString()))}" :
+                              "${toDisplayCase(checkValidString(voterDataItem.acNo.toString()))},"
+                                  " ${toDisplayCase(checkValidString(voterDataItem.partNo.toString()))},"
+                                  " ${toDisplayCase(checkValidString(voterDataItem.slnoinpart.toString()))}, "
+                                  "${toDisplayCase(checkValidString(voterDataItem.sectionNameV1.toString()))},"
+                                  " ${toDisplayCase(checkValidString(voterDataItem.tahsilNameV1.toString()))}, "
+                                  "${toDisplayCase(checkValidString(voterDataItem.acNameV1.toString()))}",
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                             )
@@ -511,15 +518,19 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                              "Booth Name",
+                              isLanguageEnglish() ? "Booth Name" : "బూత్ పేరు",
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                             ),
                             Text(
-                              "${toDisplayCase(checkValidString(voterDataItem.partNo.toString()))},"
+                              isLanguageEnglish() ? "${toDisplayCase(checkValidString(voterDataItem.partNo.toString()))},"
                               "${toDisplayCase(checkValidString(voterDataItem.partNameEn.toString()))},"
                               "${toDisplayCase(checkValidString(voterDataItem.psbuildingNameEn.toString()))},"
-                              "${toDisplayCase(checkValidString(voterDataItem.tahsilNameEn.toString()))}",
+                              "${toDisplayCase(checkValidString(voterDataItem.tahsilNameEn.toString()))}" :
+                              "${toDisplayCase(checkValidString(voterDataItem.partNo.toString()))},"
+                                  "${toDisplayCase(checkValidString(voterDataItem.partNameV1.toString()))},"
+                                  "${toDisplayCase(checkValidString(voterDataItem.psbuildingNameV1.toString()))},"
+                                  "${toDisplayCase(checkValidString(voterDataItem.tahsilNameV1.toString()))}",
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                             )
@@ -541,7 +552,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                           children: [
                             Expanded(
                                 child: Text(
-                              "Color",
+                              isLanguageEnglish() ? "Color" : "రంగు",
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                             )),
@@ -565,7 +576,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                                 style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                                               )
                                             : Text(
-                                                "Select Color",
+                                                isLanguageEnglish() ? "Select Color" : "రంగును ఎంచుకోండి",
                                                 overflow: TextOverflow.clip,
                                                 style: TextStyle(
                                                   color: darOrange,
@@ -590,7 +601,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                           children: [
                             Expanded(
                                 child: Text(
-                              "DOB",
+                              isLanguageEnglish() ? "DOB" : "DOB",
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                             )),
@@ -608,7 +619,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                           style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                                         )
                                       : Text(
-                                          "Set Birthdate",
+                                    isLanguageEnglish() ? "Set Birthdate" : "పుట్టిన తేదీని సెట్ చేయండి",
                                           overflow: TextOverflow.clip,
                                           style: TextStyle(
                                             color: darOrange,
@@ -630,7 +641,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                           children: [
                             Expanded(
                                 child: Text(
-                              "Ch Add",
+                              isLanguageEnglish() ? "Ch Add" : "Ch జోడించు",
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                             )),
@@ -648,7 +659,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                           style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                                         )
                                       : Text(
-                                          "Ch Add",
+                                         isLanguageEnglish() ? "Ch Add" : "Ch జోడించు",
                                           overflow: TextOverflow.clip,
                                           style: TextStyle(
                                             color: darOrange,
@@ -670,7 +681,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                           children: [
                             Expanded(
                                 child: Text(
-                              "Aadhar Card",
+                              isLanguageEnglish() ? "Aadhaar Card" : "ఆధార్ కార్డ్",
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                             )),
@@ -688,7 +699,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                           style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                                         )
                                       : Text(
-                                          "Aadhar Card",
+                                         isLanguageEnglish() ? "Aadhaar Card" : "ఆధార్ కార్డ్",
                                           overflow: TextOverflow.clip,
                                           style: TextStyle(
                                             color: darOrange,
@@ -710,7 +721,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                           children: [
                             Expanded(
                                 child: Text(
-                              "Email ID",
+                                  isLanguageEnglish() ? "Email ID" : "ఇమెయిల్ చిరునామా",
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                             )),
@@ -728,7 +739,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                           style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                                         )
                                       : Text(
-                                          "Email ID",
+                                         isLanguageEnglish() ? "Email ID" : "ఇమెయిల్ చిరునామా",
                                           overflow: TextOverflow.clip,
                                           style: TextStyle(
                                             color: darOrange,
@@ -750,7 +761,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                           children: [
                             Expanded(
                                 child: Text(
-                              "Reference Name",
+                                  isLanguageEnglish() ? "Reference Name" : "సూచన పేరు",
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                             )),
@@ -768,7 +779,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                           style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                                         )
                                       : Text(
-                                          "Reference Name",
+                                    isLanguageEnglish() ? "Reference Name" : "సూచన పేరు",
                                           overflow: TextOverflow.clip,
                                           style: TextStyle(
                                             color: darOrange,
@@ -790,7 +801,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                           children: [
                             Expanded(
                                 child: Text(
-                              "Blood Group",
+                              isLanguageEnglish() ? "Blood Group" : "రక్తపు గ్రూపు",
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                             )),
@@ -812,7 +823,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                           style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                                         )
                                       : Text(
-                                          "Select Blood Group",
+                                    isLanguageEnglish() ? "Select Blood Group" : "బ్లడ్ గ్రూప్ ఎంచుకోండి",
                                           overflow: TextOverflow.clip,
                                           style: TextStyle(
                                             color: darOrange,
@@ -834,7 +845,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                           children: [
                             Expanded(
                                 child: Text(
-                              "Profession",
+                              isLanguageEnglish() ? "Profession" : "వృత్తి",
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                             )),
@@ -856,7 +867,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                           style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                                         )
                                       : Text(
-                                          "Select Profession",
+                                    isLanguageEnglish() ? "Select Profession" : "వృత్తిని ఎంచుకోండి",
                                           overflow: TextOverflow.clip,
                                           style: TextStyle(
                                             color: darOrange,
@@ -892,7 +903,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                               child: Column(
                                 children: [
                                   Text(
-                                    "Dead",
+                                    isLanguageEnglish() ? "Dead" : "చనిపోయింది",
                                     overflow: TextOverflow.clip,
                                     style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                                   ),
@@ -928,7 +939,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                               child: Column(
                                 children: [
                                   Text(
-                                    "Visited",
+                                    isLanguageEnglish() ? "Visited" : "సందర్శించారు",
                                     overflow: TextOverflow.clip,
                                     style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                                   ),
@@ -968,7 +979,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                               child: Column(
                                 children: [
                                   Text(
-                                    "Voted",
+                                    isLanguageEnglish() ? "Voted" : "ఓటు వేశారు",
                                     overflow: TextOverflow.clip,
                                     style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                                   ),
@@ -1007,7 +1018,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                           children: [
                             Expanded(
                                 child: Text(
-                              "Facebook Link",
+                                  isLanguageEnglish() ? "Facebook Link" : "Facebook లింక్",
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                             )),
@@ -1025,7 +1036,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                           style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                                         )
                                       : Text(
-                                          "Set Link",
+                                    isLanguageEnglish() ? "Set Link" : "లింక్‌ని సెట్ చేయండి",
                                           overflow: TextOverflow.clip,
                                           style: TextStyle(
                                             color: darOrange,
@@ -1047,7 +1058,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                           children: [
                             Expanded(
                                 child: Text(
-                              "Instagram Link",
+                                  isLanguageEnglish() ? "Instagram Link" : "Instagram లింక్",
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                             )),
@@ -1065,7 +1076,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                           style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                                         )
                                       : Text(
-                                          "Set Link",
+                                    isLanguageEnglish() ? "Set Link" : "లింక్‌ని సెట్ చేయండి",
                                           overflow: TextOverflow.clip,
                                           style: TextStyle(
                                             color: darOrange,
@@ -1087,7 +1098,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                           children: [
                             Expanded(
                                 child: Text(
-                              "Twitter Link",
+                                  isLanguageEnglish() ? "Twitter Link" : "Twitter లింక్",
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                             )),
@@ -1105,7 +1116,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                           style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                                         )
                                       : Text(
-                                          "Set Link",
+                                          isLanguageEnglish() ? "Set Link" : "లింక్‌ని సెట్ చేయండి",
                                           overflow: TextOverflow.clip,
                                           style: TextStyle(
                                             color: darOrange,
@@ -1127,7 +1138,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                           children: [
                             Expanded(
                                 child: Text(
-                              "Other Details",
+                                  isLanguageEnglish() ? "Other Details" : "ఇతర వివరాలు",
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                             )),
@@ -1145,7 +1156,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                           style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                                         )
                                       : Text(
-                                          "Enter details",
+                                    isLanguageEnglish() ? "Enter details" : "వివరాలను నమోదు చేయండి",
                                           overflow: TextOverflow.clip,
                                           style: TextStyle(
                                             color: darOrange,
@@ -1357,10 +1368,10 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
               child: Padding(
                 padding: const EdgeInsets.only(top: 6, bottom: 6),
                 child: !_isLoading
-                    ? const Text(
-                        "Save Voter Details",
+                    ?  Text(
+                        isLanguageEnglish() ? "Save Voter Details" : "ఓటరు వివరాలను సేవ్ చేయండి",
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 16, color: white, fontWeight: FontWeight.w400),
+                        style: const TextStyle(fontSize: 16, color: white, fontWeight: FontWeight.w400),
                       )
                     : Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -1397,25 +1408,25 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
     TextEditingController commonController = TextEditingController();
     String title = "";
     if (isFor == 1) {
-      title = "Mobile Number";
+      title = isLanguageEnglish() ? "Mobile Number" : "మొబైల్ నంబర్";
     } else if (isFor == 2) {
-      title = "Whats-App Number";
+      title = isLanguageEnglish() ?"Whats-App Number" : "Whats-యాప్ నంబర్";
     } else if (isFor == 3) {
-      title = "Address";
+      title = isLanguageEnglish() ?"Address" : "చిరునామా";
     } else if (isFor == 4) {
-      title = "Aadhar Card";
+      title = isLanguageEnglish() ?"Aadhaar Card" : "ఆధార్ కార్డ్";
     } else if (isFor == 5) {
-      title = "Email";
+      title = isLanguageEnglish() ?"Email" : "ఇమెయిల్";
     } else if (isFor == 6) {
-      title = "Facebook Link";
+      title = isLanguageEnglish() ?"Facebook Link" : "Facebook లింక్";
     } else if (isFor == 7) {
-      title = "Instagram Link";
+      title = isLanguageEnglish() ?"Instagram Link" : "Instagram లింక్";
     } else if (isFor == 8) {
-      title = "Twitter Link";
+      title = isLanguageEnglish() ?"Twitter Link" : "Twitter లింక్";
     } else if (isFor == 9) {
-      title = "Other Details";
+      title = isLanguageEnglish() ?"Other Details" : "ఇతర వివరాలు";
     } else if (isFor == 10) {
-      title = "Reference Person Name";
+      title = isLanguageEnglish() ? "Reference Person Name" : "రిఫరెన్స్ వ్యక్తి పేరు";
     }
 
     showModalBottomSheet(
@@ -1632,7 +1643,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                   ),
                   Container(
                     margin: const EdgeInsets.only(top: 10, bottom: 15),
-                    child: const Text('Make a Choice', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, color: black)),
+                    child: Text(isLanguageEnglish() ? 'Make a Choice' : 'ఒక ఎంపిక చేసుకోండి', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, color: black)),
                   ),
                   Container(
                     margin: const EdgeInsets.only(left: 15, right: 15, bottom: 20, top: 20),
@@ -1657,7 +1668,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                       _showSelectionDialog(1);
                                     }
                                   },
-                                  child: const Text("Update", style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: white)),
+                                  child:  Text(isLanguageEnglish() ? "Update" : "నవీకరించు", style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: white)),
                                 ))),
                         const Gap(20),
                         Expanded(
@@ -1683,7 +1694,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                   });
                                 }
                               },
-                              child: const Text("Remove", style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: white)),
+                              child:  Text(isLanguageEnglish() ? "Remove" : "తొలగించు", style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: white)),
                             ),
                           ),
                         ),
@@ -1707,7 +1718,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                                   makePhoneCall(voterDataItem.mobileNo.toString());
                                 }
                               },
-                              child: const Text("Make a Call", style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: white)),
+                              child:  Text(isLanguageEnglish() ?  "Make a Call" : "కాల్ చేయుము", style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: white)),
                             ),
                           ),
                         ),
@@ -1724,7 +1735,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
   }
 
   void _selectBloodGroup() {
-    String title = "Select Blood Group";
+    String title = isLanguageEnglish() ? "Select Blood Group" : "బ్లడ్ గ్రూప్ ఎంచుకోండి";
 
     showModalBottomSheet(
         isScrollControlled: true,
@@ -1798,8 +1809,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
   }
 
   void _selectProfession() {
-    String title = "Select Profession";
-
+    String title = isLanguageEnglish() ? "Select Profession" : "వృత్తిని ఎంచుకోండి";
     showModalBottomSheet(
         isScrollControlled: true,
         backgroundColor: white,
@@ -1891,7 +1901,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
   }
 
   void _selectColor() {
-    String title = "Select Color";
+    String title = isLanguageEnglish() ? "Select Color" : "రంగును ఎంచుకోండి";
     setState(() {
       isFamilyWiseColorChange = false;
     });
@@ -2010,7 +2020,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                     ),
                     Container(
                       margin: const EdgeInsets.only(bottom: 12),
-                      child: Text("Set Color To", style: const TextStyle(color: black, fontWeight: FontWeight.bold, fontSize: 18)),
+                      child: Text(isLanguageEnglish() ? "Set Color To" : "దీనికి రంగును సెట్ చేయండి", style: const TextStyle(color: black, fontWeight: FontWeight.bold, fontSize: 18)),
                     ),
                     Container(height: 2, width: 40, color: darOrange, margin: const EdgeInsets.only(bottom: 12)),
                     InkWell(
@@ -2022,13 +2032,13 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                       },
                       child: Container(
                         padding: const EdgeInsets.only(left: 25, right: 25, top: 15, bottom: 15),
-                        child: const Row(
+                        child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.start,
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             Text(
-                              "All Family Members",
+                              isLanguageEnglish() ? "All Family Members" : "కుటుంబ సభ్యులందరూ",
                               textAlign: TextAlign.start,
                               style: TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.normal),
                             ),
@@ -2049,13 +2059,13 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
                       },
                       child: Container(
                         padding: const EdgeInsets.only(left: 25, right: 25, top: 15, bottom: 15),
-                        child: const Row(
+                        child:  Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.start,
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             Text(
-                              "Single Voter",
+                              isLanguageEnglish() ? "Single Voter" : "ఒకే ఓటరు",
                               textAlign: TextAlign.start,
                               style: TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.normal),
                             ),
@@ -2155,7 +2165,7 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
     } else if (isFor == 3) {
       title = "Enter Address";
     } else if (isFor == 4) {
-      title = "Enter Aadhar Number";
+      title = "Enter Aadhaar Number";
     } else if (isFor == 5) {
       title = "Enter EmailAddress";
     } else if (isFor == 6) {
@@ -2275,14 +2285,21 @@ class _VoterDetailsPage extends BaseState<VoterDetailsPage> {
     String shareText = "";
     String acNo = "";
     acNo = voterDataItem.acNo.toString() + " " + voterDataItem.acNameEn.toString();
-    shareText = "Telangana Assembly Election 2023\n" +
+    shareText = isLanguageEnglish() ? "Telangana Assembly Election 2023\n" +
         "${acNo}\n\n" +
         "Sr No : ${voterDataItem.slnoinpart.toString()}\n" +
         "Name : ${voterDataItem.fullNameEn.toString()}\n" +
         "Gender/Age : ${voterDataItem.gender}/${voterDataItem.age}\n" +
         "Booth Name : ${checkValidString(voterDataItem.partNo.toString())} - ${checkValidString(voterDataItem.partNameEn.toString())}\n" +
         "Address : ${voterDataItem.psbuildingNameEn}, ${voterDataItem.tahsilNameEn}\n\n" +
-        "From Congress Party";
+        "From Congress Party" : "తెలంగాణ అసెంబ్లీ ఎన్నికలు 2023\n" +
+        "${acNo}\n\n" +
+        "శ్రీ నం : ${voterDataItem.slnoinpart.toString()}\n" +
+        "పేరు : ${voterDataItem.fullNameV1.toString()}\n" +
+        "లింగం/వయస్సు : ${voterDataItem.gender}/${voterDataItem.age}\n" +
+        "బూత్ పేరు : ${checkValidString(voterDataItem.partNo.toString())} - ${checkValidString(voterDataItem.partNameV1.toString())}\n" +
+        "చిరునామా : ${voterDataItem.psbuildingNameV1}, ${voterDataItem.tahsilNameV1}\n\n" +
+        "కాంగ్రెస్ పార్టీ నుంచి";
     return shareText;
   }
 

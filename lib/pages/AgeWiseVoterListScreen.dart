@@ -40,13 +40,15 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
   bool isScrollingDown = false;
 
   String filterBoothName = "All Booth";
+  String filterBoothNameTitle = isLanguageEnglish() ? "All Booth" : "అన్ని బూత్";
   String filterBoothPartNo = "";
-
-  String searchHint = "Search by name...";
+  String searchHint = isLanguageEnglish() ? "Search by name..." : "పేరు ద్వారా శోధించండి...";
   String searchParam = "";
-
   String fromAge = "From";
   String toAge = "To";
+
+  String fromAgeTitle = isLanguageEnglish() ? "From" : "నుండి";
+  String toAgeTitle = isLanguageEnglish() ? "To" : "కు";
 
   final TextEditingController _searchController = TextEditingController();
   FocusNode inputNode = FocusNode();
@@ -118,7 +120,7 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
                 ),
               ),
               const Gap(12),
-              getTitle("Age Wise"),
+              getTitle(isLanguageEnglish() ? "Age Wise" : "వయస్సు వారీగా"),
             ],
           ),
           actions: [
@@ -165,13 +167,19 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
                   child: Container(
                     margin: const EdgeInsets.only(left: 10),
                     child: Text(
-                      listBooth.length == 1 ? "Booth Name" : "Select Booth",
+                      listBooth.length == 1
+                          ? isLanguageEnglish()
+                          ? "Booth Name"
+                          : "బూత్ పేరు"
+                          : isLanguageEnglish()
+                          ? "Select Booth"
+                          : "బూత్ ఎంచుకోండి",
                       overflow: TextOverflow.clip,
                       style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                     ),
                   )),
               Container(
-                margin: const EdgeInsets.only(left: 8,right: 8),
+                margin: const EdgeInsets.only(left: 8, right: 8),
                 child: Text(
                   ":",
                   overflow: TextOverflow.clip,
@@ -181,39 +189,39 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
               Expanded(
                   flex: 3,
                   child: GestureDetector(
-                    onTap: (){
-                      if(listBooth.isNotEmpty)
-                      {
-                        if(listBooth.length >1)
-                        {
+                    onTap: () {
+                      if (listBooth.isNotEmpty) {
+                        if (listBooth.length > 1) {
                           _showSelectionDialog(2);
                         }
-                      }
-                      else
-                      {
+                      } else {
                         showToast("Data not found.", context);
                       }
                     },
                     child: Container(
                       alignment: Alignment.center,
-                      margin: const EdgeInsets.only(right: 10,top: 6,bottom: 6),
+                      margin: const EdgeInsets.only(right: 10, top: 6, bottom: 6),
                       child: Column(
                         children: [
-                          Padding(padding: EdgeInsets.only(top: 6,bottom: 6),
+                          Padding(
+                              padding: EdgeInsets.only(top: 6, bottom: 6),
                               child: Row(
                                 children: [
                                   Gap(10),
-                                  Expanded(child: Text(
-                                    "$filterBoothPartNo - $filterBoothName",
-                                    overflow: TextOverflow.clip,
-                                    style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
-                                  )),
-                                  Visibility(visible: listBooth.length >1, child: Image.asset(
-                                    'assets/images/ic_arrow_down.png',
-                                    width: 14,
-                                    height: 14,
-                                    color: white,
-                                  )),
+                                  Expanded(
+                                      child: Text(
+                                        "$filterBoothPartNo - $filterBoothNameTitle",
+                                        overflow: TextOverflow.clip,
+                                        style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
+                                      )),
+                                  Visibility(
+                                      visible: listBooth.length > 1,
+                                      child: Image.asset(
+                                        'assets/images/ic_arrow_down.png',
+                                        width: 14,
+                                        height: 14,
+                                        color: white,
+                                      )),
                                   const Gap(10)
                                 ],
                               )),
@@ -233,7 +241,7 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
                   child: Container(
                     margin: const EdgeInsets.only(left: 10),
                     child: Text(
-                      "Select Age",
+                      isLanguageEnglish() ? "Select Age" : "వయస్సును ఎంచుకోండి",
                       overflow: TextOverflow.clip,
                       style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                     ),
@@ -271,7 +279,7 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
                                     children: [
                                       Gap(10),
                                       Expanded(child: Text(
-                                        fromAge,
+                                        fromAgeTitle,
                                         overflow: TextOverflow.clip,
                                         style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                                       )),
@@ -313,7 +321,7 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
                                     children: [
                                       Gap(10),
                                       Expanded(child: Text(
-                                        toAge,
+                                        toAgeTitle,
                                         overflow: TextOverflow.clip,
                                         style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                                       )),
@@ -472,7 +480,7 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                              toDisplayCase(listVoters[index].fullNameEn.toString().trim()),
+                              toDisplayCase(isLanguageEnglish() ? listVoters[index].fullNameEn.toString().trim() : listVoters[index].fullNameV1.toString().trim()),
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSizeSmall),
                             ),
@@ -535,6 +543,7 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
                 listBooth.addAll(boothListData);
                 filterBoothName = listBooth[0].partNameEn.toString().trim();
                 filterBoothPartNo = listBooth[0].partNo.toString().trim();
+                filterBoothNameTitle = isLanguageEnglish() ? listBooth[0].partNameEn.toString().trim() : listBooth[0].partNameV1.toString().trim();
               });
             }
           }
@@ -663,6 +672,7 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
                                     {
                                       filterBoothName = checkValidString(listBooth[index].partNameEn.toString());
                                       filterBoothPartNo = checkValidString(listBooth[index].partNo.toString().trim());
+                                      filterBoothNameTitle = isLanguageEnglish() ? listBooth[index].partNameEn.toString().trim() : listBooth[index].partNameV1.toString().trim();
                                       Navigator.pop(context);
                                       Timer(const Duration(milliseconds: 300), () =>  getFirstPage(false));
                                     }
@@ -672,7 +682,9 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
                                     if (listFromAge[index].toString() != fromAge)
                                     {
                                       fromAge = checkValidString(listFromAge[index].toString());
+                                      fromAgeTitle = checkValidString(listFromAge[index].toString());
                                       toAge = "To";
+                                      toAgeTitle = "To";
                                       Navigator.pop(context);
                                       Timer(const Duration(milliseconds: 300), () =>  getFirstPage(false));
                                     }
@@ -686,6 +698,7 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
                                           if(int.parse(listToAge[index].toString()) >= int.parse(fromAge))
                                           {
                                             toAge = checkValidString(listToAge[index].toString());
+                                            toAgeTitle = checkValidString(listToAge[index].toString());
                                             Navigator.pop(context);
                                             Timer(const Duration(milliseconds: 300), () =>  getFirstPage(false));
                                           }
@@ -696,6 +709,7 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
                                       else
                                         {
                                           toAge = checkValidString(listToAge[index].toString());
+                                          toAgeTitle = checkValidString(listToAge[index].toString());
                                           Navigator.pop(context);
                                           Timer(const Duration(milliseconds: 300), () =>  getFirstPage(false));
                                         }
@@ -774,14 +788,10 @@ class _AgeWiseVoterListScreen extends BaseState<AgeWiseVoterListScreen> {
 
 
   void setStaticListData() {
-    listFromAge.add("From");
-
     for(int i=18; i<= 100 ;i++)
       {
         listFromAge.add(i.toString());
       }
-
-    listToAge.add("To");
 
     for(int i=18; i<= 100 ;i++)
     {

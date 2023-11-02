@@ -15,7 +15,6 @@ abstract class BaseState<T extends StatefulWidget> extends State {
   final Connectivity _connectivity = Connectivity();
   StreamSubscription<ConnectivityResult>? _connectivitySubscription;
   SessionManager sessionManager = SessionManager();
-
   /// the internet connectivity status
   bool isOnline = true;
   bool isInternetConnected = true;

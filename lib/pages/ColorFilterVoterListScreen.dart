@@ -35,6 +35,7 @@ class _ColorFilterVoterListScreen extends BaseState<ColorFilterVoterListScreen> 
   ScrollController _scrollViewController = ScrollController();
   bool isScrollingDown = false;
   String filterBoothName = "All Booth";
+  String filterBoothNameTitle = isLanguageEnglish() ? "All Booth" : "అన్ని బూత్";
   String filterBoothPartNo = "";
 
   @override
@@ -73,7 +74,7 @@ class _ColorFilterVoterListScreen extends BaseState<ColorFilterVoterListScreen> 
                 ),
               ),
               const Gap(12),
-              getTitle("Color Wise"),
+              getTitle(isLanguageEnglish() ? "Color Wise" : "రంగు వైజ్"),
             ],
           ),
           actions: [
@@ -104,13 +105,19 @@ class _ColorFilterVoterListScreen extends BaseState<ColorFilterVoterListScreen> 
             children: [
               Expanded(
                   child: Container(
-                margin: const EdgeInsets.only(left: 10),
-                child: Text(
-                  listBooth.length == 1 ? "Booth Name" : "Select Booth",
-                  overflow: TextOverflow.clip,
-                  style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
-                ),
-              )),
+                    margin: const EdgeInsets.only(left: 10),
+                    child: Text(
+                      listBooth.length == 1
+                          ? isLanguageEnglish()
+                          ? "Booth Name"
+                          : "బూత్ పేరు"
+                          : isLanguageEnglish()
+                          ? "Select Booth"
+                          : "బూత్ ఎంచుకోండి",
+                      overflow: TextOverflow.clip,
+                      style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
+                    ),
+                  )),
               Container(
                 margin: const EdgeInsets.only(left: 8, right: 8),
                 child: Text(
@@ -143,10 +150,10 @@ class _ColorFilterVoterListScreen extends BaseState<ColorFilterVoterListScreen> 
                                   Gap(10),
                                   Expanded(
                                       child: Text(
-                                        filterBoothPartNo + " - " +filterBoothName,
-                                    overflow: TextOverflow.clip,
-                                    style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
-                                  )),
+                                        "$filterBoothPartNo - $filterBoothNameTitle",
+                                        overflow: TextOverflow.clip,
+                                        style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
+                                      )),
                                   Visibility(
                                       visible: listBooth.length > 1,
                                       child: Image.asset(
@@ -195,7 +202,7 @@ class _ColorFilterVoterListScreen extends BaseState<ColorFilterVoterListScreen> 
                           child: Padding(
                             padding: const EdgeInsets.only(top: 10, bottom: 10),
                             child: Text(
-                              "Color List",
+                              isLanguageEnglish() ? "Color List" : "రంగు జాబితా",
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
                             ),
@@ -209,7 +216,7 @@ class _ColorFilterVoterListScreen extends BaseState<ColorFilterVoterListScreen> 
                           child: Padding(
                             padding: const EdgeInsets.only(top: 10, bottom: 10),
                             child: Text(
-                              "Total Qty",
+                              isLanguageEnglish() ? "Total Qty" : "మొత్తం క్యూటీ",
                               textAlign: TextAlign.center,
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSize),
@@ -260,7 +267,7 @@ class _ColorFilterVoterListScreen extends BaseState<ColorFilterVoterListScreen> 
                                 child: Padding(
                                   padding: const EdgeInsets.only(top: 10, bottom: 10),
                                   child: Text(
-                                    checkValidString(colorCodeList[index].colorNameEn),
+                                    checkAndSetColorName(colorCodeList[index]),
                                     overflow: TextOverflow.clip,
                                     style: TextStyle(color: black, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                                   ),
@@ -307,6 +314,7 @@ class _ColorFilterVoterListScreen extends BaseState<ColorFilterVoterListScreen> 
             listBooth.addAll(boothListData);
             filterBoothName = listBooth[0].partNameEn.toString().trim();
             filterBoothPartNo = listBooth[0].partNo.toString().trim();
+            filterBoothNameTitle = isLanguageEnglish() ? listBooth[0].partNameEn.toString().trim() : listBooth[0].partNameV1.toString().trim();
           });
         }
       }
@@ -385,6 +393,7 @@ class _ColorFilterVoterListScreen extends BaseState<ColorFilterVoterListScreen> 
                                     if (listBooth[index].partNameEn.toString() != filterBoothName) {
                                       filterBoothName = checkValidString(listBooth[index].partNameEn.toString());
                                       filterBoothPartNo = checkValidString(listBooth[index].partNo.toString().trim());
+                                      filterBoothNameTitle = isLanguageEnglish() ? listBooth[index].partNameEn.toString().trim() : listBooth[index].partNameV1.toString().trim();
                                       Navigator.pop(context);
                                       Timer(const Duration(milliseconds: 300), () => getCountFromCode());
                                     }
@@ -433,5 +442,27 @@ class _ColorFilterVoterListScreen extends BaseState<ColorFilterVoterListScreen> 
   @override
   void castStatefulWidget() {
     widget is ColorFilterVoterListScreen;
+  }
+
+  String checkAndSetColorName(Colorcode colorCodeList) {
+
+    String data = "";
+    if(isLanguageEnglish())
+      {
+        if(colorCodeList.colorNameV1 == null || checkValidString(colorCodeList.colorNameV1).toString().isEmpty)
+          {
+            data = checkValidString(colorCodeList.colorNameEn);
+
+          }
+        else
+          {
+            data = checkValidString(colorCodeList.colorNameV1);
+          }
+      }
+    else
+      {
+        data = checkValidString(colorCodeList.colorNameEn);
+      }
+    return data;
   }
 }

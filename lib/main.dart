@@ -15,6 +15,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SessionManagerNew.init();
   PaintingBinding.instance.imageCache.maximumSizeBytes = 2000 << 40; // for increase the cache memory
+
   runApp(const MyApp());
 }
 
@@ -72,10 +73,13 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+
     doSomeAsyncStuff();
   }
 
   Future<void> doSomeAsyncStuff() async {
+
+
     try {
       WidgetsFlutterBinding.ensureInitialized();
       isLoggedIn = sessionManager.checkIsLoggedIn() ?? false;

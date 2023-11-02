@@ -140,6 +140,52 @@ class DbHelper {
       for (var voter in voters)
       {
         voter.totalCount = 0;
+
+        if(voter.fullNameV1 == null || checkValidString(voter.fullNameV1).isEmpty)
+          {
+            voter.fullNameV1 = checkValidString(voter.fullNameEn);
+          }
+
+        if(voter.pcnameV1 == null || checkValidString(voter.pcnameV1).isEmpty)
+        {
+          voter.pcnameV1 = checkValidString(voter.pcnameEn);
+        }
+
+        if(voter.acNameV1 == null || checkValidString(voter.acNameV1).isEmpty)
+        {
+          voter.acNameV1 = checkValidString(voter.acNameEn);
+        }
+
+        if(voter.sectionNameV1 == null || checkValidString(voter.sectionNameV1).isEmpty)
+        {
+          voter.sectionNameV1 = checkValidString(voter.sectionNameEn);
+        }
+
+        if(voter.postoffNameV1 == null || checkValidString(voter.postoffNameV1).isEmpty)
+        {
+          voter.postoffNameV1 = checkValidString(voter.postoffNameEn);
+        }
+
+        if(voter.partNameV1 == null || checkValidString(voter.partNameV1).isEmpty)
+        {
+          voter.partNameV1 = checkValidString(voter.partNameEn);
+        }
+
+        if(voter.psbuildingNameV1 == null || checkValidString(voter.psbuildingNameV1).isEmpty)
+        {
+          voter.psbuildingNameV1 = checkValidString(voter.psbuildingNameEn);
+        }
+
+        if(voter.tahsilNameV1 == null || checkValidString(voter.tahsilNameV1).isEmpty)
+        {
+          voter.tahsilNameV1 = checkValidString(voter.tahsilNameEn);
+        }
+
+        if(voter.policestNameV1 == null || checkValidString(voter.policestNameV1).isEmpty)
+        {
+          voter.policestNameV1 = checkValidString(voter.policestNameEn);
+        }
+
         batch.insert(_TABLE_VOTERS, voter.toJson(),conflictAlgorithm: ConflictAlgorithm.replace);
       }
       batch.commit();
@@ -361,7 +407,7 @@ class DbHelper {
     List<Voters>? listItem = List<Voters>.empty(growable: true);
     try {
       final db = await database;
-      var response = await db?.rawQuery('SELECT DISTINCT partNameEn,partNo FROM voters ORDER BY partNameEn');
+      var response = await db?.rawQuery('SELECT DISTINCT partNameEn,partNo,partNameV1 FROM voters ORDER BY partNameEn');
       if(response !=null)
       {
         int count = response.length;
@@ -370,7 +416,11 @@ class DbHelper {
           {
             if(checkValidString(response[i]['partNameEn'].toString()) != "0")
             {
-              Voters votersItem = Voters(partNameEn: response[i]['partNameEn'].toString(),partNo: int.parse(response[i]['partNo'].toString()));
+              Voters votersItem = Voters(
+                  partNameEn: response[i]['partNameEn'].toString(),
+                  partNameV1: response[i]['partNameV1'].toString(),
+                  partNo: int.parse(response[i]['partNo'].toString()),
+                  );
               listItem.add(votersItem);
             }
           }

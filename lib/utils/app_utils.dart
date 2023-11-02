@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 import 'package:congress_app/utils/session_manager.dart';
 import 'package:flutter/foundation.dart';
@@ -6,12 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:regexed_validator/regexed_validator.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:share_whatsapp/share_whatsapp.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:whatsapp_share2/whatsapp_share2.dart';
 import '../constant/colors.dart';
 import '../constant/global_context.dart';
+
 
 /*show message to user*/
 showSnackBar(String? message, BuildContext? context) {
@@ -521,12 +524,27 @@ makePhoneCall(String phoneNumber) async {
   await launchUrl(launchUri);
 }
 
+
 whatsapp(String conatctNo,String text,BuildContext? context)
 async{
-  await WhatsappShare.share(
+  final bytes = await rootBundle.load(isLanguageEnglish() ? 'assets/images/ic_share_en.jpeg' : 'assets/images/ic_share_te.jpeg');
+  final list = bytes.buffer.asUint8List();
+  final tempDir = await getTemporaryDirectory();
+  final file = await File('${tempDir.path}/image.jpeg').create();
+  file.writeAsBytesSync(list);
+  var xfile  = XFile(file.path);
+  shareWhatsapp.share(text: text, file: xfile,phone: conatctNo);
+
+  /* await WhatsappShare.shareFile(
+      filePath: [file.path],
+      phone: conatctNo,
+      text: "er"
+  );*/
+
+ /* await WhatsappShare.share(
     text: text,
     phone: conatctNo,
-  );
+  );*/
 
  /* final bytes = await rootBundle.load('assets/images/ic_logo.jpg');
   final list = bytes.buffer.asUint8List();

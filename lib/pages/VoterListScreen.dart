@@ -41,9 +41,10 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
   bool isScrollingDown = false;
 
   String filterBoothName = "All Booth";
+  String filterBoothNameTitle = isLanguageEnglish() ? "All Booth" : "అన్ని బూత్";
   String filterBoothPartNo = "";
-  String filterSearchBy = "Name-Regular Search";
-  String searchHint = "Search by name...";
+  String filterSearchBy = isLanguageEnglish() ? "Name-Regular Search" : "పేరు-సాధారణ శోధన";
+  String searchHint = isLanguageEnglish() ? "Search by name..." : "పేరు ద్వారా శోధించండి...";
   String searchParam = "";
   String vistedVoterFilter = "";
 
@@ -108,8 +109,8 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
           title: Row(
             children: [
               GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
+                onTap: () async {
+                   Navigator.pop(context);
                 },
                 child: Image.asset(
                   'assets/images/ic_logo.jpg',
@@ -118,7 +119,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
                 ),
               ),
               const Gap(12),
-              getTitle(vistedVoterFilter.isEmpty ? "All Voter List" : vistedVoterFilter),
+              getTitle(vistedVoterFilter.isEmpty ? isLanguageEnglish() ? "All Voter List" : "మొత్తం ఓటర్ల" : getTitleText(vistedVoterFilter)),
             ],
           ),
           actions: [],
@@ -210,7 +211,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
                                   Gap(10),
                                   Expanded(
                                       child: Text(
-                                    "$filterBoothPartNo - $filterBoothName",
+                                    "$filterBoothPartNo - $filterBoothNameTitle",
                                     overflow: TextOverflow.clip,
                                     style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                                   )),
@@ -241,7 +242,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
                   child: Container(
                 margin: const EdgeInsets.only(left: 10),
                 child: Text(
-                  "Search By",
+                      isLanguageEnglish() ? "Search By" : "ద్వారా శోధించండి",
                   overflow: TextOverflow.clip,
                   style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSizeSmall),
                 ),
@@ -427,7 +428,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                              toDisplayCase(listVoters[index].fullNameEn.toString().trim()),
+                              toDisplayCase(isLanguageEnglish() ? listVoters[index].fullNameEn.toString().trim() : listVoters[index].fullNameV1.toString().trim()),
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSizeSmall),
                             ),
@@ -489,6 +490,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
               listBooth.addAll(boothListData);
               filterBoothName = listBooth[0].partNameEn.toString().trim();
               filterBoothPartNo = listBooth[0].partNo.toString().trim();
+              filterBoothNameTitle = isLanguageEnglish() ? listBooth[0].partNameEn.toString().trim() : listBooth[0].partNameV1.toString().trim();
             });
           }
         }
@@ -558,9 +560,10 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
     if (isFor == 1) {
       title = "Select Mandal";
     } else if (isFor == 2) {
-      title = "Select Booth";
-    } else if (isFor == 3) {
-      title = "Select Search By";
+      title = isLanguageEnglish() ?  "Select Booth" : "బూత్ ఎంచుకోండి";
+    }
+    else if (isFor == 3) {
+      title = isLanguageEnglish() ? "Select Search By" : "దీని ద్వారా శోధించండి ఎంచుకోండి";
     }
 
     showModalBottomSheet(
@@ -607,6 +610,7 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
                                     if (listBooth[index].partNameEn.toString() != filterBoothName) {
                                       filterBoothName = checkValidString(listBooth[index].partNameEn.toString());
                                       filterBoothPartNo = checkValidString(listBooth[index].partNo.toString());
+                                      filterBoothNameTitle = isLanguageEnglish() ? listBooth[index].partNameEn.toString().trim() : listBooth[index].partNameV1.toString().trim();
                                       Navigator.pop(context);
                                       Timer(const Duration(milliseconds: 300), () => getFirstPage(false));
                                     }
@@ -621,16 +625,25 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
                                           Timer(const Duration(milliseconds: 300), () => getFirstPage(false));
                                         }
 
-                                        if (filterSearchBy == "Name-Regular Search") {
-                                          searchHint = "Search by name...";
-                                        } else if (filterSearchBy == "SRNO") {
-                                          searchHint = "Search by srno...";
-                                        } else if (filterSearchBy == "CardNo") {
-                                          searchHint = "Search by card no...";
-                                        } else if (filterSearchBy == "MobileNo") {
-                                          searchHint = "Search by mobile no...";
-                                        } else if (filterSearchBy == "Name-Match Case") {
-                                          searchHint = "Search by name match case...";
+                                        if(filterSearchBy == "Name-Regular Search" || filterSearchBy == "పేరు-సాధారణ శోధన")
+                                        {
+                                          searchHint = isLanguageEnglish() ? "Search by name..." : "పేరు ద్వారా శోధించండి...";
+                                        }
+                                        else  if(filterSearchBy == "SRNO")
+                                        {
+                                          searchHint = isLanguageEnglish() ? "Search by srno..." : "srno ద్వారా శోధించండి...";
+                                        }
+                                        else  if(filterSearchBy == "CardNo" || filterSearchBy == "కార్డు నెంబరు")
+                                        {
+                                          searchHint = isLanguageEnglish() ? "Search by card no..." : "కార్డ్ నంబర్ ద్వారా శోధించండి...";
+                                        }
+                                        else  if(filterSearchBy == "MobileNo" || filterSearchBy == "మొబైల్ నెం")
+                                        {
+                                          searchHint = isLanguageEnglish() ? "Search by mobile no..." : "మొబైల్ నంబర్ ద్వారా శోధించండి...";
+                                        }
+                                        else if(filterSearchBy == "Name-Match Case" || filterSearchBy == "పేరు-మ్యాచ్ కేస్")
+                                        {
+                                          searchHint = isLanguageEnglish() ? "Search by name match case..." : "పేరు మ్యాచ్ కేస్ ద్వారా శోధించండి...";
                                         }
                                       }
                                     });
@@ -692,11 +705,11 @@ class _VoterListScreen extends BaseState<VoterListScreen> {
   }
 
   void setStaticListData() {
-    listSearchBy.add("Name-Regular Search");
-    listSearchBy.add("SRNO");
-    listSearchBy.add("CardNo");
-    listSearchBy.add("MobileNo");
-    listSearchBy.add("Name-Match Case");
+    listSearchBy.add(isLanguageEnglish() ? "Name-Regular Search" : "పేరు-సాధారణ శోధన");
+    listSearchBy.add(isLanguageEnglish() ? "SRNO" : "SRNO");
+    listSearchBy.add(isLanguageEnglish() ? "CardNo" : "కార్డు నెంబరు" );
+    listSearchBy.add(isLanguageEnglish() ? "MobileNo" : "మొబైల్ నెం" );
+    listSearchBy.add(isLanguageEnglish() ? "Name-Match Case" : "పేరు-మ్యాచ్ కేస్");
   }
 
   getTitleText(String vistedVoterFilter) {

@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'package:congress_app/pages/VoterDetailsPage.dart';
 import 'package:congress_app/utils/no_data.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:lottie/lottie.dart';
 import '../constant/colors.dart';
@@ -25,6 +23,7 @@ class FilterByValueVoterListScreen extends StatefulWidget {
 
   @override
   _FilterByValueVoterListScreen createState() => _FilterByValueVoterListScreen();
+
 }
 
 class _FilterByValueVoterListScreen extends BaseState<FilterByValueVoterListScreen> {
@@ -38,13 +37,12 @@ class _FilterByValueVoterListScreen extends BaseState<FilterByValueVoterListScre
   final int _pageResult = 200;
   bool _isLastPage = false;
   bool isScrollingDown = false;
-  String searchHint = "Search by name...";
+  String searchHint = isLanguageEnglish() ? "Search by name..." : "పేరు ద్వారా శోధించండి...";
   String searchParam = "";
   String filterType = "";
   String filterValue = "";
   String title = "";
   String boothId = "";
-
   final TextEditingController _searchController = TextEditingController();
   FocusNode inputNode = FocusNode();
 
@@ -293,7 +291,7 @@ class _FilterByValueVoterListScreen extends BaseState<FilterByValueVoterListScre
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
-                              toDisplayCase(listVoters[index].fullNameEn.toString().trim()),
+                              toDisplayCase(isLanguageEnglish() ? listVoters[index].fullNameEn.toString().trim() : listVoters[index].fullNameV1.toString().trim()),
                               overflow: TextOverflow.clip,
                               style: TextStyle(color: black, fontWeight: FontWeight.w600, fontSize: contentSizeSmall),
                             ),

@@ -112,7 +112,7 @@ class _HomePage extends BaseState<HomePage> {
                 child: Column(
                   children: [
                     Text(
-                      "Telangana Assembly Election - 2023",
+                      isLanguageEnglish() ? "Telangana Assembly Election - 2023" : "తెలంగాణ అసెంబ్లీ ఎన్నికలు - 2023",
                       overflow: TextOverflow.clip,
                       style: TextStyle(color: white, fontWeight: FontWeight.w500, fontSize: contentSize),
                     ),
@@ -168,19 +168,19 @@ class _HomePage extends BaseState<HomePage> {
               startActivity(context,  const VoterListScreen("Non-Visited Voters"));
             }
             else if (menuList[index].id == 5) {
-              startActivity(context,  const WiseFilterVoterListScreen("House No Wise"));
+              startActivity(context, WiseFilterVoterListScreen("House No Wise",isLanguageEnglish() ? "House No Wise" : "హౌస్ నో వైజ్"));
             }
             else if (menuList[index].id == 6) {
-              startActivity(context,  const WiseFilterVoterListScreen("Address Wise"));
+              startActivity(context,  WiseFilterVoterListScreen("Address Wise",isLanguageEnglish() ? "Address Wise" : "చిరునామా వైజ్"));
             }
             else if (menuList[index].id == 7) {
               startActivity(context,  const AgeWiseVoterListScreen());
             }
             else if (menuList[index].id == 8) {
-              startActivity(context,  const WiseFilterVoterListScreen("Duplicate Voters"));
+              startActivity(context,  WiseFilterVoterListScreen("Duplicate Voters",isLanguageEnglish() ? "Duplicate Voters" : "నకిలీ ఓటర్లు"));
             }
             else if (menuList[index].id == 9) {
-              startActivity(context,  const WiseFilterVoterListScreen("Family Wise"));
+              startActivity(context,  WiseFilterVoterListScreen("Family Wise",isLanguageEnglish() ? "Family Wise" : "ఫ్యామిలీ వైజ్"));
             }
             else if (menuList[index].id == 10) {
               startActivity(context,  const ColorFilterVoterListScreen());
@@ -483,9 +483,13 @@ class _HomePage extends BaseState<HomePage> {
       }
       titledata = "$acNo - $acName";
     }
+
   }
 
   void setMenuList() {
+
+
+
     menuList = [];
     menuList = [
       MenuGetSet(idStatic : 1,nameStatic: isLanguageEnglish() ? "All Voters" : "మొత్తం ఓటర్లు", itemIconStatic: "assets/images/ic_voters.png"),
