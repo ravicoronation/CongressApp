@@ -30,9 +30,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final dbHelper = DbHelper.instance;
 
   @override
-  SessionManager sessionManager = SessionManager();
-
-  @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       openKeyboard();
