@@ -69,7 +69,6 @@ String getPrice(String text) {
   }
 }
 
-
 getCommonCard() {
   return BoxDecoration(
     color: white,
@@ -206,7 +205,6 @@ noInterNet(BuildContext? context) {
     }
   }
 }
-
 
 apiFailed(BuildContext? context) {
   try {

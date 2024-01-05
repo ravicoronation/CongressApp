@@ -9,13 +9,25 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:workmanager/workmanager.dart';
 import 'constant/colors.dart';
+
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
+    print("<><> TASK :: Voter sync data was executed MAIN :: " + formattedDate.toString() + "");
+    return Future.value(true);
+  });
+}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SessionManagerNew.init();
   PaintingBinding.instance.imageCache.maximumSizeBytes = 2000 << 40; // for increase the cache memory
-
+  Workmanager().initialize(callbackDispatcher,isInDebugMode: true);
   runApp(const MyApp());
 }
 
@@ -73,7 +85,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-
     doSomeAsyncStuff();
   }
 

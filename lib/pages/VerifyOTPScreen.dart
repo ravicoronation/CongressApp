@@ -8,7 +8,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import '../constant/api_end_point.dart';
 import '../constant/colors.dart';
 import '../model/LoginResponse.dart';
-import '../model/SendOTPResponse.dart';
+import '../model/SendOtpResponse.dart';
 import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
 import '../utils/common_widget.dart';
@@ -345,17 +345,15 @@ class _VerifyOTPScreenState extends BaseState<VerifyOTPScreen> {
     });
      String otpTemp = getRandomOTP();
     print("<><> MY OTP ::: "+ otpTemp + "<><>");
-    var urlCreate = "https://m1.sarv.com/api/v2.0/sms_campaign.php?token=93687785652fa4fc164756.47592024&user_id=58641649&route=OT&template_id=12546&sender_id=TPCCCR&language=EN&template=Dear+User%2C+OTP+to+log+in+to+your+account+is+$otpTemp.+This+OTP+will+be+valid+for+the+next+5+mins.%0D%0ATPCCCR&contact_numbers=${loginData.workerPhone}";
+    var urlCreate = "https://smslogin.co/v3/api.php?username=tsincapi&apikey=a033fc3b4ff32463c572&senderid=TPCCCR&mobile=${loginData.workerPhone}&message=Dear+User%2C+OTP+to+log+in+to+your+account+is+$otpTemp.+This+OTP+will+be+valid+for+the+next+5+mins.%0D%0ATPCCCR";
     final url = Uri.parse(urlCreate);
     var request = http.MultipartRequest('GET', url);
     request.fields.addAll({'token': Token});
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       final body = await response.stream.bytesToString();
-      Map<String, dynamic> user = jsonDecode(body);
       final statusCode = response.statusCode;
-      var dataResponse = SendOtpResponse.fromJson(user);
-      if (checkValidString(dataResponse.msg) == "success" && dataResponse.code == 200) {
+      if (statusCode == 200) {
         try {
            otp = otpTemp;
         } catch (e) {

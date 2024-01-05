@@ -6,6 +6,8 @@ import 'package:congress_app/utils/session_manager_new.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
+import 'package:workmanager/workmanager.dart';
 import '../constant/colors.dart';
 import '../constant/global_context.dart';
 import '../local_storage/db_helper.dart';
@@ -73,7 +75,6 @@ class _HomePage extends BaseState<HomePage> {
               ),
               const Gap(12),
               getTitle("Congress Party"),
-
             ],
           ),
           actions: [
@@ -92,7 +93,17 @@ class _HomePage extends BaseState<HomePage> {
             InkWell(
               customBorder: const CircleBorder(),
               onTap: () async {
-                showActionDialog();
+             //   showActionDialog();
+                DateTime now = DateTime.now();
+                String formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
+                print("<><> TASK :: Voter sync data was executed HOME :: " + formattedDate.toString() + "");
+                Workmanager().registerPeriodicTask(
+                  "periodic-task-identifier",
+                  "simplePeriodicTask",
+                  // When no frequency is provided the default 15 minutes is set.
+                  // Minimum frequency is 15 min. Android will automatically change your frequency to 15 min if you have configured a lower frequency.
+                  frequency: const Duration(minutes:15)
+                );
               },
               child: Container(
                 width: 40,
@@ -146,49 +157,61 @@ class _HomePage extends BaseState<HomePage> {
 
   setProjectList() {
     return GridView.builder(
-      gridDelegate:
-          const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisExtent: 100,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisExtent: 100,
               crossAxisSpacing: 10, mainAxisSpacing: 10),
       itemCount: menuList.length,
       scrollDirection: Axis.vertical,
       itemBuilder: (BuildContext context, int index) {
         return InkWell(
           hoverColor: Colors.white.withOpacity(0.0),
-          onTap: () async {
-            if (menuList[index].id == 1) {
+          onTap: () async
+          {
+            if (menuList[index].id == 1)
+            {
               startActivity(context,  const VoterListScreen(""));
             }
-            else if (menuList[index].id == 2) {
+            else if (menuList[index].id == 2)
+            {
               startActivity(context,  const SearchVoterListScreen());
             }
-            else if (menuList[index].id == 3) {
+            else if (menuList[index].id == 3)
+            {
               startActivity(context,  const VoterListScreen("Visited Voters"));
             }
-            else if (menuList[index].id == 4) {
+            else if (menuList[index].id == 4)
+            {
               startActivity(context,  const VoterListScreen("Non-Visited Voters"));
             }
-            else if (menuList[index].id == 5) {
+            else if (menuList[index].id == 5)
+            {
               startActivity(context, WiseFilterVoterListScreen("House No Wise",isLanguageEnglish() ? "House No Wise" : "హౌస్ నో వైజ్"));
             }
-            else if (menuList[index].id == 6) {
+            else if (menuList[index].id == 6)
+            {
               startActivity(context,  WiseFilterVoterListScreen("Address Wise",isLanguageEnglish() ? "Address Wise" : "చిరునామా వైజ్"));
             }
-            else if (menuList[index].id == 7) {
+            else if (menuList[index].id == 7)
+            {
               startActivity(context,  const AgeWiseVoterListScreen());
             }
-            else if (menuList[index].id == 8) {
+            else if (menuList[index].id == 8)
+            {
               startActivity(context,  WiseFilterVoterListScreen("Duplicate Voters",isLanguageEnglish() ? "Duplicate Voters" : "నకిలీ ఓటర్లు"));
             }
-            else if (menuList[index].id == 9) {
+            else if (menuList[index].id == 9)
+            {
               startActivity(context,  WiseFilterVoterListScreen("Family Wise",isLanguageEnglish() ? "Family Wise" : "ఫ్యామిలీ వైజ్"));
             }
-            else if (menuList[index].id == 10) {
+            else if (menuList[index].id == 10)
+            {
               startActivity(context,  const ColorFilterVoterListScreen());
             }
-            else if (menuList[index].id == 11) {
+            else if (menuList[index].id == 11)
+            {
               startActivity(context,  const FavVoterListScreen());
             }
-            else if (menuList[index].id == 12) {
+            else if (menuList[index].id == 12)
+            {
               startActivity(context,  const AddNewVoterScreen());
             }
           },

@@ -41,14 +41,14 @@ dependencies:
   pretty_http_logger:
   shared_preferences: ^2.0.12
   intl:
-  connectivity_plus:
+  connectivity_plus: ^5.0.1
   lottie:
   photo_view:
   smooth_page_indicator: ^1.0.0+2
   share_plus:
-  firebase_messaging: ^14.0.3
-  firebase_auth: ^4.12.1
-  firebase_core: ^2.21.0
+  firebase_messaging:
+  firebase_auth:
+  firebase_core:
   flutter_local_notifications: ^9.5.3+1
   url_launcher:
   gap: ^3.0.0
@@ -61,6 +61,7 @@ dependencies:
   regexed_validator: ^2.0.0+1
   progressive_image: ^2.0.1
   share_whatsapp: ^1.0.2
+  workmanager:
 
 dev_dependencies:
   flutter_test:

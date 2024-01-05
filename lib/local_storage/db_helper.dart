@@ -186,6 +186,11 @@ class DbHelper {
           voter.policestNameV1 = checkValidString(voter.policestNameEn);
         }
 
+        if(voter.chouseNoV1 == null || checkValidString(voter.chouseNoV1).isEmpty)
+        {
+          voter.chouseNoV1 = checkValidString(voter.chouseNo);
+        }
+
         batch.insert(_TABLE_VOTERS, voter.toJson(),conflictAlgorithm: ConflictAlgorithm.replace);
       }
       batch.commit();

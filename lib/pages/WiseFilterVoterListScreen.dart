@@ -656,13 +656,13 @@ class _WiseFilterVoterListScreen extends BaseState<WiseFilterVoterListScreen> {
 
   String getParamData(Voters listItem) {
     if (type == "House No Wise") {
-      return checkValidString(listItem.chouseNo);
+      return isLanguageEnglish() ? checkValidString(listItem.chouseNo) : checkValidString(listItem.chouseNoV1);
     } else if (type == "Address Wise") {
-      return checkValidString(listItem.sectionNameEn);
+      return isLanguageEnglish() ? checkValidString(listItem.sectionNameEn) : checkValidString(listItem.sectionNameV1);
     } else if (type == "Family Wise") {
-      return checkValidString(listItem.chouseNo);
+      return isLanguageEnglish() ? checkValidString(listItem.chouseNo) : checkValidString(listItem.chouseNoV1);
     } else if (type == "Duplicate Voters") {
-      return checkValidString(listItem.fullNameEn);
+      return isLanguageEnglish() ? checkValidString(listItem.fullNameEn) : checkValidString(listItem.fullNameV1);
     } else {
       return "";
     }
